@@ -2,179 +2,196 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <title>Gestionale Contatti</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --cream: #F5F0E8; --warm-white: #FDFAF5;
-    --terracotta: #C4714A; --terracotta-dark: #9E5535;
-    --forest: #3A5A40; --navy: #1E2D40; --navy-light: #2E3D50;
-    --gold: #C9A84C; --text-dark: #1A1A1A; --text-mid: #4A4A4A; --text-light: #888;
-    --border: rgba(60,40,20,0.12); --shadow: 0 4px 24px rgba(30,15,5,0.10);
-    --shadow-lg: 0 12px 48px rgba(30,15,5,0.18); --radius: 12px; --radius-sm: 8px;
+  :root{
+    --cream:#F5F0E8;--ww:#FDFAF5;
+    --terra:#C4714A;--terra-dk:#9E5535;
+    --forest:#3A5A40;--navy:#1E2D40;--navy2:#2E3D50;
+    --gold:#C9A84C;--dk:#1A1A1A;--mid:#4A4A4A;--lt:#888;
+    --border:rgba(60,40,20,0.12);--sh:0 4px 20px rgba(30,15,5,0.10);
+    --r:12px;--rs:8px;
+    --font:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif;
+    --font-serif:Georgia,'Times New Roman',serif;
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--text-dark); min-height: 100vh; display: flex; flex-direction: column; }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  body{font-family:var(--font);background:var(--cream);color:var(--dk);min-height:100vh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased;}
 
-  header { background: var(--navy); color: white; padding: 0 32px; height: 64px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 16px rgba(0,0,0,0.3); }
-  header h1 { font-family: 'Playfair Display', serif; font-size: 1.5rem; }
-  header h1 span { color: var(--gold); }
-  .header-right { display: flex; gap: 12px; align-items: center; }
-  .sync-status { font-size: 0.78rem; color: rgba(255,255,255,0.55); display: flex; align-items: center; gap: 6px; }
-  .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: #4CAF50; flex-shrink: 0; transition: background 0.3s; }
-  .sync-dot.syncing { background: var(--gold); animation: pulse 1s infinite; }
-  .sync-dot.error { background: #f44336; }
-  @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.3} }
-  .btn-header { background: var(--terracotta); color: white; border: none; padding: 8px 18px; border-radius: var(--radius-sm); font-family: 'DM Sans',sans-serif; font-size: 0.88rem; font-weight: 500; cursor: pointer; transition: all 0.2s; }
-  .btn-header:hover { background: var(--terracotta-dark); transform: translateY(-1px); }
+  header{background:var(--navy);color:white;padding:0 20px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,0.25);}
+  header h1{font-family:var(--font-serif);font-size:1.2rem;font-weight:700;}
+  header h1 span{color:var(--gold);}
+  .hright{display:flex;gap:10px;align-items:center;}
 
-  .app-body { display: flex; flex: 1; min-height: 0; }
+  .sync-banner{color:rgba(255,255,255,0.85);font-size:0.72rem;text-align:center;padding:5px;display:none;align-items:center;justify-content:center;gap:6px;}
+  .sync-banner.show{display:flex;}
+  .sync-banner.loading{background:#2a3f55;}
+  .sync-banner.ok{background:#2d5a3d;}
+  .sync-banner.err{background:#5a2d2d;}
+  .sync-banner .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+  .sync-banner.loading .dot{background:var(--gold);animation:pulse 1s infinite;}
+  .sync-banner.ok .dot{background:#4CAF50;}
+  .sync-banner.err .dot{background:#f44336;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
 
-  aside { width: 260px; min-width: 260px; background: var(--warm-white); border-right: 1px solid var(--border); overflow-y: auto; padding: 20px 0; }
-  .sidebar-folder { padding: 10px 20px; font-weight: 600; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-light); display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; }
-  .sidebar-folder .chevron { margin-left: auto; transition: transform 0.2s; font-size: 0.7rem; }
-  .sidebar-folder.open .chevron { transform: rotate(90deg); }
-  .sidebar-items { display: none; }
-  .sidebar-items.open { display: block; }
-  .sidebar-item { padding: 9px 20px 9px 40px; font-size: 0.88rem; color: var(--text-mid); cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 8px; border-left: 3px solid transparent; }
-  .sidebar-item:hover { background: rgba(196,113,74,0.06); color: var(--terracotta); }
-  .sidebar-item.active { background: rgba(196,113,74,0.10); color: var(--terracotta); border-left-color: var(--terracotta); font-weight: 500; }
-  .sidebar-item-all { padding: 9px 20px; font-size: 0.88rem; color: var(--text-mid); cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 8px; border-left: 3px solid transparent; }
-  .sidebar-item-all:hover { background: rgba(196,113,74,0.06); color: var(--terracotta); }
-  .sidebar-item-all.active { background: rgba(196,113,74,0.10); color: var(--terracotta); border-left-color: var(--terracotta); font-weight: 500; }
-  .badge { margin-left: auto; background: var(--terracotta); color: white; font-size: 0.7rem; font-weight: 600; padding: 2px 7px; border-radius: 20px; min-width: 20px; text-align: center; }
-  .badge.zero { background: var(--border); color: var(--text-light); }
+  .btn-hdr{background:var(--terra);color:white;border:none;padding:7px 15px;border-radius:var(--rs);font-family:var(--font);font-size:0.85rem;font-weight:600;cursor:pointer;}
+  .btn-hdr:active{background:var(--terra-dk);}
 
-  main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-  .stats-bar { display: flex; border-bottom: 1px solid var(--border); background: var(--warm-white); padding: 0 28px; overflow-x: auto; }
-  .stat-pill { padding: 10px 20px; font-size: 0.82rem; color: var(--text-light); white-space: nowrap; display: flex; align-items: center; gap: 7px; }
-  .stat-pill strong { color: var(--text-dark); font-size: 1.1rem; font-weight: 700; }
-  .topbar { background: var(--warm-white); border-bottom: 1px solid var(--border); padding: 14px 28px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
-  .breadcrumb { font-size: 0.85rem; color: var(--text-light); display: flex; align-items: center; gap: 6px; }
-  .filter-pills { display: flex; gap: 8px; flex-wrap: wrap; }
-  .pill { padding: 5px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 500; border: 1px solid var(--border); cursor: pointer; transition: all 0.2s; background: white; color: var(--text-mid); white-space: nowrap; }
-  .pill:hover { border-color: var(--terracotta); color: var(--terracotta); }
-  .pill.active { background: var(--terracotta); color: white; border-color: var(--terracotta); }
-  .search-box { margin-left: auto; position: relative; }
-  .search-box input { padding: 8px 14px 8px 36px; border: 1px solid var(--border); border-radius: 20px; font-family: 'DM Sans',sans-serif; font-size: 0.88rem; background: var(--cream); width: 220px; outline: none; transition: all 0.2s; }
-  .search-box input:focus { border-color: var(--terracotta); width: 270px; }
-  .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-light); font-size: 0.85rem; }
+  /* MOBILE NAV */
+  .mob-nav{display:none;background:var(--navy2);padding:10px 12px;gap:8px;flex-direction:column;}
+  .mob-sel{width:100%;padding:11px 12px;border:none;border-radius:var(--rs);font-family:var(--font);font-size:0.95rem;font-weight:500;background:#243550;color:white;outline:none;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%23aaa' d='M5 6L0 0h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}
+  .mob-sel option{background:#1E2D40;}
+  .mob-sel optgroup{background:#1E2D40;font-style:normal;font-weight:700;color:rgba(255,255,255,0.5);}
+  .mob-cat{display:none;}
+  .mob-cat.vis{display:block;}
+  .mob-new{width:100%;padding:12px;background:var(--terra);color:white;border:none;border-radius:var(--rs);font-family:var(--font);font-size:1rem;font-weight:600;cursor:pointer;margin-top:2px;}
+  .mob-new:active{background:var(--terra-dk);}
 
-  .content-area { flex: 1; overflow-y: auto; padding: 24px 28px; }
-  .contacts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px,1fr)); gap: 16px; }
-  .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 300px; color: var(--text-light); gap: 12px; }
-  .empty-state .big-icon { font-size: 3.5rem; opacity: 0.4; }
+  .app-body{display:flex;flex:1;min-height:0;}
 
-  .contact-card { background: white; border-radius: var(--radius); border: 1px solid var(--border); padding: 20px; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; }
-  .contact-card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:4px; }
-  .contact-card.cat-stagionale::before { background: var(--forest); }
-  .contact-card.cat-annuale::before { background: var(--gold); }
-  .contact-card.cat-semestrale::before { background: var(--terracotta); }
-  .contact-card.cat-estate::before { background: #E89B4A; }
-  .contact-card.cat-argentini::before { background: #5A7AB5; }
-  .contact-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+  /* SIDEBAR */
+  aside{width:260px;min-width:260px;background:var(--ww);border-right:1px solid var(--border);overflow-y:auto;padding:14px 0;}
+  .sf{padding:9px 16px;font-weight:600;font-size:0.76rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--lt);display:flex;align-items:center;gap:7px;cursor:pointer;user-select:none;}
+  .sf .ch{margin-left:auto;transition:transform 0.18s;font-size:0.62rem;}
+  .sf.open .ch{transform:rotate(90deg);}
+  .si-wrap{display:none;}
+  .si-wrap.open{display:block;}
+  .si{padding:8px 16px 8px 36px;font-size:0.84rem;color:var(--mid);cursor:pointer;display:flex;align-items:center;gap:6px;border-left:3px solid transparent;}
+  .si.sub{padding-left:52px;font-size:0.8rem;}
+  .si:hover,.si-all:hover{background:rgba(196,113,74,0.06);color:var(--terra);}
+  .si.active,.si-all.active{background:rgba(196,113,74,0.10);color:var(--terra);border-left-color:var(--terra);font-weight:600;}
+  .si-all{padding:8px 16px;font-size:0.84rem;color:var(--mid);cursor:pointer;display:flex;align-items:center;gap:6px;border-left:3px solid transparent;}
+  /* Argentini gruppo nella sidebar */
+  .si-group{padding:7px 16px 7px 36px;font-size:0.76rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--lt);display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none;}
+  .si-group .ch2{margin-left:auto;transition:transform 0.18s;font-size:0.6rem;}
+  .si-group.open .ch2{transform:rotate(90deg);}
+  .si-sub-wrap{display:none;}
+  .si-sub-wrap.open{display:block;}
+  .bdg{margin-left:auto;background:var(--terra);color:white;font-size:0.67rem;font-weight:600;padding:2px 6px;border-radius:20px;min-width:18px;text-align:center;}
+  .bdg.z{background:var(--border);color:var(--lt);}
 
-  .card-top { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
-  .avatar { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1rem; flex-shrink: 0; color: white; }
-  .card-name { font-weight: 600; font-size: 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .card-sub { font-size: 0.8rem; color: var(--text-light); margin-top: 2px; }
-  .card-badges { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
-  .tag { font-size: 0.72rem; font-weight: 600; padding: 3px 9px; border-radius: 12px; }
-  .tag.cat { color: white; }
-  .tag.cat.stagionale { background: var(--forest); }
-  .tag.cat.annuale { background: var(--gold); color:#333; }
-  .tag.cat.semestrale { background: var(--terracotta); }
-  .tag.cat.estate { background: #E89B4A; }
-  .tag.cat.argentini { background: #5A7AB5; }
-  .tag.info { background: var(--cream); color: var(--text-mid); border: 1px solid var(--border); }
-  .tag.appuntamento { background: rgba(201,168,76,0.15); color: #8A6010; border: 1px solid rgba(201,168,76,0.4); }
-  .card-period { font-size: 0.82rem; color: var(--text-mid); margin-bottom: 6px; }
-  .card-note { font-size: 0.8rem; color: var(--text-light); line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-  .card-footer { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-  .card-contact { font-size: 0.8rem; color: var(--text-light); }
-  .card-contact strong { color: var(--text-mid); }
-  .card-actions { display: flex; gap: 6px; }
-  .icon-btn { width: 28px; height: 28px; border: none; border-radius: 6px; background: var(--cream); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; transition: all 0.15s; color: var(--text-mid); }
-  .icon-btn:hover { background: var(--terracotta); color: white; }
-  .icon-btn.danger:hover { background: #d9534f; color: white; }
+  main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+  .sbar{display:flex;border-bottom:1px solid var(--border);background:var(--ww);padding:0 20px;overflow-x:auto;scrollbar-width:none;}
+  .sbar::-webkit-scrollbar{display:none;}
+  .sp{padding:8px 14px;font-size:0.78rem;color:var(--lt);white-space:nowrap;display:flex;align-items:center;gap:5px;}
+  .sp strong{color:var(--dk);font-size:0.98rem;font-weight:700;}
+  .topbar{background:var(--ww);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .bc{font-size:0.82rem;color:var(--lt);}
+  .fps{display:flex;gap:6px;flex-wrap:wrap;}
+  .pill{padding:5px 12px;border-radius:20px;font-size:0.76rem;font-weight:500;border:1px solid var(--border);cursor:pointer;background:white;color:var(--mid);white-space:nowrap;}
+  .pill:hover{border-color:var(--terra);color:var(--terra);}
+  .pill.active{background:var(--terra);color:white;border-color:var(--terra);}
+  .sbox{margin-left:auto;position:relative;}
+  .sbox input{padding:8px 12px 8px 32px;border:1px solid var(--border);border-radius:20px;font-family:var(--font);font-size:0.85rem;background:var(--cream);width:190px;outline:none;}
+  .sbox input:focus{border-color:var(--terra);}
+  .si-ico{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--lt);font-size:0.8rem;}
 
-  .loading-overlay { position: fixed; inset: 0; background: rgba(253,250,245,0.9); backdrop-filter: blur(4px); z-index: 300; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; }
-  .spinner { width: 40px; height: 40px; border: 3px solid var(--border); border-top-color: var(--terracotta); border-radius: 50%; animation: spin 0.8s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .loading-text { font-size: 0.9rem; color: var(--text-light); }
+  .ca{flex:1;overflow-y:auto;padding:16px 20px;-webkit-overflow-scrolling:touch;}
+  .cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px;}
+  .es{display:flex;flex-direction:column;align-items:center;justify-content:center;height:240px;color:var(--lt);gap:10px;}
+  .es .bi{font-size:2.8rem;opacity:0.35;}
 
-  .overlay { position: fixed; inset: 0; background: rgba(10,10,10,0.55); backdrop-filter: blur(4px); z-index: 200; display: none; align-items: center; justify-content: center; padding: 20px; }
-  .overlay.open { display: flex; animation: fadeIn 0.2s; }
-  @keyframes fadeIn { from{opacity:0}to{opacity:1} }
-  .modal { background: white; border-radius: 16px; width: 100%; max-width: 680px; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow-lg); animation: slideUp 0.25s ease-out; }
-  @keyframes slideUp { from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1} }
-  .modal-header { padding: 24px 28px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: white; z-index: 1; border-radius: 16px 16px 0 0; }
-  .modal-title { font-family: 'Playfair Display',serif; font-size: 1.3rem; color: var(--navy); }
-  .close-btn { width: 32px; height: 32px; border: 1px solid var(--border); border-radius: 8px; background: none; cursor: pointer; font-size: 1rem; color: var(--text-light); display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
-  .close-btn:hover { background: var(--cream); }
-  .modal-body { padding: 24px 28px; }
-  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  .form-grid .full { grid-column: 1/-1; }
-  .field { display: flex; flex-direction: column; gap: 6px; }
-  .field label { font-size: 0.8rem; font-weight: 600; color: var(--text-mid); text-transform: uppercase; letter-spacing: 0.06em; }
-  .field input, .field select, .field textarea { padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: 'DM Sans',sans-serif; font-size: 0.9rem; color: var(--text-dark); background: var(--cream); outline: none; transition: border-color 0.2s; }
-  .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--terracotta); background: white; }
-  .field textarea { resize: vertical; min-height: 80px; }
-  .section-divider { grid-column: 1/-1; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--terracotta); padding: 8px 0 4px; border-bottom: 1px solid rgba(196,113,74,0.2); margin-top: 8px; }
-  .appuntamenti-list { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
-  .appuntamento-item { display: flex; gap: 8px; align-items: center; padding: 10px 12px; background: var(--cream); border-radius: var(--radius-sm); border: 1px solid var(--border); font-size: 0.85rem; }
-  .apt-date { font-weight: 600; color: var(--navy); min-width: 150px; }
-  .apt-note { flex: 1; color: var(--text-mid); }
-  .add-appuntamento { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
-  .modal-footer { padding: 16px 28px 24px; display: flex; gap: 10px; justify-content: flex-end; border-top: 1px solid var(--border); margin-top: 8px; }
-  .btn { padding: 10px 24px; border: none; border-radius: var(--radius-sm); font-family: 'DM Sans',sans-serif; font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: all 0.2s; }
-  .btn-primary { background: var(--terracotta); color: white; }
-  .btn-primary:hover { background: var(--terracotta-dark); }
-  .btn-ghost { background: var(--cream); color: var(--text-mid); }
+  .cc{background:white;border-radius:var(--r);border:1px solid var(--border);padding:16px;cursor:pointer;position:relative;overflow:hidden;}
+  .cc::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;}
+  .cc.cat-stagionale::before{background:var(--forest);}
+  .cc.cat-annuale::before{background:var(--gold);}
+  .cc.cat-semestrale::before{background:var(--terra);}
+  .cc.cat-estate::before{background:#E89B4A;}
+  .cc.cat-argentini-estate::before{background:#5A7AB5;}
+  .cc.cat-argentini-inverno::before{background:#3A5A8A;}
+  .cc:active{opacity:0.85;}
 
-  .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 24px; }
-  .detail-item .dt-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-light); margin-bottom: 3px; }
-  .detail-item .dt-value { font-size: 0.92rem; }
-  .detail-item.full { grid-column: 1/-1; }
-  .detail-notes { background: var(--cream); border-radius: var(--radius-sm); padding: 12px 14px; font-size: 0.88rem; color: var(--text-mid); line-height: 1.55; white-space: pre-wrap; }
-  .apt-tag { display: inline-flex; align-items: center; gap: 6px; background: rgba(201,168,76,0.12); color: #7A5810; border: 1px solid rgba(201,168,76,0.35); border-radius: 20px; padding: 4px 12px; font-size: 0.82rem; font-weight: 500; margin: 3px; }
+  .ctop{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;}
+  .av{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;flex-shrink:0;color:white;}
+  .cn{font-weight:600;font-size:0.95rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .cs{font-size:0.75rem;color:var(--lt);margin-top:1px;}
+  .cbs{display:flex;gap:5px;margin-bottom:9px;flex-wrap:wrap;}
+  .tag{font-size:0.68rem;font-weight:600;padding:3px 8px;border-radius:10px;}
+  .tag.cat{color:white;}
+  .tag.cat.stagionale{background:var(--forest);}
+  .tag.cat.annuale{background:var(--gold);color:#333;}
+  .tag.cat.semestrale{background:var(--terra);}
+  .tag.cat.estate{background:#E89B4A;}
+  .tag.cat.argentini-estate{background:#5A7AB5;}
+  .tag.cat.argentini-inverno{background:#3A5A8A;}
+  .tag.info{background:var(--cream);color:var(--mid);border:1px solid var(--border);}
+  .tag.apt{background:rgba(201,168,76,0.15);color:#8A6010;border:1px solid rgba(201,168,76,0.4);}
+  .cp{font-size:0.78rem;color:var(--mid);margin-bottom:5px;}
+  .cnote{font-size:0.76rem;color:var(--lt);line-height:1.4;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+  .cf{margin-top:10px;padding-top:10px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+  .cc-ct{font-size:0.76rem;color:var(--lt);}
+  .cc-ct strong{color:var(--mid);}
+  .cact{display:flex;gap:5px;}
+  .ib{width:30px;height:30px;border:none;border-radius:6px;background:var(--cream);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.82rem;color:var(--mid);}
+  .ib:active{background:var(--terra);color:white;}
+  .ib.d:active{background:#d9534f;color:white;}
 
-  .av-0{background:var(--forest)} .av-1{background:var(--terracotta)} .av-2{background:#5A7AB5}
-  .av-3{background:var(--gold);color:#333} .av-4{background:#B5845A} .av-5{background:#7A5AB5}
+  /* MODAL */
+  .ov{position:fixed;inset:0;background:rgba(10,10,10,0.55);z-index:200;display:none;align-items:flex-end;justify-content:center;}
+  .ov.open{display:flex;animation:fi 0.15s;}
+  @keyframes fi{from{opacity:0}to{opacity:1}}
+  .modal{background:white;border-radius:18px 18px 0 0;width:100%;max-width:680px;max-height:93vh;overflow-y:auto;-webkit-overflow-scrolling:touch;animation:su 0.2s ease-out;padding-bottom:env(safe-area-inset-bottom,12px);}
+  @keyframes su{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+  .mh{padding:18px 20px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:white;z-index:1;border-radius:18px 18px 0 0;}
+  .mh::before{content:'';display:block;width:32px;height:4px;background:var(--border);border-radius:2px;position:absolute;top:7px;left:50%;transform:translateX(-50%);}
+  .mt{font-family:var(--font-serif);font-size:1.15rem;color:var(--navy);font-weight:700;}
+  .xb{width:28px;height:28px;border:1px solid var(--border);border-radius:6px;background:none;cursor:pointer;font-size:0.88rem;color:var(--lt);display:flex;align-items:center;justify-content:center;}
+  .mb{padding:18px 20px;}
+  .fg{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .fg .full{grid-column:1/-1;}
+  .fl{display:flex;flex-direction:column;gap:5px;}
+  .fl label{font-size:0.73rem;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:0.06em;}
+  .fl input,.fl select,.fl textarea{padding:10px 12px;border:1px solid var(--border);border-radius:var(--rs);font-family:var(--font);font-size:0.92rem;color:var(--dk);background:var(--cream);outline:none;-webkit-appearance:none;appearance:none;width:100%;}
+  .fl input:focus,.fl select:focus,.fl textarea:focus{border-color:var(--terra);background:white;}
+  .fl textarea{resize:vertical;min-height:76px;}
+  .sdiv{grid-column:1/-1;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--terra);padding:7px 0 3px;border-bottom:1px solid rgba(196,113,74,0.2);margin-top:5px;}
+  .al{display:flex;flex-direction:column;gap:6px;margin-top:4px;}
+  .ai{display:flex;gap:7px;align-items:center;padding:8px 10px;background:var(--cream);border-radius:var(--rs);border:1px solid var(--border);font-size:0.81rem;}
+  .ai .ad{font-weight:600;color:var(--navy);font-size:0.78rem;min-width:120px;}
+  .ai .an{flex:1;color:var(--mid);}
+  .aadd{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;}
+  .aadd input{flex:1;min-width:110px;}
+  .mf{padding:12px 20px 18px;display:flex;gap:8px;justify-content:flex-end;border-top:1px solid var(--border);}
+  .btn{padding:10px 20px;border:none;border-radius:var(--rs);font-family:var(--font);font-size:0.9rem;font-weight:600;cursor:pointer;}
+  .btn-p{background:var(--terra);color:white;}
+  .btn-p:active{background:var(--terra-dk);}
+  .btn-g{background:var(--cream);color:var(--mid);}
+  .dg{display:grid;grid-template-columns:1fr 1fr;gap:12px 18px;}
+  .di .dl{font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--lt);margin-bottom:2px;}
+  .di .dv{font-size:0.88rem;}
+  .di.full{grid-column:1/-1;}
+  .dn{background:var(--cream);border-radius:var(--rs);padding:10px 12px;font-size:0.84rem;color:var(--mid);line-height:1.55;white-space:pre-wrap;}
+  .atag{display:inline-flex;align-items:center;gap:5px;background:rgba(201,168,76,0.12);color:#7A5810;border:1px solid rgba(201,168,76,0.35);border-radius:20px;padding:3px 10px;font-size:0.78rem;font-weight:500;margin:2px;}
 
-  /* ── MOBILE FILTER BAR ── */
-  .mobile-filters { display: none; background: var(--navy); padding: 10px 16px; gap: 8px; flex-direction: column; }
-  .mobile-filters select {
-    width: 100%; padding: 10px 14px; border: none; border-radius: var(--radius-sm);
-    font-family: 'DM Sans',sans-serif; font-size: 0.92rem; font-weight: 500;
-    background: var(--navy-light); color: white; outline: none; appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='white' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat; background-position: right 14px center;
+  .av-0{background:var(--forest)}.av-1{background:var(--terra)}.av-2{background:#5A7AB5}
+  .av-3{background:var(--gold);color:#333}.av-4{background:#B5845A}.av-5{background:#3A5A8A}
+
+  @media(min-width:701px){
+    .ov{align-items:center;padding:16px;}
+    .modal{border-radius:14px;max-height:88vh;}
+    .mh{border-radius:14px 14px 0 0;}
+    .mh::before{display:none;}
+    .cc:hover{box-shadow:var(--sh);}
+    .ib:hover{background:var(--terra);color:white;}
+    .ib.d:hover{background:#d9534f;color:white;}
   }
-  .mobile-filters select option { background: var(--navy); }
-  .mobile-new-btn {
-    width: 100%; padding: 11px; background: var(--terracotta); color: white;
-    border: none; border-radius: var(--radius-sm); font-family: 'DM Sans',sans-serif;
-    font-size: 0.95rem; font-weight: 600; cursor: pointer; text-align: center;
-  }
-
   @media(max-width:700px){
-    aside { display: none; }
-    header { padding: 0 16px; }
-    header h1 { font-size: 1.1rem; }
-    .btn-header { display: none; }
-    .mobile-filters { display: flex; }
-    .topbar { padding: 10px 16px; flex-wrap: wrap; gap: 10px; }
-    .filter-pills { display: none; }
-    .search-box { margin-left: 0; width: 100%; }
-    .search-box input { width: 100% !important; }
-    .content-area { padding: 12px; }
-    .contacts-grid { grid-template-columns: 1fr; }
-    .form-grid { grid-template-columns: 1fr; }
-    .form-grid .full { grid-column: 1; }
-    .stats-bar { padding: 0 12px; }
-    .stat-pill { padding: 8px 10px; font-size: 0.75rem; }
+    aside{display:none;}
+    .btn-hdr{display:none;}
+    .mob-nav{display:flex;}
+    .topbar{padding:8px 12px;gap:8px;}
+    .fps{display:none;}
+    .sbox{margin-left:0;width:100%;}
+    .sbox input{width:100%!important;}
+    .bc{display:none;}
+    .ca{padding:10px 12px;}
+    .cg{grid-template-columns:1fr;gap:9px;}
+    .sbar{padding:0 10px;}
+    .sp{padding:7px 8px;font-size:0.72rem;}
+    .fg{grid-template-columns:1fr;}
+    .fg .full{grid-column:1;}
   }
 </style>
 </head>
@@ -182,79 +199,69 @@
 
 <header>
   <h1>🏠 Gestionale <span>Contatti</span></h1>
-  <div class="header-right">
-    <div class="sync-status">
-      <div class="sync-dot" id="syncDot"></div>
-      <span id="syncText">Connessione…</span>
-    </div>
-    <button class="btn-header" onclick="openAdd()">＋ Nuovo Contatto</button>
+  <div class="hright">
+    <button class="btn-hdr" onclick="openAdd()">＋ Nuovo</button>
   </div>
 </header>
 
-<!-- MOBILE FILTER BAR -->
-<div class="mobile-filters" id="mobileFilters">
-  <select id="mob_cartella" onchange="mobileFilter()">
+<div class="sync-banner" id="banner">
+  <span class="dot"></span><span id="bannerTxt"></span>
+</div>
+
+<!-- MOBILE NAV -->
+<div class="mob-nav">
+  <select class="mob-sel" id="mob_cartella" onchange="onMobC()">
     <option value="">🏠 Tutte le case</option>
     <option value="Casa Paese Piano 1°">🏠 Casa Paese Piano 1°</option>
     <option value="Casa Paese Piano 2°">🏡 Casa Paese Piano 2°</option>
     <option value="Casa Stazione">🚉 Casa Stazione</option>
   </select>
-  <select id="mob_categoria" onchange="mobileFilter()">
+  <select class="mob-sel mob-cat" id="mob_categoria" onchange="onMobCat()">
     <option value="">📋 Tutte le categorie</option>
     <option value="stagionale">🌿 Stagionale</option>
     <option value="annuale">📆 Annuale</option>
     <option value="semestrale">🗓️ Semestrale</option>
     <option value="estate">☀️ Estate</option>
-    <option value="argentini">🇦🇷 Argentini</option>
+    <optgroup label="🇦🇷 Argentini">
+      <option value="argentini-estate">🇦🇷 Argentini Estate</option>
+      <option value="argentini-inverno">🇦🇷 Argentini Inverno</option>
+    </optgroup>
   </select>
-  <button class="mobile-new-btn" onclick="openAdd()">＋ Nuovo Contatto</button>
+  <button class="mob-new" onclick="openAdd()">＋ Nuovo Contatto</button>
 </div>
 
 <div class="app-body">
   <aside id="sidebar"></aside>
   <main>
-    <div class="stats-bar" id="statsBar"></div>
+    <div class="sbar" id="sbar"></div>
     <div class="topbar">
-      <div class="breadcrumb" id="breadcrumb"></div>
-      <div class="filter-pills" id="filterPills"></div>
-      <div class="search-box">
-        <span class="search-icon">🔍</span>
-        <input type="text" placeholder="Cerca contatto…" id="searchInput" oninput="render()">
+      <div class="bc" id="bc"></div>
+      <div class="fps" id="fps"></div>
+      <div class="sbox">
+        <span class="si-ico">🔍</span>
+        <input type="search" placeholder="Cerca…" id="srch" oninput="render()" autocomplete="off">
       </div>
     </div>
-    <div class="content-area">
-      <div class="contacts-grid" id="cardsGrid"></div>
-      <div class="empty-state" id="emptyState" style="display:none">
-        <span class="big-icon">📭</span>
-        <span>Nessun contatto trovato</span>
-      </div>
+    <div class="ca">
+      <div class="cg" id="cg"></div>
+      <div class="es" id="es" style="display:none"><span class="bi">📭</span><span>Nessun contatto</span></div>
     </div>
   </main>
 </div>
 
-<div class="loading-overlay" id="loadingOverlay">
-  <div class="spinner"></div>
-  <div class="loading-text" id="loadingText">Caricamento contatti…</div>
-</div>
-
-<!-- FORM MODAL -->
-<div class="overlay" id="formOverlay">
+<!-- FORM -->
+<div class="ov" id="fov">
   <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title" id="formTitle">Nuovo Contatto</div>
-      <button class="close-btn" onclick="closeForm()">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="form-grid">
-        <div class="section-divider">👤 Anagrafica</div>
-        <div class="field"><label>Nome *</label><input type="text" id="f_nome" placeholder="Mario Rossi"></div>
-        <div class="field"><label>Telefono</label><input type="text" id="f_tel" placeholder="+39 000 000 0000"></div>
-        <div class="field"><label>Email</label><input type="text" id="f_email" placeholder="email@esempio.it"></div>
-        <div class="field"><label>Sito / Provenienza</label><input type="text" id="f_sito" placeholder="Airbnb, Booking, Subito…"></div>
-
-        <div class="section-divider">🏠 Struttura & Categoria</div>
-        <div class="field">
-          <label>Cartella *</label>
+    <div class="mh"><div class="mt" id="ftitle">Nuovo Contatto</div><button class="xb" onclick="closeForm()">✕</button></div>
+    <div class="mb">
+      <div class="fg">
+        <div class="sdiv">👤 Anagrafica</div>
+        <div class="fl"><label>Nome *</label><input type="text" id="f_nome" placeholder="Mario Rossi" autocomplete="name"></div>
+        <div class="fl"><label>Telefono</label><input type="tel" id="f_tel" placeholder="+39 000 000 0000"></div>
+        <div class="fl"><label>Email</label><input type="email" id="f_email" placeholder="email@esempio.it"></div>
+        <div class="fl"><label>Provenienza</label><input type="text" id="f_sito" placeholder="Airbnb, Booking, Subito…"></div>
+        <div class="sdiv">🏠 Struttura & Categoria</div>
+        <div class="fl"><label>Cartella *</label>
           <select id="f_cartella">
             <option value="">— Seleziona —</option>
             <option>Casa Paese Piano 1°</option>
@@ -262,395 +269,390 @@
             <option>Casa Stazione</option>
           </select>
         </div>
-        <div class="field">
-          <label>Categoria *</label>
+        <div class="fl"><label>Categoria *</label>
           <select id="f_categoria">
             <option value="">— Seleziona —</option>
-            <option value="stagionale">Stagionale</option>
-            <option value="annuale">Annuale</option>
-            <option value="semestrale">Semestrale</option>
-            <option value="estate">Estate</option>
-            <option value="argentini">Argentini</option>
+            <option value="stagionale">🌿 Stagionale</option>
+            <option value="annuale">📆 Annuale</option>
+            <option value="semestrale">🗓️ Semestrale</option>
+            <option value="estate">☀️ Estate</option>
+            <optgroup label="🇦🇷 Argentini">
+              <option value="argentini-estate">🇦🇷 Argentini Estate</option>
+              <option value="argentini-inverno">🇦🇷 Argentini Inverno</option>
+            </optgroup>
           </select>
         </div>
-
-        <div class="section-divider">📅 Periodi</div>
-        <div class="field"><label>Periodo richiesto (da)</label><input type="date" id="f_periodo_da"></div>
-        <div class="field"><label>Periodo richiesto (a)</label><input type="date" id="f_periodo_a"></div>
-        <div class="field full"><label>Dettagli periodo</label><input type="text" id="f_periodo_note" placeholder="es. solo week-end, luglio-agosto…"></div>
-
-        <div class="section-divider">📞 Contatto ricevuto</div>
-        <div class="field"><label>Data contatto</label><input type="date" id="f_data_contatto"></div>
-        <div class="field"><label>Chi ha parlato</label><input type="text" id="f_chi" placeholder="es. Io, Tu, Marco…"></div>
-
-        <div class="section-divider">📝 Note</div>
-        <div class="field full"><label>Note e motivazioni</label><textarea id="f_note" placeholder="Perché vuole la casa, preferenze, famiglia, animali…"></textarea></div>
-
-        <div class="section-divider">🗓️ Appuntamenti</div>
+        <div class="sdiv">📅 Periodi</div>
+        <div class="fl"><label>Da</label><input type="date" id="f_periodo_da"></div>
+        <div class="fl"><label>A</label><input type="date" id="f_periodo_a"></div>
+        <div class="fl full"><label>Dettagli periodo</label><input type="text" id="f_periodo_note" placeholder="es. solo week-end, luglio-agosto…"></div>
+        <div class="sdiv">📞 Contatto ricevuto</div>
+        <div class="fl"><label>Data contatto</label><input type="date" id="f_data_contatto"></div>
+        <div class="fl"><label>Chi ha parlato</label><input type="text" id="f_chi" placeholder="es. Io, Tu, Marco…"></div>
+        <div class="sdiv">📝 Note</div>
+        <div class="fl full"><label>Note e motivazioni</label><textarea id="f_note" placeholder="Perché vuole la casa, preferenze, famiglia…"></textarea></div>
+        <div class="sdiv">🗓️ Appuntamenti</div>
         <div class="full">
-          <div class="appuntamenti-list" id="aptList"></div>
-          <div class="add-appuntamento">
+          <div class="al" id="al"></div>
+          <div class="aadd">
             <input type="datetime-local" id="apt_data" style="flex:0 0 auto">
-            <input type="text" id="apt_note" placeholder="Motivo appuntamento…" style="flex:1;min-width:120px">
-            <button class="btn btn-ghost" onclick="addApt()" style="padding:8px 14px;flex-shrink:0">＋ Aggiungi</button>
+            <input type="text" id="apt_note" placeholder="Motivo…" style="flex:1">
+            <button class="btn btn-g" onclick="addApt()" style="padding:9px 13px;flex-shrink:0">＋</button>
           </div>
         </div>
       </div>
     </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeForm()">Annulla</button>
-      <button class="btn btn-primary" onclick="saveContact()">💾 Salva</button>
-    </div>
+    <div class="mf"><button class="btn btn-g" onclick="closeForm()">Annulla</button><button class="btn btn-p" onclick="saveContact()">💾 Salva</button></div>
   </div>
 </div>
 
-<!-- DETAIL MODAL -->
-<div class="overlay" id="detailOverlay">
+<!-- DETAIL -->
+<div class="ov" id="dov">
   <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title" id="detailTitle">Dettaglio</div>
-      <button class="close-btn" onclick="closeDetail()">✕</button>
-    </div>
-    <div class="modal-body" id="detailBody"></div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeDetail()">Chiudi</button>
-      <button class="btn btn-primary" id="editBtn">✏️ Modifica</button>
-    </div>
+    <div class="mh"><div class="mt" id="dtitle">Dettaglio</div><button class="xb" onclick="closeDetail()">✕</button></div>
+    <div class="mb" id="dbody"></div>
+    <div class="mf"><button class="btn btn-g" onclick="closeDetail()">Chiudi</button><button class="btn btn-p" id="ebtn">✏️ Modifica</button></div>
   </div>
 </div>
 
 <script>
-// ── CONFIG ──
-const API_KEY = '$2a$10$chHTzJ5hoeIyhWpM0Tw7COz4xSEF6u8u3yyusI1YoMvq9w4VL/Ql.';
-let BIN_ID = localStorage.getItem('gestionale_bin_id') || null;
-let contacts = [];
-let editingId = null;
-let currentApts = [];
-let filterCartella = null;
-let filterCategoria = null;
-let isSaving = false;
+// ── SUPABASE ──
+const SB_URL='https://szpyhbtfoxdsatcrksfo.supabase.co';
+const SB_KEY='sb_publishable_H0cfXThFKxloHuJfyGPD0A_PflUFQY_';
+const HDR={'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY};
 
-const FOLDERS = ['Casa Paese Piano 1°','Casa Paese Piano 2°','Casa Stazione'];
-const CATS = ['stagionale','annuale','semestrale','estate','argentini'];
-const CAT_LABELS = {stagionale:'Stagionale',annuale:'Annuale',semestrale:'Semestrale',estate:'Estate',argentini:'Argentini'};
-const CAT_EMOJI = {stagionale:'🌿',annuale:'📆',semestrale:'🗓️',estate:'☀️',argentini:'🇦🇷'};
-const FOLDER_EMOJI = {'Casa Paese Piano 1°':'🏠','Casa Paese Piano 2°':'🏡','Casa Stazione':'🚉'};
-const AV = ['av-0','av-1','av-2','av-3','av-4','av-5'];
+let contacts=[],editId=null,curApts=[],fC=null,fCat=null,saving=false;
 
-function uid() { return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
-function initials(n) { return (n||'?').split(' ').map(w=>w[0]||'').join('').slice(0,2).toUpperCase()||'?'; }
-function avColor(n) { let h=0; for(let c of (n||'')) h=(h*31+c.charCodeAt(0))%AV.length; return AV[h]; }
-function fmtDate(d) { if(!d) return ''; const dt=new Date(d); return isNaN(dt)?d:dt.toLocaleDateString('it-IT',{day:'2-digit',month:'short',year:'numeric'}); }
-function fmtDT(d) { if(!d) return ''; const dt=new Date(d); return isNaN(dt)?d:dt.toLocaleDateString('it-IT',{day:'2-digit',month:'short',year:'numeric'})+' '+dt.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}); }
+const FL=['Casa Paese Piano 1°','Casa Paese Piano 2°','Casa Stazione'];
 
-// ── SYNC UI ──
-function setSync(state, text) {
-  document.getElementById('syncDot').className = 'sync-dot'+(state==='syncing'?' syncing':state==='error'?' error':'');
-  document.getElementById('syncText').textContent = text;
+// Categorie — argentini si ramifica
+const CATS=['stagionale','annuale','semestrale','estate','argentini-estate','argentini-inverno'];
+const CL={
+  stagionale:'Stagionale',annuale:'Annuale',semestrale:'Semestrale',estate:'Estate',
+  'argentini-estate':'Argentini Estate','argentini-inverno':'Argentini Inverno'
+};
+const CE={
+  stagionale:'🌿',annuale:'📆',semestrale:'🗓️',estate:'☀️',
+  'argentini-estate':'🇦🇷','argentini-inverno':'🇦🇷'
+};
+const FE={'Casa Paese Piano 1°':'🏠','Casa Paese Piano 2°':'🏡','Casa Stazione':'🚉'};
+const AVC=['av-0','av-1','av-2','av-3','av-4','av-5'];
+
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const ini=n=>(n||'?').split(' ').map(w=>w[0]||'').join('').slice(0,2).toUpperCase()||'?';
+const avc=n=>{let h=0;for(let c of(n||''))h=(h*31+c.charCodeAt(0))%AVC.length;return AVC[h];};
+const fd=d=>{if(!d)return'';const t=new Date(d);return isNaN(t)?d:t.toLocaleDateString('it-IT',{day:'2-digit',month:'short',year:'numeric'});};
+const fdt=d=>{if(!d)return'';const t=new Date(d);return isNaN(t)?d:t.toLocaleDateString('it-IT',{day:'2-digit',month:'short',year:'numeric'})+' '+t.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});};
+const $=id=>document.getElementById(id);
+
+// ── BANNER ──
+let bT=null;
+function banner(state,txt){
+  const b=$('banner');
+  b.className='sync-banner show '+state;
+  $('bannerTxt').textContent=txt;
+  if(bT)clearTimeout(bT);
+  if(state==='ok'||state==='err') bT=setTimeout(()=>b.classList.remove('show'),2500);
 }
 
-// ── JSONBIN ──
-async function createBin() {
-  const res = await fetch('https://api.jsonbin.io/v3/b', {
-    method: 'POST',
-    headers: {'Content-Type':'application/json','X-Master-Key':API_KEY,'X-Bin-Name':'gestionale-contatti','X-Bin-Private':'false'},
-    body: JSON.stringify({contacts:[]})
+// ── API SUPABASE ──
+async function dbRead(){
+  const r=await fetch(`${SB_URL}/rest/v1/contacts?select=*&order=updated_at.desc`,{headers:HDR});
+  if(!r.ok)throw new Error('read');
+  const rows=await r.json();
+  return rows.map(row=>({...row.data,id:row.id}));
+}
+async function dbUpsert(c){
+  const r=await fetch(`${SB_URL}/rest/v1/contacts`,{
+    method:'POST',
+    headers:{...HDR,'Prefer':'resolution=merge-duplicates'},
+    body:JSON.stringify({id:c.id,data:c,updated_at:new Date().toISOString()})
   });
-  const j = await res.json();
-  return j.metadata.id;
+  if(!r.ok)throw new Error('upsert');
+}
+async function dbDelete(id){
+  const r=await fetch(`${SB_URL}/rest/v1/contacts?id=eq.${id}`,{method:'DELETE',headers:HDR});
+  if(!r.ok)throw new Error('delete');
 }
 
-async function readBin() {
-  const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
-    headers: {'X-Master-Key':API_KEY}
-  });
-  const j = await res.json();
-  return j.record?.contacts || [];
-}
-
-async function writeBin() {
-  await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
-    method: 'PUT',
-    headers: {'Content-Type':'application/json','X-Master-Key':API_KEY},
-    body: JSON.stringify({contacts})
-  });
-}
-
-// ── LOAD ──
-async function loadContacts() {
-  showLoading('Caricamento contatti…');
-  setSync('syncing','Connessione…');
-  try {
-    if (!BIN_ID) {
-      BIN_ID = await createBin();
-      localStorage.setItem('gestionale_bin_id', BIN_ID);
-    }
-    contacts = await readBin();
-    setSync('ok','Sincronizzato ✓');
-  } catch(e) {
-    setSync('error','Errore connessione');
-    contacts = JSON.parse(localStorage.getItem('contacts_backup')||'[]');
-    if(contacts.length) alert('⚠️ Problemi di connessione. Mostro dati salvati in locale.');
-  }
-  hideLoading();
+// ── LOAD ISTANTANEO ──
+function load(){
+  const cached=localStorage.getItem('sb_cache');
+  if(cached){try{contacts=JSON.parse(cached);}catch(e){contacts=[];}}
   render();
+  syncFresh();
 }
-
-async function pushContacts() {
-  setSync('syncing','Salvataggio…');
-  localStorage.setItem('contacts_backup', JSON.stringify(contacts));
-  try {
-    await writeBin();
-    setSync('ok','Sincronizzato ✓');
-  } catch(e) {
-    setSync('error','Errore salvataggio');
+async function syncFresh(){
+  banner('loading','Aggiornamento…');
+  try{
+    const fresh=await dbRead();
+    const changed=JSON.stringify(fresh)!==JSON.stringify(contacts);
+    contacts=fresh;
+    localStorage.setItem('sb_cache',JSON.stringify(contacts));
+    if(changed)render();
+    banner('ok','Aggiornato ✓');
+  }catch(e){
+    banner('err','Errore connessione');
+    if(!contacts.length){contacts=JSON.parse(localStorage.getItem('sb_cache')||'[]');render();}
   }
 }
 
-function showLoading(t) { document.getElementById('loadingText').textContent=t; document.getElementById('loadingOverlay').style.display='flex'; }
-function hideLoading() { document.getElementById('loadingOverlay').style.display='none'; }
-
-// ── SIDEBAR ──
-function buildSidebar() {
-  let html = `<div class="sidebar-item-all ${!filterCartella&&!filterCategoria?'active':''}" onclick="setFilter(null,null)">
-    <span>📋</span> Tutti i contatti <span class="badge ${!contacts.length?'zero':''}">${contacts.length}</span>
-  </div>`;
-  FOLDERS.forEach(folder => {
-    const fc = contacts.filter(c=>c.cartella===folder);
-    const isOpen = filterCartella===folder;
-    html += `<div>
-      <div class="sidebar-folder ${isOpen?'open':''}" onclick="toggleFolder(this,'${folder}')">
-        <span>${FOLDER_EMOJI[folder]}</span><span style="flex:1">${folder}</span><span class="chevron">▶</span>
+// ── SIDEBAR con gruppo Argentini ──
+function buildSidebar(){
+  let h=`<div class="si-all ${!fC&&!fCat?'active':''}" onclick="sf(null,null)"><span>📋</span>Tutti<span class="bdg ${!contacts.length?'z':''}">${contacts.length}</span></div>`;
+  FL.forEach(folder=>{
+    const fc=contacts.filter(c=>c.cartella===folder);
+    const open=fC===folder;
+    h+=`<div>
+      <div class="sf ${open?'open':''}" onclick="togF(this,'${folder}')">
+        <span>${FE[folder]}</span><span style="flex:1">${folder}</span><span class="ch">▶</span>
       </div>
-      <div class="sidebar-items ${isOpen?'open':''}">
-        <div class="sidebar-item ${filterCartella===folder&&!filterCategoria?'active':''}" onclick="setFilter('${folder}',null)">
-          <span>📂</span>Tutti<span class="badge ${!fc.length?'zero':''}">${fc.length}</span>
+      <div class="si-wrap ${open?'open':''}">
+        <div class="si ${fC===folder&&!fCat?'active':''}" onclick="sf('${folder}',null)">
+          <span>📂</span>Tutti<span class="bdg ${!fc.length?'z':''}">${fc.length}</span>
         </div>`;
-    CATS.forEach(cat => {
-      const n = fc.filter(c=>c.categoria===cat).length;
-      html += `<div class="sidebar-item ${filterCartella===folder&&filterCategoria===cat?'active':''}" onclick="setFilter('${folder}','${cat}')">
-        <span>${CAT_EMOJI[cat]}</span>${CAT_LABELS[cat]}<span class="badge ${!n?'zero':''}">${n}</span>
+
+    // Categorie normali
+    ['stagionale','annuale','semestrale','estate'].forEach(cat=>{
+      const n=fc.filter(c=>c.categoria===cat).length;
+      h+=`<div class="si ${fC===folder&&fCat===cat?'active':''}" onclick="sf('${folder}','${cat}')">
+        <span>${CE[cat]}</span>${CL[cat]}<span class="bdg ${!n?'z':''}">${n}</span>
       </div>`;
     });
-    html += `</div></div>`;
+
+    // Gruppo Argentini con sottocategorie
+    const nArg=fc.filter(c=>c.categoria==='argentini-estate'||c.categoria==='argentini-inverno').length;
+    const argOpen=fC===folder&&(fCat==='argentini-estate'||fCat==='argentini-inverno');
+    h+=`<div class="si-group ${argOpen?'open':''}" onclick="togArg(this)">
+        <span>🇦🇷</span><span style="flex:1">Argentini</span>
+        <span class="bdg ${!nArg?'z':''}">${nArg}</span>
+        <span class="ch2">▶</span>
+      </div>
+      <div class="si-sub-wrap ${argOpen?'open':''}">`;
+    ['argentini-estate','argentini-inverno'].forEach(cat=>{
+      const n=fc.filter(c=>c.categoria===cat).length;
+      h+=`<div class="si sub ${fC===folder&&fCat===cat?'active':''}" onclick="sf('${folder}','${cat}')">
+          <span>${CE[cat]}</span>${CL[cat]}<span class="bdg ${!n?'z':''}">${n}</span>
+        </div>`;
+    });
+    h+=`</div></div></div>`;
   });
-  document.getElementById('sidebar').innerHTML = html;
+  $('sidebar').innerHTML=h;
 }
 
-function toggleFolder(el, folder) {
+function togF(el,folder){
+  const wasOpen=el.classList.contains('open');
+  // Chiudi tutti
+  document.querySelectorAll('.sf.open').forEach(e=>{e.classList.remove('open');e.nextElementSibling.classList.remove('open');});
+  if(!wasOpen){el.classList.add('open');el.nextElementSibling.classList.add('open');sf(folder,null);}
+  else sf(null,null);
+}
+function togArg(el){
   el.classList.toggle('open');
   el.nextElementSibling.classList.toggle('open');
-  setFilter(folder, null);
 }
-function setFilter(c,cat) { filterCartella=c; filterCategoria=cat; render(); }
+function sf(c,cat){fC=c;fCat=cat;render();}
 
-function buildPills() {
-  let html = `<span class="pill ${!filterCategoria?'active':''}" onclick="setFilter(filterCartella,null)">Tutte</span>`;
-  CATS.forEach(cat => {
-    html += `<span class="pill ${filterCategoria===cat?'active':''}" onclick="setFilter(filterCartella,'${cat}')">${CAT_EMOJI[cat]} ${CAT_LABELS[cat]}</span>`;
+let argPillsOpen=false;
+function buildPills(){
+  const isArg=fCat==='argentini-estate'||fCat==='argentini-inverno';
+  if(isArg) argPillsOpen=true;
+  let h=`<span class="pill ${!fCat?'active':''}" onclick="sf(fC,null)">Tutte</span>`;
+  ['stagionale','annuale','semestrale','estate'].forEach(cat=>{
+    h+=`<span class="pill ${fCat===cat?'active':''}" onclick="sf(fC,'${cat}')">$\{CE[cat]} ${CL[cat]}</span>`;
   });
-  document.getElementById('filterPills').innerHTML = html;
+  h+=`<span class="pill ${isArg?'active':''}" onclick="toggleArgPills()">🇦🇷 Argentini ${argPillsOpen?'▴':'▾'}</span>`;
+  if(argPillsOpen){
+    h+=`<span class="pill ${fCat==='argentini-estate'?'active':''}" onclick="sf(fC,'argentini-estate')" style="margin-left:8px">↳ Estate</span>`;
+    h+=`<span class="pill ${fCat==='argentini-inverno'?'active':''}" onclick="sf(fC,'argentini-inverno')" style="margin-left:8px">↳ Inverno</span>`;
+  }
+  $('fps').innerHTML=h;
+}
+function toggleArgPills(){
+  argPillsOpen=!argPillsOpen;
+  if(!argPillsOpen&&(fCat==='argentini-estate'||fCat==='argentini-inverno')) sf(fC,null);
+  else buildPills();
 }
 
-function buildStats() {
-  const now = new Date();
-  const up = contacts.filter(c=>(c.appuntamenti||[]).some(a=>new Date(a.data)>=now)).length;
-  document.getElementById('statsBar').innerHTML = `
-    <div class="stat-pill"><strong>${contacts.length}</strong>&nbsp;totali</div>
-    <div class="stat-pill"><strong>${contacts.filter(c=>c.categoria==='annuale').length}</strong>&nbsp;annuali</div>
-    <div class="stat-pill"><strong>${contacts.filter(c=>c.categoria==='estate').length}</strong>&nbsp;estate</div>
-    <div class="stat-pill"><strong>${contacts.filter(c=>c.categoria==='stagionale').length}</strong>&nbsp;stagionali</div>
-    <div class="stat-pill">🗓️&nbsp;<strong>${up}</strong>&nbsp;appuntamenti</div>`;
+function buildStats(){
+  const now=new Date();
+  const up=contacts.filter(c=>(c.appuntamenti||[]).some(a=>new Date(a.data)>=now)).length;
+  const nArg=contacts.filter(c=>c.categoria==='argentini-estate'||c.categoria==='argentini-inverno').length;
+  $('sbar').innerHTML=`
+    <div class="sp"><strong>${contacts.length}</strong>&nbsp;tot</div>
+    <div class="sp"><strong>${contacts.filter(c=>c.categoria==='annuale').length}</strong>&nbsp;ann</div>
+    <div class="sp"><strong>${contacts.filter(c=>c.categoria==='estate').length}</strong>&nbsp;est</div>
+    <div class="sp"><strong>${contacts.filter(c=>c.categoria==='stagionale').length}</strong>&nbsp;stag</div>
+    <div class="sp">🇦🇷&nbsp;<strong>${nArg}</strong></div>
+    <div class="sp">🗓️&nbsp;<strong>${up}</strong>&nbsp;apt</div>`;
 }
 
-function buildBreadcrumb() {
-  let parts = [];
-  if(filterCartella) parts.push(FOLDER_EMOJI[filterCartella]+' '+filterCartella);
-  if(filterCategoria) parts.push(CAT_EMOJI[filterCategoria]+' '+CAT_LABELS[filterCategoria]);
-  document.getElementById('breadcrumb').innerHTML = parts.length ? parts.join(' › ') : '📋 Tutti i contatti';
+function buildBc(){
+  let p=[];
+  if(fC)p.push(FE[fC]+' '+fC);
+  if(fCat)p.push(CE[fCat]+' '+CL[fCat]);
+  $('bc').textContent=p.length?p.join(' › '):'📋 Tutti';
 }
 
-function getFiltered() {
-  const q = document.getElementById('searchInput').value.toLowerCase();
-  return contacts.filter(c => {
-    if(filterCartella && c.cartella!==filterCartella) return false;
-    if(filterCategoria && c.categoria!==filterCategoria) return false;
-    if(q && ![c.nome,c.tel,c.email,c.sito,c.chi,c.note,c.periodo_note].join(' ').toLowerCase().includes(q)) return false;
+function getF(){
+  const q=$('srch').value.toLowerCase();
+  return contacts.filter(c=>{
+    if(fC&&c.cartella!==fC)return false;
+    if(fCat&&c.categoria!==fCat)return false;
+    if(q&&![c.nome,c.tel,c.email,c.sito,c.chi,c.note,c.periodo_note].join(' ').toLowerCase().includes(q))return false;
     return true;
   });
 }
 
-function render() {
-  buildSidebar(); buildPills(); buildStats(); buildBreadcrumb();
-  const grid = document.getElementById('cardsGrid');
-  const empty = document.getElementById('emptyState');
-  const filtered = getFiltered();
-  if(!filtered.length){ grid.innerHTML=''; empty.style.display='flex'; return; }
-  empty.style.display='none';
-  const now = new Date();
-  filtered.sort((a,b)=>{
+function render(){
+  buildSidebar();buildPills();buildStats();buildBc();
+  const grid=$('cg'),es=$('es'),fl=getF();
+  if(!fl.length){grid.innerHTML='';es.style.display='flex';return;}
+  es.style.display='none';
+  const now=new Date();
+  fl.sort((a,b)=>{
     const an=(a.appuntamenti||[]).filter(x=>new Date(x.data)>=now)[0];
     const bn=(b.appuntamenti||[]).filter(x=>new Date(x.data)>=now)[0];
-    return (an&&!bn)?-1:(!an&&bn)?1:0;
+    return(an&&!bn)?-1:(!an&&bn)?1:0;
   });
-  grid.innerHTML = filtered.map(c => {
-    const nextApt=(c.appuntamenti||[]).filter(a=>new Date(a.data)>=now).sort((a,b)=>new Date(a.data)-new Date(b.data))[0];
-    return `<div class="contact-card cat-${c.categoria}" onclick="openDetail('${c.id}')">
-      <div class="card-top">
-        <div class="avatar ${avColor(c.nome)}">${initials(c.nome)}</div>
-        <div style="flex:1;min-width:0">
-          <div class="card-name">${c.nome}</div>
-          <div class="card-sub">${c.sito||'Fonte non specificata'} · ${c.cartella}</div>
-        </div>
+  grid.innerHTML=fl.map(c=>{
+    const nx=(c.appuntamenti||[]).filter(a=>new Date(a.data)>=now).sort((a,b)=>new Date(a.data)-new Date(b.data))[0];
+    return`<div class="cc cat-${c.categoria}" onclick="openDetail('${c.id}')">
+      <div class="ctop">
+        <div class="av ${avc(c.nome)}">${ini(c.nome)}</div>
+        <div style="flex:1;min-width:0"><div class="cn">${c.nome}</div><div class="cs">${c.sito||'—'} · ${c.cartella}</div></div>
       </div>
-      <div class="card-badges">
-        <span class="tag cat ${c.categoria}">${CAT_EMOJI[c.categoria]} ${CAT_LABELS[c.categoria]}</span>
+      <div class="cbs">
+        <span class="tag cat ${c.categoria}">${CE[c.categoria]} ${CL[c.categoria]}</span>
         ${c.tel?`<span class="tag info">📞 ${c.tel}</span>`:''}
-        ${nextApt?`<span class="tag appuntamento">🗓️ ${fmtDate(nextApt.data)}</span>`:''}
+        ${nx?`<span class="tag apt">🗓️ ${fd(nx.data)}</span>`:''}
       </div>
-      ${c.periodo_da||c.periodo_a?`<div class="card-period">📅 ${fmtDate(c.periodo_da)}${c.periodo_da&&c.periodo_a?' → ':''}${fmtDate(c.periodo_a)}${c.periodo_note?' · '+c.periodo_note:''}</div>`:(c.periodo_note?`<div class="card-period">📅 ${c.periodo_note}</div>`:'')}
-      ${c.note?`<div class="card-note">${c.note}</div>`:''}
-      <div class="card-footer">
-        <div class="card-contact">Ha parlato: <strong>${c.chi||'—'}</strong>${c.data_contatto?' · '+fmtDate(c.data_contatto):''}</div>
-        <div class="card-actions">
-          <button class="icon-btn" onclick="event.stopPropagation();openEdit('${c.id}')">✏️</button>
-          <button class="icon-btn danger" onclick="event.stopPropagation();deleteContact('${c.id}')">🗑️</button>
+      ${c.periodo_da||c.periodo_a?`<div class="cp">📅 ${fd(c.periodo_da)}${c.periodo_da&&c.periodo_a?' → ':''}${fd(c.periodo_a)}${c.periodo_note?' · '+c.periodo_note:''}</div>`:(c.periodo_note?`<div class="cp">📅 ${c.periodo_note}</div>`:'')}
+      ${c.note?`<div class="cnote">${c.note}</div>`:''}
+      <div class="cf">
+        <div class="cc-ct">Con: <strong>${c.chi||'—'}</strong>${c.data_contatto?' · '+fd(c.data_contatto):''}</div>
+        <div class="cact">
+          <button class="ib" onclick="event.stopPropagation();openEdit('${c.id}')">✏️</button>
+          <button class="ib d" onclick="event.stopPropagation();delContact('${c.id}')">🗑️</button>
         </div>
       </div>
     </div>`;
   }).join('');
 }
 
-// ── FORM ──
-function openAdd() {
-  editingId=null; currentApts=[];
-  document.getElementById('formTitle').textContent='Nuovo Contatto';
-  ['nome','tel','email','sito','cartella','categoria','periodo_da','periodo_a','periodo_note','data_contatto','chi','note'].forEach(k=>document.getElementById('f_'+k).value='');
-  renderAptList();
-  document.getElementById('formOverlay').classList.add('open');
+// MOBILE
+function onMobC(){
+  const v=$('mob_cartella').value,ce=$('mob_categoria');
+  fC=v||null;fCat=null;ce.value='';
+  v?ce.classList.add('vis'):ce.classList.remove('vis');
+  render();
 }
-function openEdit(id) {
-  const c=contacts.find(x=>x.id===id); if(!c) return;
-  editingId=id; currentApts=JSON.parse(JSON.stringify(c.appuntamenti||[]));
-  document.getElementById('formTitle').textContent='Modifica Contatto';
-  ['nome','tel','email','sito','cartella','categoria','periodo_da','periodo_a','periodo_note','data_contatto','chi','note'].forEach(k=>document.getElementById('f_'+k).value=c[k]||'');
-  renderAptList();
-  document.getElementById('formOverlay').classList.add('open');
-}
-function closeForm() { document.getElementById('formOverlay').classList.remove('open'); }
+function onMobCat(){fCat=$('mob_categoria').value||null;render();}
 
-function addApt() {
-  const data=document.getElementById('apt_data').value;
-  const note=document.getElementById('apt_note').value.trim();
-  if(!data) return alert('Inserisci data e ora');
-  currentApts.push({id:uid(),data,note});
-  document.getElementById('apt_data').value='';
-  document.getElementById('apt_note').value='';
-  renderAptList();
+// FORM
+function openAdd(){
+  editId=null;curApts=[];
+  $('ftitle').textContent='Nuovo Contatto';
+  ['nome','tel','email','sito','cartella','categoria','periodo_da','periodo_a','periodo_note','data_contatto','chi','note'].forEach(k=>$('f_'+k).value='');
+  rAL();$('fov').classList.add('open');
 }
-function removeApt(id) { currentApts=currentApts.filter(a=>a.id!==id); renderAptList(); }
-function renderAptList() {
-  const el=document.getElementById('aptList');
-  el.innerHTML=!currentApts.length
-    ?'<div style="color:var(--text-light);font-size:0.82rem;padding:4px 0">Nessun appuntamento</div>'
-    :currentApts.map(a=>`<div class="appuntamento-item">
-        <span class="apt-date">🗓️ ${fmtDT(a.data)}</span>
-        <span class="apt-note">${a.note||'—'}</span>
-        <button class="icon-btn danger" onclick="removeApt('${a.id}')">✕</button>
-      </div>`).join('');
+function openEdit(id){
+  const c=contacts.find(x=>x.id===id);if(!c)return;
+  editId=id;curApts=JSON.parse(JSON.stringify(c.appuntamenti||[]));
+  $('ftitle').textContent='Modifica';
+  ['nome','tel','email','sito','cartella','categoria','periodo_da','periodo_a','periodo_note','data_contatto','chi','note'].forEach(k=>$('f_'+k).value=c[k]||'');
+  rAL();$('fov').classList.add('open');
+}
+function closeForm(){$('fov').classList.remove('open');}
+
+function addApt(){
+  const d=$('apt_data').value,n=$('apt_note').value.trim();
+  if(!d)return alert('Inserisci data e ora');
+  curApts.push({id:uid(),data:d,note:n});
+  $('apt_data').value='';$('apt_note').value='';rAL();
+}
+function remApt(id){curApts=curApts.filter(a=>a.id!==id);rAL();}
+function rAL(){
+  $('al').innerHTML=!curApts.length
+    ?'<div style="color:var(--lt);font-size:0.78rem;padding:2px 0">Nessun appuntamento</div>'
+    :curApts.map(a=>`<div class="ai"><span class="ad">🗓️ ${fdt(a.data)}</span><span class="an">${a.note||'—'}</span><button class="ib d" onclick="remApt('${a.id}')">✕</button></div>`).join('');
 }
 
-async function saveContact() {
-  const nome=document.getElementById('f_nome').value.trim();
-  const cartella=document.getElementById('f_cartella').value;
-  const categoria=document.getElementById('f_categoria').value;
-  if(!nome) return alert('Il nome è obbligatorio');
-  if(!cartella) return alert('Seleziona una cartella');
-  if(!categoria) return alert('Seleziona una categoria');
-  if(isSaving) return;
-  isSaving=true;
+async function saveContact(){
+  const nome=$('f_nome').value.trim(),cartella=$('f_cartella').value,categoria=$('f_categoria').value;
+  if(!nome)return alert('Nome obbligatorio');
+  if(!cartella)return alert('Seleziona una cartella');
+  if(!categoria)return alert('Seleziona una categoria');
+  if(saving)return;saving=true;
   const data={
-    id:editingId||uid(), nome,
-    tel:document.getElementById('f_tel').value.trim(),
-    email:document.getElementById('f_email').value.trim(),
-    sito:document.getElementById('f_sito').value.trim(),
-    cartella, categoria,
-    periodo_da:document.getElementById('f_periodo_da').value,
-    periodo_a:document.getElementById('f_periodo_a').value,
-    periodo_note:document.getElementById('f_periodo_note').value.trim(),
-    data_contatto:document.getElementById('f_data_contatto').value,
-    chi:document.getElementById('f_chi').value.trim(),
-    note:document.getElementById('f_note').value.trim(),
-    appuntamenti:JSON.parse(JSON.stringify(currentApts)),
-    createdAt:editingId?(contacts.find(c=>c.id===editingId)||{}).createdAt||new Date().toISOString():new Date().toISOString(),
+    id:editId||uid(),nome,
+    tel:$('f_tel').value.trim(),email:$('f_email').value.trim(),
+    sito:$('f_sito').value.trim(),cartella,categoria,
+    periodo_da:$('f_periodo_da').value,periodo_a:$('f_periodo_a').value,
+    periodo_note:$('f_periodo_note').value.trim(),
+    data_contatto:$('f_data_contatto').value,
+    chi:$('f_chi').value.trim(),note:$('f_note').value.trim(),
+    appuntamenti:JSON.parse(JSON.stringify(curApts)),
+    createdAt:editId?(contacts.find(c=>c.id===editId)||{}).createdAt||new Date().toISOString():new Date().toISOString(),
     updatedAt:new Date().toISOString()
   };
-  if(editingId){ const i=contacts.findIndex(c=>c.id===editingId); if(i>=0) contacts[i]=data; }
+  if(editId){const i=contacts.findIndex(c=>c.id===editId);if(i>=0)contacts[i]=data;}
   else contacts.unshift(data);
-  closeForm(); render();
-  await pushContacts();
-  isSaving=false;
+  localStorage.setItem('sb_cache',JSON.stringify(contacts));
+  closeForm();render();
+  banner('loading','Salvataggio…');
+  try{await dbUpsert(data);banner('ok','Salvato ✓');}
+  catch(e){banner('err','Errore salvataggio');}
+  saving=false;
 }
 
-async function deleteContact(id) {
-  if(!confirm('Eliminare questo contatto?')) return;
+async function delContact(id){
+  if(!confirm('Eliminare?'))return;
   contacts=contacts.filter(c=>c.id!==id);
-  render(); await pushContacts();
+  localStorage.setItem('sb_cache',JSON.stringify(contacts));
+  render();
+  try{await dbDelete(id);banner('ok','Eliminato ✓');}
+  catch(e){banner('err','Errore eliminazione');}
 }
 
-// ── DETAIL ──
-function openDetail(id) {
-  const c=contacts.find(x=>x.id===id); if(!c) return;
-  document.getElementById('detailTitle').textContent=c.nome;
-  document.getElementById('editBtn').onclick=()=>{ closeDetail(); openEdit(id); };
+function openDetail(id){
+  const c=contacts.find(x=>x.id===id);if(!c)return;
+  $('dtitle').textContent=c.nome;
+  $('ebtn').onclick=()=>{closeDetail();openEdit(id);};
   const now=new Date();
-  const allApts=[...(c.appuntamenti||[]).filter(a=>new Date(a.data)>=now).sort((a,b)=>new Date(a.data)-new Date(b.data)),
-                 ...(c.appuntamenti||[]).filter(a=>new Date(a.data)<now).sort((a,b)=>new Date(b.data)-new Date(a.data))];
-  document.getElementById('detailBody').innerHTML=`
-    <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">
-      <div class="avatar ${avColor(c.nome)}" style="width:58px;height:58px;font-size:1.3rem">${initials(c.nome)}</div>
+  const apts=[...(c.appuntamenti||[]).filter(a=>new Date(a.data)>=now).sort((a,b)=>new Date(a.data)-new Date(b.data)),
+              ...(c.appuntamenti||[]).filter(a=>new Date(a.data)<now).sort((a,b)=>new Date(b.data)-new Date(a.data))];
+  $('dbody').innerHTML=`
+    <div style="display:flex;align-items:center;gap:13px;margin-bottom:16px">
+      <div class="av ${avc(c.nome)}" style="width:52px;height:52px;font-size:1.15rem">${ini(c.nome)}</div>
       <div>
-        <div style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:600">${c.nome}</div>
-        <div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap">
-          <span class="tag cat ${c.categoria}">${CAT_EMOJI[c.categoria]} ${CAT_LABELS[c.categoria]}</span>
-          <span class="tag info">${FOLDER_EMOJI[c.cartella]} ${c.cartella}</span>
+        <div style="font-family:var(--font-serif);font-size:1.25rem;font-weight:700">${c.nome}</div>
+        <div style="margin-top:5px;display:flex;gap:5px;flex-wrap:wrap">
+          <span class="tag cat ${c.categoria}">${CE[c.categoria]} ${CL[c.categoria]}</span>
+          <span class="tag info">${FE[c.cartella]} ${c.cartella}</span>
         </div>
       </div>
     </div>
-    <div class="detail-grid">
-      ${c.tel?`<div class="detail-item"><div class="dt-label">📞 Telefono</div><div class="dt-value">${c.tel}</div></div>`:''}
-      ${c.email?`<div class="detail-item"><div class="dt-label">✉️ Email</div><div class="dt-value">${c.email}</div></div>`:''}
-      ${c.sito?`<div class="detail-item"><div class="dt-label">🌐 Provenienza</div><div class="dt-value">${c.sito}</div></div>`:''}
-      ${c.data_contatto?`<div class="detail-item"><div class="dt-label">📅 Data contatto</div><div class="dt-value">${fmtDate(c.data_contatto)}</div></div>`:''}
-      ${c.chi?`<div class="detail-item"><div class="dt-label">👤 Ha parlato con</div><div class="dt-value">${c.chi}</div></div>`:''}
-      ${c.periodo_da||c.periodo_a?`<div class="detail-item full"><div class="dt-label">🏠 Periodo richiesto</div><div class="dt-value">${fmtDate(c.periodo_da)} → ${fmtDate(c.periodo_a)}${c.periodo_note?' · '+c.periodo_note:''}</div></div>`:(c.periodo_note?`<div class="detail-item full"><div class="dt-label">🏠 Periodo richiesto</div><div class="dt-value">${c.periodo_note}</div></div>`:'')}
-      ${c.note?`<div class="detail-item full"><div class="dt-label">📝 Note</div><div class="detail-notes">${c.note}</div></div>`:''}
-      ${allApts.length?`<div class="detail-item full"><div class="dt-label">🗓️ Appuntamenti</div><div style="margin-top:4px">${allApts.map(a=>{const past=new Date(a.data)<now;return`<span class="apt-tag" style="${past?'opacity:0.5;text-decoration:line-through':''}">${past?'✓':'📍'} ${fmtDT(a.data)}${a.note?' — '+a.note:''}</span>`;}).join('')}</div></div>`:''}
+    <div class="dg">
+      ${c.tel?`<div class="di"><div class="dl">📞 Telefono</div><div class="dv">${c.tel}</div></div>`:''}
+      ${c.email?`<div class="di"><div class="dl">✉️ Email</div><div class="dv">${c.email}</div></div>`:''}
+      ${c.sito?`<div class="di"><div class="dl">🌐 Provenienza</div><div class="dv">${c.sito}</div></div>`:''}
+      ${c.data_contatto?`<div class="di"><div class="dl">📅 Contatto</div><div class="dv">${fd(c.data_contatto)}</div></div>`:''}
+      ${c.chi?`<div class="di"><div class="dl">👤 Ha parlato con</div><div class="dv">${c.chi}</div></div>`:''}
+      ${c.periodo_da||c.periodo_a?`<div class="di full"><div class="dl">🏠 Periodo</div><div class="dv">${fd(c.periodo_da)} → ${fd(c.periodo_a)}${c.periodo_note?' · '+c.periodo_note:''}</div></div>`:(c.periodo_note?`<div class="di full"><div class="dl">🏠 Periodo</div><div class="dv">${c.periodo_note}</div></div>`:'')}
+      ${c.note?`<div class="di full"><div class="dl">📝 Note</div><div class="dn">${c.note}</div></div>`:''}
+      ${apts.length?`<div class="di full"><div class="dl">🗓️ Appuntamenti</div><div style="margin-top:3px">${apts.map(a=>{const p=new Date(a.data)<now;return`<span class="atag" style="${p?'opacity:0.5;text-decoration:line-through':''}">${p?'✓':'📍'} ${fdt(a.data)}${a.note?' — '+a.note:''}</span>`;}).join('')}</div></div>`:''}
     </div>
-    <div style="margin-top:16px;font-size:0.75rem;color:var(--text-light)">Aggiunto il ${fmtDate(c.createdAt)} · Aggiornato il ${fmtDate(c.updatedAt)}</div>`;
-  document.getElementById('detailOverlay').classList.add('open');
+    <div style="margin-top:12px;font-size:0.7rem;color:var(--lt)">Aggiunto ${fd(c.createdAt)} · Aggiornato ${fd(c.updatedAt)}</div>`;
+  $('dov').classList.add('open');
 }
-function closeDetail() { document.getElementById('detailOverlay').classList.remove('open'); }
+function closeDetail(){$('dov').classList.remove('open');}
 
-document.getElementById('formOverlay').addEventListener('click',function(e){if(e.target===this)closeForm();});
-document.getElementById('detailOverlay').addEventListener('click',function(e){if(e.target===this)closeDetail();});
+$('fov').addEventListener('click',function(e){if(e.target===this)closeForm();});
+$('dov').addEventListener('click',function(e){if(e.target===this)closeDetail();});
 
-// ── MOBILE FILTER ──
-function mobileFilter() {
-  filterCartella = document.getElementById('mob_cartella').value || null;
-  filterCategoria = document.getElementById('mob_categoria').value || null;
-  render();
-}
-
-// ── INIT ──
-loadContacts();
-
-// Auto-sync ogni 60 secondi (per vedere aggiornamenti degli altri utenti)
-setInterval(async()=>{
-  if(isSaving) return;
-  try { contacts=await readBin(); render(); setSync('ok','Sincronizzato ✓'); }
-  catch(e) { setSync('error','Errore sync'); }
-}, 60000);
+load();
+setInterval(syncFresh,30000);
 </script>
 </body>
 </html>
