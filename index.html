@@ -278,6 +278,23 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
     <div class="mf"><button class="btn btn-g" onclick="closeDetail()">Chiudi</button><button class="btn btn-p" id="ebtn">Modifica</button></div>
   </div>
 </div>
+
+<!-- DUPLICATE MODAL -->
+<div class="ov" id="dupov">
+  <div class="modal" style="max-height:60vh;">
+    <div class="mh"><div class="mt" style="color:#C4714A;">⚠️ Duplicato Trovato</div><button class="xb" onclick="closeDup()">✕</button></div>
+    <div class="mb">
+      <p style="font-size:0.9rem;color:var(--mid);margin-bottom:14px;">Esiste già un contatto simile:</p>
+      <div id="dupinfo" style="background:var(--cream);border-radius:var(--rs);padding:12px;font-size:0.85rem;color:var(--dk);line-height:1.8;margin-bottom:16px;"></div>
+      <p style="font-size:0.82rem;color:var(--lt);">Vuoi salvare comunque o annullare?</p>
+    </div>
+    <div class="mf">
+      <button class="btn btn-g" onclick="closeDup()">Annulla</button>
+      <button class="btn btn-p" onclick="confirmSave()">Salva comunque</button>
+    </div>
+  </div>
+</div>
+
 <script>
 var SB_URL='https://szpyhbtfoxdsatcrksfo.supabase.co';
 var SB_KEY='sb_publishable_H0cfXThFKxloHuJfyGPD0A_PflUFQY_';
@@ -473,12 +490,48 @@ function rAL(){
   $('al').innerHTML=!curApts.length?'<div style="color:var(--lt);font-size:0.78rem;padding:2px 0">Nessun appuntamento</div>':
     curApts.map(function(a){return '<div class="ai"><span class="ad">🗓️ '+fdt(a.data)+'</span><span class="an">'+(a.note||'—')+'</span><button class="ib d" onclick="remApt(\''+a.id+'\')">✕</button></div>';}).join('');
 }
+var pendingContact=null;
+function closeDup(){document.getElementById('dupov').classList.remove('open');}
+async function confirmSave(){
+  closeDup();
+  if(!pendingContact)return;
+  var data=pendingContact;pendingContact=null;
+  if(editId){var i=contacts.findIndex(function(c){return c.id===editId;});if(i>=0)contacts[i]=data;}
+  else contacts.unshift(data);
+  closeForm();render();
+  await push(data);
+  saving=false;
+}
 async function saveContact(){
   var nome=$('f_nome').value.trim(),cartella=$('f_cartella').value,categoria=$('f_categoria').value;
   if(!nome)return alert('Nome obbligatorio');
   if(!cartella)return alert('Seleziona una cartella');
   if(!categoria)return alert('Seleziona una categoria');
   if(saving)return;saving=true;
+  // Controllo duplicati
+  var nomeLower=nome.toLowerCase().trim();
+  var telClean=$('f_tel').value.trim().replace(/\s/g,'');
+  var dups=contacts.filter(function(c){
+    if(editId&&c.id===editId)return false;
+    var sameNome=c.nome&&c.nome.toLowerCase().trim()===nomeLower;
+    var sameTel=telClean&&c.tel&&c.tel.replace(/\s/g,'')===telClean;
+    return sameNome||sameTel;
+  });
+  if(dups.length>0){
+    var dup=dups[0];
+    var info='';
+    if(dup.nome)info+='<b>Nome:</b> '+dup.nome+'<br>';
+    if(dup.tel)info+='<b>Telefono:</b> '+dup.tel+'<br>';
+    if(dup.cartella)info+='<b>Cartella:</b> '+dup.cartella+'<br>';
+    if(dup.categoria)info+='<b>Categoria:</b> '+CL[dup.categoria]+'<br>';
+    if(dup.data_contatto)info+='<b>Contattato il:</b> '+fd(dup.data_contatto);
+    document.getElementById('dupinfo').innerHTML=info;
+    // Store pending contact
+    pendingContact={id:editId||uid(),nome:nome,tel:$('f_tel').value.trim(),email:$('f_email').value.trim(),sito:$('f_sito').value.trim(),cartella:cartella,categoria:categoria,periodo_da:$('f_periodo_da').value,periodo_a:$('f_periodo_a').value,periodo_note:$('f_periodo_note').value.trim(),data_contatto:$('f_data_contatto').value,chi:$('f_chi').value.trim(),note:$('f_note').value.trim(),appuntamenti:JSON.parse(JSON.stringify(curApts)),createdAt:editId?(contacts.find(function(c){return c.id===editId;})||{}).createdAt||new Date().toISOString():new Date().toISOString(),updatedAt:new Date().toISOString()};
+    document.getElementById('dupov').classList.add('open');
+    saving=false;
+    return;
+  }
   var data={id:editId||uid(),nome:nome,tel:$('f_tel').value.trim(),email:$('f_email').value.trim(),sito:$('f_sito').value.trim(),cartella:cartella,categoria:categoria,periodo_da:$('f_periodo_da').value,periodo_a:$('f_periodo_a').value,periodo_note:$('f_periodo_note').value.trim(),data_contatto:$('f_data_contatto').value,chi:$('f_chi').value.trim(),note:$('f_note').value.trim(),appuntamenti:JSON.parse(JSON.stringify(curApts)),createdAt:editId?(contacts.find(function(c){return c.id===editId;})||{}).createdAt||new Date().toISOString():new Date().toISOString(),updatedAt:new Date().toISOString()};
   if(editId){var i=contacts.findIndex(function(c){return c.id===editId;});if(i>=0)contacts[i]=data;}
   else contacts.unshift(data);
