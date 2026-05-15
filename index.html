@@ -182,6 +182,7 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
     <option value="Casa Paese Piano 1">Casa Paese Piano 1</option>
     <option value="Casa Paese Piano 2">Casa Paese Piano 2</option>
     <option value="Casa Stazione">Casa Stazione</option>
+    <option value="Fago del Soldato">Fago del Soldato</option>
   </select>
   <select class="mob-sel mob-cat" id="mob_categoria" onchange="onMobCat()">
     <option value="">Tutte le categorie</option>
@@ -231,6 +232,7 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
             <option>Casa Paese Piano 1</option>
             <option>Casa Paese Piano 2</option>
             <option>Casa Stazione</option>
+            <option>Fago del Soldato</option>
           </select>
         </div>
         <div class="fl"><label>Categoria *</label>
@@ -281,10 +283,10 @@ var SB_URL='https://szpyhbtfoxdsatcrksfo.supabase.co';
 var SB_KEY='sb_publishable_H0cfXThFKxloHuJfyGPD0A_PflUFQY_';
 var HDR={'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY};
 var contacts=[],editId=null,curApts=[],fC=null,fCat=null,saving=false,argOpen=false;
-var FL=['Casa Paese Piano 1','Casa Paese Piano 2','Casa Stazione'];
+var FL=['Casa Paese Piano 1','Casa Paese Piano 2','Casa Stazione','Fago del Soldato'];
 var CL={stagionale:'Stagionale',annuale:'Annuale',semestrale:'Semestrale',estate:'Estate','argentini-estate':'Argentini Estate','argentini-inverno':'Argentini Inverno'};
 var CE={stagionale:'🌿',annuale:'📆',semestrale:'🗓️',estate:'☀️','argentini-estate':'🇦🇷','argentini-inverno':'🇦🇷'};
-var FE={'Casa Paese Piano 1':'🏠','Casa Paese Piano 2':'🏡','Casa Stazione':'🚉'};
+var FE={'Casa Paese Piano 1':'🏠','Casa Paese Piano 2':'🏡','Casa Stazione':'🚉','Fago del Soldato':'🏔️'};
 var AVC=['av-0','av-1','av-2','av-3','av-4','av-5'];
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
 function ini(n){return(n||'?').split(' ').map(function(w){return w[0]||'';}).join('').slice(0,2).toUpperCase()||'?';}
