@@ -296,9 +296,9 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
 </div>
 
 <script>
-var SB_URL='https://szpyhbtfoxdsatcrksfo.supabase.co';
-var SB_KEY='sb_publishable_H0cfXThFKxloHuJfyGPD0A_PflUFQY_';
-var HDR={'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY};
+var JB_KEY='$2a$10$chHTzJ5hoeIyhWpM0Tw7COz4xSEF6u8u3yyusI1YoMvq9w4VL/Ql.';
+var JB_BID='69e73ad0aaba882197200bf4';
+var JB_URL='https://api.jsonbin.io/v3/b/'+JB_BID;
 var contacts=[],editId=null,curApts=[],fC=null,fCat=null,saving=false,argOpen=false;
 var FL=['Casa Paese Piano 1','Casa Paese Piano 2','Casa Stazione','Fago del Soldato'];
 var CL={stagionale:'Stagionale',annuale:'Annuale',semestrale:'Semestrale',estate:'Estate','argentini-estate':'Argentini Estate','argentini-inverno':'Argentini Inverno'};
@@ -320,20 +320,25 @@ function banner(state,txt){
   if(state==='ok'||state==='err')bT=setTimeout(function(){b.classList.remove('show');},2500);
 }
 async function readDB(){
-  var r=await fetch(SB_URL+'/rest/v1/contacts?select=*&order=updated_at.desc',{headers:HDR});
+  var r=await fetch(JB_URL+'/latest',{'headers':{'X-Master-Key':JB_KEY,'X-Bin-Meta':'false'}});
   if(!r.ok)throw new Error('read');
-  var rows=await r.json();
-  return rows.map(function(row){return Object.assign({},row.data,{id:row.id});});
+  var j=await r.json();
+  return j.record.contacts||[];
 }
 async function upsertDB(contact){
-  var r=await fetch(SB_URL+'/rest/v1/contacts',{method:'POST',headers:Object.assign({},HDR,{'Prefer':'resolution=merge-duplicates'}),body:JSON.stringify({id:contact.id,data:contact,updated_at:new Date().toISOString()})});
-  if(!r.ok)throw new Error('upsert');
+  var fresh=await readDB();
+  var idx=fresh.findIndex(function(c){return c.id===contact.id;});
+  if(idx>=0)fresh[idx]=contact;
+  else fresh.unshift(contact);
+  await fetch(JB_URL,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':JB_KEY},body:JSON.stringify({contacts:fresh})});
 }
 async function deleteDB(id){
-  await fetch(SB_URL+'/rest/v1/contacts?id=eq.'+id,{method:'DELETE',headers:HDR});
+  var fresh=await readDB();
+  fresh=fresh.filter(function(c){return c.id!==id;});
+  await fetch(JB_URL,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':JB_KEY},body:JSON.stringify({contacts:fresh})});
 }
 function load(){
-  var cached=localStorage.getItem('sb_cache');
+  var cached=localStorage.getItem('jb_cache');
   if(cached){try{contacts=JSON.parse(cached);}catch(e){contacts=[];}}
   render();
   syncFresh();
@@ -344,7 +349,7 @@ async function syncFresh(){
     var fresh=await readDB();
     var changed=JSON.stringify(fresh)!==JSON.stringify(contacts);
     contacts=fresh;
-    localStorage.setItem('sb_cache',JSON.stringify(contacts));
+    localStorage.setItem('jb_cache',JSON.stringify(contacts));
     if(changed)render();
     banner('ok','Aggiornato');
   }catch(e){
@@ -352,7 +357,7 @@ async function syncFresh(){
   }
 }
 async function push(contact){
-  localStorage.setItem('sb_cache',JSON.stringify(contacts));
+  localStorage.setItem('jb_cache',JSON.stringify(contacts));
   banner('loading','Salvataggio...');
   try{await upsertDB(contact);banner('ok','Salvato');}
   catch(e){banner('err','Errore salvataggio');}
@@ -569,7 +574,7 @@ $('fov').addEventListener('click',function(e){if(e.target===this)closeForm();});
 $('dov').addEventListener('click',function(e){if(e.target===this)closeDetail();});
 load();
 setInterval(syncFresh,30000);
-setInterval(function(){try{fetch(SB_URL+'/rest/v1/contacts?select=id&limit=1',{headers:HDR});}catch(e){}},3*24*60*60*1000);
+
 </script>
 </body>
 </html>
