@@ -442,7 +442,6 @@ function togF(el,folder){
 }
 function togArg(el){
   el.classList.toggle('open');
-  el.nextElementSibling.classList.toggle('toggle');
   el.nextElementSibling.classList.toggle('open');
 }
 function sf(c,cat){fC=c;fCat=cat;render();}
@@ -675,7 +674,6 @@ function openDetail(id){
 }
 function closeDetail(){$('dov').classList.remove('open');}
 
-// Avvio dell'app al caricamento della pagina
 window.onload = load;
 </script>
 </body>
