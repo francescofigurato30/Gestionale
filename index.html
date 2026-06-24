@@ -25,10 +25,12 @@
   .login-box {background:white;padding:30px;border-radius:var(--r);box-shadow:var(--sh);width:100%;max-width:380px;border:1px solid var(--border);text-align:center;}
   .login-box h2 {font-family:var(--font-serif);color:var(--navy);margin-bottom:8px;font-size:1.6rem;}
   .login-box p {font-size:0.85rem;color:var(--lt);margin-bottom:20px;}
-  .login-field {display:flex;flex-direction:column;gap:6px;text-align:left;margin-bottom:14px;}
+  .login-field {display:flex;flex-direction:column;gap:6px;text-align:left;margin-bottom:14px;position:relative;}
   .login-field label {font-size:0.75rem;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:0.05em;}
   .login-field input {padding:11px 12px;border:1px solid var(--border);border-radius:var(--rs);font-family:var(--font);font-size:0.95rem;background:var(--ww);outline:none;}
   .login-field input:focus {border-color:var(--terra);background:white;}
+  .pass-wrapper {position:relative;display:flex;flex-direction:column;}
+  .toggle-password {position:absolute;right:12px;bottom:11px;background:none;border:none;cursor:pointer;color:var(--lt);font-size:1.1rem;display:flex;align-items:center;justify-content:center;}
   .login-btn-admin {width:100%;padding:12px;background:var(--terra);color:white;border:none;border-radius:var(--rs);font-family:var(--font);font-size:0.95rem;font-weight:600;cursor:pointer;margin-top:10px;margin-bottom:12px;}
   .login-btn-admin:active {background:var(--terra-dk);}
   .login-btn-guest {background:none;border:none;color:var(--forest);font-size:0.88rem;font-weight:600;cursor:pointer;text-decoration:underline;}
@@ -107,7 +109,7 @@
   .ca{flex:1;overflow-y:auto;padding:16px 20px;-webkit-overflow-scrolling:touch;}
   .cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px;}
   .es{display:flex;flex-direction:column;align-items:center;justify-content:center;height:240px;color:var(--lt);gap:10px;}
-  .es .bi{font-size:2.8rem;opacity:0.35;}
+  .es .bi">📭</span>
 
   .cc{background:white;border-radius:var(--r);border:1px solid var(--border);padding:16px;cursor:pointer;position:relative;overflow:hidden;}
   .cc::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;}
@@ -227,9 +229,10 @@
       <label>Nome Utente</label>
       <input type="text" id="l_user" placeholder="es. Francesco" autocomplete="username">
     </div>
-    <div class="login-field">
+    <div class="login-field pass-wrapper">
       <label>Password</label>
       <input type="password" id="l_pass" placeholder="••••••••" autocomplete="current-password">
+      <button type="button" class="toggle-password" onclick="togglePasswordVisibility()">👁️</button>
     </div>
     
     <button class="login-btn-admin" onclick="eseguiLogin()">Accedi come Amministratore</button>
@@ -327,6 +330,18 @@
             </optgroup>
           </select>
         </div>
+        
+        <!-- NUOVO MENU GESTIONE MANUAL PALLINI/STATO -->
+        <div class="fl full"><label>Stato Occupazione (Pallino)</label>
+          <select id="f_stato_manuale">
+            <option value="auto">⚙️ Calcola automaticamente (In base alle date)</option>
+            <option value="🟢 Libera">🟢 Libera</option>
+            <option value="🔴 Occupata">🔴 Occupata</option>
+            <option value="🟡 Forse Occupata">🟡 Forse Occupata</option>
+            <option value="nessuno">⚪ Nessun pallino</option>
+          </select>
+        </div>
+
         <div class="sdiv">📅 Periodi</div>
         <div class="fl"><label>Da</label><input type="date" id="f_periodo_da"></div>
         <div class="fl"><label>A</label><input type="date" id="f_periodo_a"></div>
@@ -393,6 +408,16 @@ const fd=d=>{if(!d)return'';const t=new Date(d);return isNaN(t)?d:t.toLocaleDate
 const fdt=d=>{if(!d)return'';const t=new Date(d);return isNaN(t)?d:t.toLocaleDateString('it-IT',{day:'2-digit',month:'short',year:'numeric'})+' '+t.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});};
 const $=id=>document.getElementById(id);
 
+// ── LOGICA MOSTRA/NASCONDI PASSWORD ──
+function togglePasswordVisibility() {
+  const passInput = $('l_pass');
+  if (passInput.type === 'password') {
+    passInput.type = 'text';
+  } else {
+    passInput.type = 'password';
+  }
+}
+
 // ── LOGICA DI ACCESSO / LOGIN ──
 function eseguiLogin(){
   const user = $('l_user').value.trim();
@@ -418,6 +443,7 @@ function logout(){
   isAdmin = false;
   $('l_user').value = '';
   $('l_pass').value = '';
+  $('l_pass').type = 'password'; // resetta il tipo a password per sicurezza
   $('loginScreen').style.display = 'flex';
 }
 
@@ -435,15 +461,22 @@ function applicaRuolo(){
   render();
 }
 
-// Logica disponibilità temporale delle case
-function calcolaStatoCasa(da, a, categoria){
-  if(categoria === 'solo-info') return ''; 
-  if(!da || !a) return '🟢 Libera';
+// Logica disponibilità temporale delle case (Con override manuale)
+function calcolaStatoCasa(c){
+  // Se è stato forzato un valore manuale nel contatto
+  if(c.stato_manuale && c.stato_manuale !== 'auto'){
+    if(c.stato_manuale === 'nessuno') return '';
+    return c.stato_manuale;
+  }
+
+  // Altrimenti procede con il calcolo automatico standard
+  if(c.categoria === 'solo-info') return ''; 
+  if(!c.periodo_da || !c.periodo_a) return '🟢 Libera';
   
   const oggi = new Date();
   oggi.setHours(0,0,0,0);
-  const dataInizio = new Date(da);
-  const dataFine = new Date(a);
+  const dataInizio = new Date(c.periodo_da);
+  const dataFine = new Date(c.periodo_a);
   
   if(oggi >= dataInizio && oggi <= dataFine){
     return '🔴 Occupata';
@@ -631,7 +664,7 @@ function render(){
   });
   grid.innerHTML=fl.map(c=>{
     const nx=(c.appuntamenti||[]).filter(a=>new Date(a.data)>=now).sort((a,b)=>new Date(a.data)-new Date(b.data))[0];
-    const statoCasa = calcolaStatoCasa(c.periodo_da, c.periodo_a, c.categoria);
+    const statoCasa = calcolaStatoCasa(c);
     
     return`<div class="cc cat-${c.categoria}" onclick="openDetail('${c.id}')">
       <div class="ctop">
@@ -672,6 +705,7 @@ function openAdd(){
   editId=null;curApts=[];
   $('ftitle').textContent='Nuovo Contatto';
   ['nome','tel','email','sito','cartella','categoria','periodo_da','periodo_a','periodo_note','data_contatto','chi','note'].forEach(k=>$('f_'+k).value='');
+  $('f_stato_manuale').value = 'auto'; // Default auto
   $('apt_add_container').style.display = 'flex';
   $('form_actions').style.display = 'flex';
   rAL();$('fov').classList.add('open');
@@ -682,6 +716,7 @@ function openEdit(id){
   editId=id;curApts=JSON.parse(JSON.stringify(c.appuntamenti||[]));
   $('ftitle').textContent='Modifica';
   ['nome','tel','email','sito','cartella','categoria','periodo_da','periodo_a','periodo_note','data_contatto','chi','note'].forEach(k=>$('f_'+k).value=c[k]||'');
+  $('f_stato_manuale').value = c.stato_manuale || 'auto'; // Carica stato manuale salvato
   $('apt_add_container').style.display = 'flex';
   $('form_actions').style.display = 'flex';
   rAL();$('fov').classList.add('open');
@@ -717,6 +752,7 @@ async function saveContact(){
     id:editId||uid(),nome,
     tel:$('f_tel').value.trim(),email:$('f_email').value.trim(),
     sito:$('f_sito').value.trim(),cartella,categoria,
+    stato_manuale:$('f_stato_manuale').value, // Salva lo stato manuale scelto
     periodo_da:$('f_periodo_da').value,periodo_a:$('f_periodo_a').value,
     periodo_note:$('f_periodo_note').value.trim(),
     data_contatto:$('f_data_contatto').value,
@@ -765,7 +801,7 @@ function openDetail(id){
     ?'<div>Nessuno</div>'
     :c.appuntamenti.map(a=>`<div style="margin-bottom:4px"><strong>🗓️ ${fdt(a.data)}</strong> — ${a.note||'—'}</div>`).join('');
 
-  const statoCasa = calcolaStatoCasa(c.periodo_da, c.periodo_a, c.categoria);
+  const statoCasa = calcolaStatoCasa(c);
 
   $('dbody').innerHTML=`
     <div class="dg">
@@ -785,7 +821,7 @@ function openDetail(id){
         <div class="dl">Struttura / Categoria</div>
         <div class="dv">${FE[c.cartella] || '📐'} ${c.cartella} / <span class="atag">${CE[c.categoria]} ${CL[c.categoria]}</span></div>
       </div>
-      ${statoCasa ? `<div class="di"><div class="dl">Stato Occupazione</div><div class="dv"><strong>${statoCasa}</strong></div></div>` : ''}
+      ${statoCasa ? `<div class="di"><div class="dl">Stato Occupazione</div><div class="dv"><strong>${statoCasa}</strong> ${c.stato_manuale && c.stato_manuale !== 'auto' ? '<span style="font-size:0.75rem; color:var(--lt)">(Forzato Manualmente)</span>' : ''}</div></div>` : ''}
       <div class="di">
         <div class="dl">Periodo</div>
         <div class="dv">${fd(c.periodo_da)} → ${fd(c.periodo_a)}</div>
