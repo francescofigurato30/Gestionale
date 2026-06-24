@@ -109,7 +109,6 @@
   .ca{flex:1;overflow-y:auto;padding:16px 20px;-webkit-overflow-scrolling:touch;}
   .cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px;}
   .es{display:flex;flex-direction:column;align-items:center;justify-content:center;height:240px;color:var(--lt);gap:10px;}
-  .es .bi">📭</span>
 
   .cc{background:white;border-radius:var(--r);border:1px solid var(--border);padding:16px;cursor:pointer;position:relative;overflow:hidden;}
   .cc::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;}
@@ -331,7 +330,7 @@
           </select>
         </div>
         
-        <!-- NUOVO MENU GESTIONE MANUAL PALLINI/STATO -->
+        <!-- SELETTORE DISPONIBILITÀ (PALLINI) -->
         <div class="fl full"><label>Stato Occupazione (Pallino)</label>
           <select id="f_stato_manuale">
             <option value="auto">⚙️ Calcola automaticamente (In base alle date)</option>
@@ -375,11 +374,9 @@
 </div>
 
 <script>
-// ── CREDENZIALI AGGIORNATE ──
 const ADMIN_USER = 'Francesco';
 const ADMIN_PASS = 'Gestionale2026';
 
-// ── SUPABASE ──
 const SB_URL='https://szpyhbtfoxdsatcrksfo.supabase.co';
 const SB_KEY='sb_publishable_H0cfXThFKxloHuJfyGPD0A_PflUFQY_';
 const HDR={'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY};
@@ -388,7 +385,6 @@ let contacts=[],editId=null,curApts=[],fC=null,fCat=null,saving=false;
 let isAdmin=false; 
 
 const FL=['Casa Paese Piano 1°','Casa Paese Ultimo Piano','Casa Stazione','Monolocale'];
-
 const CATS=['stagionale','annuale','semestrale','estate','argentini-estate','argentini-inverno','solo-info'];
 const CL={
   stagionale:'Stagionale',annuale:'Annuale',semestrale:'Semestrale',estate:'Estate',
@@ -408,21 +404,14 @@ const fd=d=>{if(!d)return'';const t=new Date(d);return isNaN(t)?d:t.toLocaleDate
 const fdt=d=>{if(!d)return'';const t=new Date(d);return isNaN(t)?d:t.toLocaleDateString('it-IT',{day:'2-digit',month:'short',year:'numeric'})+' '+t.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});};
 const $=id=>document.getElementById(id);
 
-// ── LOGICA MOSTRA/NASCONDI PASSWORD ──
 function togglePasswordVisibility() {
   const passInput = $('l_pass');
-  if (passInput.type === 'password') {
-    passInput.type = 'text';
-  } else {
-    passInput.type = 'password';
-  }
+  passInput.type = (passInput.type === 'password') ? 'text' : 'password';
 }
 
-// ── LOGICA DI ACCESSO / LOGIN ──
 function eseguiLogin(){
   const user = $('l_user').value.trim();
   const pass = $('l_pass').value;
-  
   if(user === ADMIN_USER && pass === ADMIN_PASS){
     isAdmin = true;
     $('loginError').style.display = 'none';
@@ -443,7 +432,7 @@ function logout(){
   isAdmin = false;
   $('l_user').value = '';
   $('l_pass').value = '';
-  $('l_pass').type = 'password'; // resetta il tipo a password per sicurezza
+  $('l_pass').type = 'password';
   $('loginScreen').style.display = 'flex';
 }
 
@@ -455,44 +444,30 @@ function applicaRuolo(){
     $('roleBadge').textContent = "OSPITE (Lettura)";
     $('roleBadge').style.background = "#5bc0de";
   }
-  
   $('hdr_btn_nuovo').style.display = isAdmin ? 'block' : 'none';
   $('mob_btn_nuovo').style.display = isAdmin ? 'block' : 'none';
   render();
 }
 
-// Logica disponibilità temporale delle case (Con override manuale)
 function calcolaStatoCasa(c){
-  // Se è stato forzato un valore manuale nel contatto
   if(c.stato_manuale && c.stato_manuale !== 'auto'){
-    if(c.stato_manuale === 'nessuno') return '';
-    return c.stato_manuale;
+    return (c.stato_manuale === 'nessuno') ? '' : c.stato_manuale;
   }
-
-  // Altrimenti procede con il calcolo automatico standard
   if(c.categoria === 'solo-info') return ''; 
   if(!c.periodo_da || !c.periodo_a) return '🟢 Libera';
   
-  const oggi = new Date();
-  oggi.setHours(0,0,0,0);
+  const oggi = new Date(); oggi.setHours(0,0,0,0);
   const dataInizio = new Date(c.periodo_da);
   const dataFine = new Date(c.periodo_a);
   
-  if(oggi >= dataInizio && oggi <= dataFine){
-    return '🔴 Occupata';
-  }
+  if(oggi >= dataInizio && oggi <= dataFine) return '🔴 Occupata';
   
-  const diffTempo = dataInizio - oggi;
-  const diffGiorni = Math.ceil(diffTempo / (1000 * 60 * 60 * 24));
-  
-  if(diffGiorni > 0 && diffGiorni <= 7){
-    return '🟡 Forse Occupata';
-  }
+  const diffGiorni = Math.ceil((dataInizio - oggi) / (1000 * 60 * 60 * 24));
+  if(diffGiorni > 0 && diffGiorni <= 7) return '🟡 Forse Occupata';
   
   return '🟢 Libera';
 }
 
-// ── BANNER ──
 let bT=null;
 function banner(state,txt){
   const b=$('banner');
@@ -502,7 +477,6 @@ function banner(state,txt){
   if(state==='ok'||state==='err') bT=setTimeout(()=>b.classList.remove('show'),2500);
 }
 
-// ── API SUPABASE ──
 async function dbRead(){
   const r=await fetch(`${SB_URL}/rest/v1/contacts?select=*&order=updated_at.desc`,{headers:HDR});
   if(!r.ok)throw new Error('read');
@@ -524,7 +498,6 @@ async function dbDelete(id){
   if(!r.ok)throw new Error('delete');
 }
 
-// ── LOAD ──
 function load(){
   const cached=localStorage.getItem('sb_cache');
   if(cached){try{contacts=JSON.parse(cached);}catch(e){contacts=[];}}
@@ -545,7 +518,6 @@ async function syncFresh(){
   }
 }
 
-// ── SIDEBAR ──
 function buildSidebar(){
   let h=`<div class="si-all ${!fC&&!fCat?'active':''}" onclick="sf(null,null)"><span>📋</span>Tutti<span class="bdg ${!contacts.length?'z':''}">${contacts.length}</span></div>`;
   FL.forEach(folder=>{
@@ -592,10 +564,7 @@ function togF(el,folder){
   if(!wasOpen){el.classList.add('open');el.nextElementSibling.classList.add('open');sf(folder,null);}
   else sf(null,null);
 }
-function togArg(el){
-  el.classList.toggle('open');
-  el.nextElementSibling.classList.toggle('open');
-}
+function togArg(el){el.classList.toggle('open');el.nextElementSibling.classList.toggle('open');}
 function sf(c,cat){fC=c;fCat=cat;render();}
 
 let argPillsOpen=false;
@@ -690,7 +659,6 @@ function render(){
   }).join('');
 }
 
-// MOBILE
 function onMobC(){
   const v=$('mob_cartella').value,ce=$('mob_categoria');
   fC=v||null;fCat=null;ce.value='';
@@ -699,28 +667,37 @@ function onMobC(){
 }
 function onMobCat(){fCat=$('mob_categoria').value||null;render();}
 
-// FORM
+// ── CORREZIONE APERTURA NUOVO CONTATTO ──
 function openAdd(){
   if(!isAdmin) return;
   editId=null;curApts=[];
   $('ftitle').textContent='Nuovo Contatto';
   ['nome','tel','email','sito','cartella','categoria','periodo_da','periodo_a','periodo_note','data_contatto','chi','note'].forEach(k=>$('f_'+k).value='');
-  $('f_stato_manuale').value = 'auto'; // Default auto
+  
+  // Ora viene svuotato/resettato correttamente su "auto" ad ogni nuova inserzione
+  $('f_stato_manuale').value = 'auto'; 
+  
   $('apt_add_container').style.display = 'flex';
   $('form_actions').style.display = 'flex';
   rAL();$('fov').classList.add('open');
 }
+
+// ── CORREZIONE APERTURA MODIFICA CONTATTO ──
 function openEdit(id){
   if(!isAdmin) return;
   const c=contacts.find(x=>x.id===id);if(!c)return;
   editId=id;curApts=JSON.parse(JSON.stringify(c.appuntamenti||[]));
   $('ftitle').textContent='Modifica';
   ['nome','tel','email','sito','cartella','categoria','periodo_da','periodo_a','periodo_note','data_contatto','chi','note'].forEach(k=>$('f_'+k).value=c[k]||'');
-  $('f_stato_manuale').value = c.stato_manuale || 'auto'; // Carica stato manuale salvato
+  
+  // Ora carica e seleziona correttamente lo stato salvato in precedenza
+  $('f_stato_manuale').value = c.stato_manuale || 'auto'; 
+  
   $('apt_add_container').style.display = 'flex';
   $('form_actions').style.display = 'flex';
   rAL();$('fov').classList.add('open');
 }
+
 function closeForm(){$('fov').classList.remove('open');}
 
 function addApt(){
@@ -752,7 +729,7 @@ async function saveContact(){
     id:editId||uid(),nome,
     tel:$('f_tel').value.trim(),email:$('f_email').value.trim(),
     sito:$('f_sito').value.trim(),cartella,categoria,
-    stato_manuale:$('f_stato_manuale').value, // Salva lo stato manuale scelto
+    stato_manuale:$('f_stato_manuale').value, // Salva l'input
     periodo_da:$('f_periodo_da').value,periodo_a:$('f_periodo_a').value,
     periodo_note:$('f_periodo_note').value.trim(),
     data_contatto:$('f_data_contatto').value,
@@ -793,7 +770,6 @@ async function delContact(id){
   }
 }
 
-// ── DETTAGLI ──
 function openDetail(id){
   const c=contacts.find(x=>x.id===id);if(!c)return;
   $('dtitle').textContent=c.nome;
@@ -851,7 +827,6 @@ function openDetail(id){
   } else {
     ebtn.style.display = "none";
   }
-  
   $('dov').classList.add('open');
 }
 function closeDetail(){$('dov').classList.remove('open');}
