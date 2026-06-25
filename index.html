@@ -1,160 +1,493 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestionale</title>
-    <!-- Tailwind CSS per una grafica pulita (opzionale, rimuovilo se usi i tuoi stili) -->
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <!-- SDK di Supabase -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        .hidden { display: none !important; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Gestionale Contatti</title>
+<style>
+:root{
+--cream:#F5F0E8;--ww:#FDFAF5;
+--terra:#C4714A;--terra-dk:#9E5535;
+--forest:#3A5A40;--navy:#1E2D40;--navy2:#2E3D50;
+--gold:#C9A84C;--dk:#1A1A1A;--mid:#4A4A4A;--lt:#888;
+--border:rgba(60,40,20,0.12);--sh:0 4px 20px rgba(30,15,5,0.10);
+--r:12px;--rs:8px;
+--font:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif;
+--font-serif:Georgia,'Times New Roman',serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{font-family:var(--font);background:var(--cream);color:var(--dk);min-height:100vh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased;}
+
+/* SCHERMATA LOGIN */
+.login-screen {position:fixed;inset:0;background:var(--cream);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;}
+.login-box {background:white;padding:30px;border-radius:var(--r);box-shadow:var(--sh);width:100%;max-width:380px;border:1px solid var(--border);text-align:center;}
+.login-box h2 {font-family:var(--font-serif);color:var(--navy);margin-bottom:8px;font-size:1.6rem;}
+.login-box p {font-size:0.85rem;color:var(--lt);margin-bottom:20px;}
+.login-field {display:flex;flex-direction:column;gap:6px;text-align:left;margin-bottom:14px;position:relative;}
+.login-field label {font-size:0.75rem;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:0.05em;}
+.login-field input {padding:11px 12px;border:1px solid var(--border);border-radius:var(--rs);font-family:var(--font);font-size:0.95rem;background:var(--ww);outline:none;}
+.login-field input:focus {border-color:var(--terra);background:white;}
+.pass-wrapper {position:relative;display:flex;flex-direction:column;}
+.toggle-password {position:absolute;right:12px;bottom:11px;background:none;border:none;cursor:pointer;color:var(--lt);font-size:1.1rem;display:flex;align-items:center;justify-content:center;}
+.login-btn-admin {width:100%;padding:12px;background:var(--terra);color:white;border:none;border-radius:var(--rs);font-family:var(--font);font-size:0.95rem;font-weight:600;cursor:pointer;margin-top:10px;margin-bottom:12px;}
+.login-btn-admin:active {background:var(--terra-dk);}
+.login-btn-guest {background:none;border:none;color:var(--forest);font-size:0.88rem;font-weight:600;cursor:pointer;text-decoration:underline;}
+.login-err {color:#d9534f;font-size:0.8rem;margin-top:8px;display:none;font-weight:500;}
+
+/* INTERFACCIA PRINCIPALE */
+header{background:var(--navy);color:white;padding:0 20px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,0.25);}
+header h1{font-family:var(--font-serif);font-size:1.2rem;font-weight:700;}
+header h1 span{color:var(--gold);}
+.hright{display:flex;gap:10px;align-items:center;}
+
+.sync-banner{color:rgba(255,255,255,0.85);font-size:0.72rem;text-align:center;padding:5px;display:none;align-items:center;justify-content:center;gap:6px;}
+.sync-banner.show{display:flex;}
+.sync-banner.loading{background:#2a3f55;}
+.sync-banner.ok{background:#2d5a3d;}
+.sync-banner.err{background:#5a2d2d;}
+.sync-banner .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.sync-banner.loading .dot{background:var(--gold);animation:pulse 1s infinite;}
+.sync-banner.ok .dot{background:#4CAF50;}
+.sync-banner.err .dot{background:#f44336;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+
+.btn-hdr{background:var(--terra);color:white;border:none;padding:7px 15px;border-radius:var(--rs);font-family:var(--font);font-size:0.85rem;font-weight:600;cursor:pointer;}
+.btn-hdr:active{background:var(--terra-dk);}
+.btn-logout{background:transparent;color:white;border:1px solid rgba(255,255,255,0.3);padding:5px 10px;border-radius:var(--rs);font-size:0.75rem;cursor:pointer;}
+
+/* MOBILE NAV */
+.mob-nav{display:none;background:var(--navy2);padding:10px 12px;gap:8px;flex-direction:column;}
+.mob-sel{width:100%;padding:11px 12px;border:none;border-radius:var(--rs);font-family:var(--font);font-size:0.95rem;font-weight:500;background:#243550;color:white;outline:none;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%23aaa' d='M5 6L0 0h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}
+.mob-sel option{background:#1E2D40;}
+.mob-sel optgroup{background:#1E2D40;font-style:normal;font-weight:700;color:rgba(255,255,255,0.5);}
+.mob-cat{display:none;}
+.mob-cat.vis{display:block;}
+.mob-new{width:100%;padding:12px;background:var(--terra);color:white;border:none;border-radius:var(--rs);font-family:var(--font);font-size:1rem;font-weight:600;cursor:pointer;margin-top:2px;}
+.mob-new:active{background:var(--terra-dk);}
+
+.app-body{display:flex;flex:1;min-height:0;}
+
+/* SIDEBAR */
+aside{width:260px;min-width:260px;background:var(--ww);border-right:1px solid var(--border);overflow-y:auto;padding:14px 0;}
+.sf{padding:9px 16px;font-weight:600;font-size:0.76rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--lt);display:flex;align-items:center;gap:7px;cursor:pointer;user-select:none;}
+.sf .ch{margin-left:auto;transition:transform 0.18s;font-size:0.62rem;}
+.sf.open .ch{transform:rotate(90deg);}
+.si-wrap{display:none;}
+.si-wrap.open{display:block;}
+.si{padding:8px 16px 8px 36px;font-size:0.84rem;color:var(--mid);cursor:pointer;display:flex;align-items:center;gap:6px;border-left:3px solid transparent;}
+.si.sub{padding-left:52px;font-size:0.8rem;}
+.si:hover,.si-all:hover{background:rgba(196,113,74,0.06);color:var(--terra);}
+.si.active,.si-all.active{background:rgba(196,113,74,0.10);color:var(--terra);border-left-color:var(--terra);font-weight:600;}
+.si-all{padding:8px 16px;font-size:0.84rem;color:var(--mid);cursor:pointer;display:flex;align-items:center;gap:6px;border-left:3px solid transparent;}
+
+.si-group{padding:7px 16px 7px 36px;font-size:0.76rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--lt);display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none;}
+.si-group .ch2{margin-left:auto;transition:transform 0.18s;font-size:0.6rem;}
+.si-group.open .ch2{transform:rotate(90deg);}
+.si-sub-wrap{display:none;}
+.si-sub-wrap.open{display:block;}
+.bdg{margin-left:auto;background:var(--terra);color:white;font-size:0.67rem;font-weight:600;padding:2px 6px;border-radius:20px;min-width:18px;text-align:center;}
+.bdg.z{background:var(--border);color:var(--lt);}
+
+main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.sbar{display:flex;border-bottom:1px solid var(--border);background:var(--ww);padding:0 20px;overflow-x:auto;scrollbar-width:none;}
+.sbar::-webkit-scrollbar{display:none;}
+.sp{padding:8px 14px;font-size:0.78rem;color:var(--lt);white-space:nowrap;display:flex;align-items:center;gap:5px;}
+.sp strong{color:var(--dk);font-size:0.98rem;font-weight:700;}
+.topbar{background:var(--ww);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.bc{font-size:0.82rem;color:var(--lt);}
+.fps{display:flex;gap:6px;flex-wrap:wrap;}
+.pill{padding:5px 12px;border-radius:20px;font-size:0.76rem;font-weight:500;border:1px solid var(--border);cursor:pointer;background:white;color:var(--mid);white-space:nowrap;}
+.pill:hover{border-color:var(--terra);color:var(--terra);}
+.pill.active{background:var(--terra);color:white;border-color:var(--terra);}
+.sbox{margin-left:auto;position:relative;}
+.sbox input{padding:8px 12px 8px 32px;border:1px solid var(--border);border-radius:20px;font-family:var(--font);font-size:0.85rem;background:var(--cream);width:190px;outline:none;}
+.sbox input:focus{border-color:var(--terra);}
+.si-ico{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--lt);font-size:0.8rem;}
+
+.ca{flex:1;overflow-y:auto;padding:16px 20px;-webkit-overflow-scrolling:touch;}
+.cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px;}
+.es{display:flex;flex-direction:column;align-items:center;justify-content:center;height:240px;color:var(--lt);gap:10px;}
+.es .bi{font-size:2rem;}
+
+.cc{background:white;border-radius:var(--r);border:1px solid var(--border);padding:16px;cursor:pointer;position:relative;overflow:hidden;}
+.cc::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;}
+</style>
 </head>
-<body class="bg-gray-100 font-sans">
+<body>
 
-    <!-- ======================================================= -->
-    <!-- 1. SCHERMATA DI LOGIN                                   -->
-    <!-- ======================================================= -->
-    <div id="login-container" class="flex items-center justify-center min-h-screen">
-        <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-            <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">Accesso Gestionale</h2>
-            
-            <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2" for="username">Utente</label>
-                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="username" type="text" placeholder="Inserisci username">
-            </div>
-            
-            <div class="mb-6 relative">
-                <label class="block text-gray-700 text-sm font-bold mb-2" for="password">Password</label>
-                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="password" type="password" placeholder="********">
-                <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 bottom-2 text-sm text-gray-500 hover:text-gray-700">Mostra</button>
-            </div>
-            
-            <div class="flex flex-col gap-3">
-                <button onclick="eseguiLogin()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full" type="button">
-                    Accedi
-                </button>
-                <button onclick="accessoLibero()" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full text-sm" type="button">
-                    Accesso Ospite / Limitato
-                </button>
-            </div>
-        </div>
+<div id="loginScreen" class="login-screen">
+  <div class="login-box">
+    <h2>Gestionale Contatti</h2>
+    <p>Inserisci le tue credenziali per accedere</p>
+    
+    <div class="login-field">
+      <label for="l_user">Utente</label>
+      <input type="text" id="l_user" placeholder="Nome utente">
     </div>
-
-    <!-- ======================================================= -->
-    <!-- 2. CONTENUTI DEL GESTIONALE (Nascosto di default)        -->
-    <!-- ======================================================= -->
-    <div id="main-container" class="hidden p-6">
-        <div class="max-w-6xl mx-auto bg-white p-6 rounded-lg shadow-md">
-            <div class="flex justify-between items-center mb-6">
-                <h1 class="text-3xl font-bold text-gray-800">Benvenuto nel Gestionale</h1>
-                <div class="flex items-center gap-4">
-                    <span id="user-display" class="font-semibold text-gray-600"></span>
-                    <button onclick="logout()" class="bg-red-500 hover:bg-red-700 text-white text-xs font-bold py-1 px-3 rounded">Logout</button>
-                </div>
-            </div>
-            
-            <p class="text-gray-600 mb-4">I tuoi dati collegati a Supabase appariranno qui sotto.</p>
-            
-            <!-- Inserisci qui dentro le tue tabelle, i tuoi bottoni e le liste dei contatti -->
-            <div id="dati-supabase" class="border border-dashed border-gray-300 p-8 text-center text-gray-400 rounded">
-                [ Qui va il resto della tua interfaccia: tabelle, contatti, appuntamenti ]
-            </div>
-        </div>
+    
+    <div class="login-field">
+      <label for="l_pass">Password</label>
+      <div class="pass-wrapper">
+        <input type="password" id="l_pass" placeholder="Password">
+        <button type="button" class="toggle-password" onclick="togglePasswordVisibility()">👁️</button>
+      </div>
     </div>
+    
+    <button class="login-btn-admin" onclick="eseguiLogin()">Accedi come Amministratore</button>
+    <button class="login-btn-guest" onclick="accessoOspite()">Entra come Ospite (Sola Lettura)</button>
+    <div id="loginError" class="login-err">Credenziali non valide</div>
+  </div>
+</div>
 
-    <!-- ======================================================= -->
-    <!-- 3. LOGICA JAVASCRIPT                                    -->
-    <!-- ======================================================= -->
-    <script>
-        // CONFIGURAZIONE SUPABASE
-        // Inserisci qui l'URL e la Chiave Anonima del tuo progetto Supabase
-        const SUPABASE_URL = "https://TUO-PROGETTO.supabase.co";
-        const SUPABASE_ANON_KEY = "LA-TUA-CHIAVE-ANONIMA-SUPABASE";
-        
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+<header>
+  <h1>Gestionale <span>Contatti</span></h1>
+  <div class="hright">
+    <div id="banner" class="sync-banner"><span class="dot"></span><span id="banner-txt"></span></div>
+    <span id="roleBadge" class="bdg" style="padding: 4px 10px; font-size: 0.8rem;"></span>
+    <button id="hdr_btn_nuovo" class="btn-hdr" onclick="openAdd()">+ Nuovo Contatto</button>
+    <button class="btn-logout" onclick="logout()">Esci</button>
+  </div>
+</header>
 
-        // CREDENZIALI AMMINISTRATORI
-        const ADMIN_USER = 'Francesco';
-        const ADMIN_PASS = 'Gestionale2026';
+<div class="mob-nav">
+  <select id="mob_cartella" class="mob-sel" onchange="onMobC()"></select>
+  <select id="mob_categoria" class="mob-sel" onchange="onMobCat()"></select>
+  <button id="mob_btn_nuovo" class="mob-new" onclick="openAdd()">+ Nuovo Contatto</button>
+</div>
 
-        const VITTO_USER = 'Vittoria';
-        const VITTO_PASS = 'Gestionale2026';
+<div class="app-body">
+  <aside id="sidebar"></aside>
+  <main>
+    <div class="sbar" id="statbar"></div>
+    <div class="topbar">
+      <div class="bc" id="breadcrumbs">Tutti i contatti</div>
+      <div class="fps" id="filterPills"></div>
+      <div class="sbox">
+        <span class="si-ico">🔍</span>
+        <input type="text" id="searchInp" placeholder="Cerca nome o note..." oninput="render()">
+      </div>
+    </div>
+    <div class="ca" id="mainContent"></div>
+  </main>
+</div>
 
-        // GESTIONE VISIBILITÀ PASSWORD
-        function togglePasswordVisibility() {
-            const passwordInput = document.getElementById('password');
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-            } else {
-                passwordInput.type = 'password';
-            }
-        }
+<script>
+// ── CREDENZIALI AGGIORNATE ──
+const ADMIN_USER = 'Francesco';
+const ADMIN_PASS = 'Gestionale2026';
 
-        // FUNZIONE DI LOGIN PER FRANCESCO E VITTORIA
-        function eseguiLogin() {
-            const usernameInput = document.getElementById('username').value.trim();
-            const passwordInput = document.getElementById('password').value.trim();
+const VITTO_USER = 'Vittoria';
+const VITTO_PASS = 'Gestionale2026';
 
-            const isFrancesco = (usernameInput === ADMIN_USER && passwordInput === ADMIN_PASS);
-            const isVittoria = (usernameInput === VITTO_USER && passwordInput === VITTO_PASS);
+// ── SUPABASE ──
+const SB_URL='https://szpyhbtfoxdsatcrksfo.supabase.co';
+const SB_KEY='sb_publishable_H0cfXThFKxloHuJfyGPD0A_PflUFQY_';
+const HDR={'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY};
 
-            if (isFrancesco || isVittoria) {
-                localStorage.setItem('isLoggedIn', 'true');
-                localStorage.setItem('currentUser', usernameInput);
-                localStorage.setItem('userRole', 'admin');
-                controlloSessione();
-            } else {
-                alert('Credenziali non corrette. Riprova.');
-            }
-        }
+let contacts=[];
+let fC=null,fCat=null,fPill=null,searchQuery='';
+let isAdmin=false; 
 
-        // ACCESSO LIBERO / OSPITE
-        function accessoLibero() {
-            localStorage.setItem('isLoggedIn', 'true');
-            localStorage.setItem('currentUser', 'Ospite');
-            localStorage.setItem('userRole', 'guest');
-            controlloSessione();
-        }
+const FL=['Casa Paese Piano 1°','Casa Paese Ultimo Piano','Casa Stazione','Monolocale'];
 
-        // LOGOUT
-        function logout() {
-            localStorage.clear();
-            location.reload();
-        }
+const CATS=['stagionale','annuale','semestrale','estate','argentini-estate','argentini-inverno','solo-info'];
+const CL={
+stagionale:'Stagionale',annuale:'Annuale',semestrale:'Semestrale',estate:'Estate',
+'argentini-estate':'Argentini Estate','argentini-inverno':'Argentini Inverno','solo-info':'Solo Info'
+};
+const CE={
+stagionale:'🍂',annuale:'📅',semestrale:'⏳',estate:'☀️',
+'argentini-estate':'🇦🇷☀️','argentini-inverno':'🇦🇷❄️','solo-info':'ℹ️'
+};
+const FE={'Casa Paese Piano 1°':'🏠','Casa Paese Ultimo Piano':'🌇','Casa Stazione':'🚉','Monolocale':'📦'};
 
-        // CONTROLLO STATO ACCESSO ALL'AVVIO DELLA PAGINA
-        function controlloSessione() {
-            const loginContainer = document.getElementById('login-container');
-            const mainContainer = document.getElementById('main-container');
-            const userDisplay = document.getElementById('user-display');
+let editId=null;
+let curApts=[];
 
-            const isLoggedIn = localStorage.getItem('isLoggedIn');
-            const currentUser = localStorage.getItem('currentUser');
+const fd=d=>{if(!d)return'—';const t=new Date(d);return isNaN(t)?d:t.toLocaleDateString('it-IT',{day:'2-digit',month:'short',year:'numeric'});};
+const fdt=d=>{if(!d)return'';const t=new Date(d);return isNaN(t)?d:t.toLocaleDateString('it-IT',{day:'2-digit',month:'short',year:'numeric'})+' '+t.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});};
+const $=id=>document.getElementById(id);
 
-            if (isLoggedIn === 'true') {
-                loginContainer.classList.add('hidden');
-                mainContainer.classList.remove('hidden');
-                userDisplay.textContent = "Utente: " + currentUser;
-                
-                // Avvia qui le tue funzioni che leggono i dati da Supabase (es. caricaContatti())
-                caricaDatiGestionale();
-            } else {
-                loginContainer.classList.remove('hidden');
-                mainContainer.classList.add('hidden');
-            }
-        }
+// ── LOGICA MOSTRA/NASCONDI PASSWORD ──
+function togglePasswordVisibility() {
+  const passInput = $('l_pass');
+  if (passInput.type === 'password') {
+    passInput.type = 'text';
+  } else {
+    passInput.type = 'password';
+  }
+}
 
-        // FUNZIONE ESEMPIO PER RECUPERARE DATI DA SUPABASE
-        async function caricaDatiGestionale() {
-            console.log("Inizializzazione caricamento dati da Supabase...");
-            // Qui andranno le tue funzioni reali (es. await supabase.from('contatti').select('*'))
-        }
+// ── LOGICA DI ACCESSO / LOGIN ──
+function eseguiLogin(){
+  const user = $('l_user').value.trim();
+  const pass = $('l_pass').value;
+    
+  const isFrancesco = (user === ADMIN_USER && pass === ADMIN_PASS);
+  const isVittoria = (user === VITTO_USER && pass === VITTO_PASS);
 
-        // Esegui il controllo non appena la pagina viene caricata
-        window.onload = controlloSessione;
-    </script>
+  if(isFrancesco || isVittoria){
+    isAdmin = true;
+    $('loginError').style.display = 'none';
+    localStorage.setItem('gestionale_logged', 'admin');
+    localStorage.setItem('gestionale_user', user);
+    initApp();
+  } else {
+    $('loginError').style.display = 'block';
+  }
+}
+
+function accesoOspite(){
+  isAdmin = false;
+  localStorage.setItem('gestionale_logged', 'guest');
+  localStorage.setItem('gestionale_user', 'Ospite');
+  initApp();
+}
+
+function logout(){
+  localStorage.removeItem('gestionale_logged');
+  localStorage.removeItem('gestionale_user');
+  isAdmin = false;
+  $('l_user').value = '';
+  $('l_pass').value = '';
+  $('l_pass').type = 'password';
+  $('loginScreen').style.display = 'flex';
+}
+
+function checkSession(){
+  const s = localStorage.getItem('gestionale_logged');
+  const u = localStorage.getItem('gestionale_user');
+  if(s === 'admin'){
+    isAdmin = true;
+    initApp();
+  } else if(s === 'guest'){
+    isAdmin = false;
+    initApp();
+  } else {
+    $('loginScreen').style.display = 'flex';
+  }
+}
+
+function initApp(){
+  $('loginScreen').style.display = 'none';
+  const u = localStorage.getItem('gestionale_user') || 'Utente';
+  if(isAdmin){
+    $('roleBadge').textContent = u + " (Admin)";
+    $('roleBadge').style.background = "var(--terra)";
+  } else {
+    $('roleBadge').textContent = "OSPITE (Lettura)";
+    $('roleBadge').style.background = "#5bc0de";
+  }
+    
+  $('hdr_btn_nuovo').style.display = isAdmin ? 'block' : 'none';
+  $('mob_btn_nuovo').style.display = isAdmin ? 'block' : 'none';
+  render();
+}
+
+// Logica disponibilità temporale delle case (Con override manuale)
+function calcolaStatoCasa(c){
+  if(c.stato_manuale && c.stato_manuale !== 'auto'){
+    return (c.stato_manuale === 'nessuno') ? '' : c.stato_manuale;
+  }
+
+  if(c.categoria === 'solo-info') return ''; 
+  if(!c.periodo_da || !c.periodo_a) return '🟢 Libera';
+
+  const oggi = new Date(); oggi.setHours(0,0,0,0);
+  const dataInizio = new Date(c.periodo_da);
+  const dataFine = new Date(c.periodo_a);
+
+  if(oggi >= dataInizio && oggi <= dataFine) return '🔴 Occupata';
+
+  const diffGiorni = Math.ceil((dataInizio - oggi) / (1000 * 60 * 60 * 24));
+  if(diffGiorni > 0 && diffGiorni <= 7) return '🟡 Forse Occupata';
+
+  return '🟢 Libera';
+}
+
+// ── BANNER ──
+let bT=null;
+function banner(state,txt){
+  const b=$('banner');
+  b.className='sync-banner show '+state;
+  $('banner-txt').textContent=txt;
+  clearTimeout(bT);
+  if(state==='ok'||state==='err') bT=setTimeout(()=>b.classList.remove('show'),2500);
+}
+
+// ── API SUPABASE ──
+async function dbRead(){
+  const r=await fetch(`${SB_URL}/rest/v1/contacts?select=*&order=updated_at.desc`,{headers:HDR});
+  if(!r.ok)throw new Error('read');
+  return await r.json();
+}
+async function dbWrite(data){
+  const isNew=!data.id;
+  const url=isNew?`${SB_URL}/rest/v1/contacts`:`${SB_URL}/rest/v1/contacts?id=eq.${data.id}`;
+  const m=isNew?'POST':'PATCH';
+  const h={...HDR};if(!isNew) h['Prefer']='resolution=merge-duplicates';
+  const r=await fetch(url,{method:m,headers:h,body:JSON.stringify(data)});
+  if(!r.ok)throw new Error('write');
+}
+async function dbDelete(id){
+  const r=await fetch(`${SB_URL}/rest/v1/contacts?id=eq.${id}`,{method:'DELETE',headers:HDR});
+  if(!r.ok)throw new Error('delete');
+}
+
+// ── LOAD ──
+function load(){
+  const cached=localStorage.getItem('sb_cache');
+  if(cached){try{contacts=JSON.parse(cached);}catch(e){contacts=[];}}
+  buildSidebar();buildMobNav();render();
+  banner('loading','Sincronizzazione in corso...');
+  dbRead().then(d=>{
+    contacts=d;
+    localStorage.setItem('sb_cache',JSON.stringify(d));
+    banner('ok','Dati aggiornati');
+    buildSidebar();buildMobNav();render();
+  }).catch(e=>{
+    console.error(e);
+    banner('err','Errore sincr. Usa cache offline');
+  });
+}
+
+// ── SIDEBAR ──
+function buildSidebar(){
+  let h=`<div class="si-all ${!fC&&!fCat?'active':''}" onclick="sf(null,null)"><span>📋</span>Tutti<span class="bdg ${!contacts.length?'z':''}">${contacts.length}</span></div>`;
+  FL.forEach(folder=>{
+    const cF=contacts.filter(x=>x.cartella===folder);
+    h+=`<div class="sf" onclick="togF(this,'${folder}')"><span>${FE[folder]||'📁'}</span>${folder}<span class="bdg ${!cF.length?'z':''}">${cF.length}</span><span class="ch">▶</span></div><div class="si-wrap">`;
+    CATS.forEach(cat=>{
+      const cC=cF.filter(x=>x.categoria===cat);
+      if(cC.length) h+=`<div class="si sub ${fC===folder&&fCat===cat?'active':''}" onclick="sf('${folder}','${cat}')"><span>${CE[cat]}</span>${CL[cat]}<span class="bdg">${cC.length}</span></div>`;
+    });
+    h+=`</div>`;
+  });
+  
+  h+=`<div class="si-group" onclick="togArg(this)"><span>🇦🇷</span>Gruppo Argentini<span class="ch2">▶</span></div><div class="si-sub-wrap">`;
+  const cEst=contacts.filter(x=>x.categoria==='argentini-estate');
+  h+=`<div class="si sub ${fCat==='argentini-estate'?'active':''}" onclick="sf(null,'argentini-estate')"><span>☀️</span>Argentini Estate<span class="bdg ${!cEst.length?'z':''}">${cEst.length}</span></div>`;
+  const cInv=contacts.filter(x=>x.categoria==='argentini-inverno');
+  h+=`<div class="si sub ${fCat==='argentini-inverno'?'active':''}" onclick="sf(null,'argentini-inverno')"><span>❄️</span>Argentini Inverno<span class="bdg ${!cInv.length?'z':''}">${cInv.length}</span></div>`;
+  h+=`</div>`;
+  
+  $('sidebar').innerHTML=h;
+}
+
+function buildMobNav(){
+  let h=`<option value="">📁 Tutte le strutture</option>`;
+  FL.forEach(f=>h+=`<option value="${f}">${f}</option>`);
+  $('mob_cartella').innerHTML=h;
+  let c=`<option value="">🏷️ Tutte le categorie</option>`;
+  CATS.forEach(cat=>c+=`<option value="${cat}">${CL[cat]}</option>`);
+  $('mob_categoria').innerHTML=c;
+}
+
+function togF(el,folder){
+  const wasOpen=el.classList.contains('open');
+  document.querySelectorAll('.sf').forEach(x=>{x.classList.remove('open');x.nextElementSibling.classList.remove('open');});
+  if(!wasOpen){el.classList.add('open');el.nextElementSibling.classList.add('open');sf(folder,null);}
+  else sf(null,null);
+}
+function togArg(el){el.classList.toggle('open');el.nextElementSibling.classList.toggle('open');}
+function sf(c,cat){fC=c;fCat=cat;render();}
+
+let argPillsOpen=false;
+function render(){
+  const s=$('statbar');
+  let sH=``;
+  FL.forEach(f=>{
+    const list=contacts.filter(x=>x.cartella===f);
+    let st='🟢 Libera';
+    const occ=list.find(x=>calcolaStatoCasa(x)==='🔴 Occupata');
+    if(occ) st='🔴 Occupata';
+    else if(list.find(x=>calcolaStatoCasa(x)==='🟡 Forse Occupata')) st='🟡 Forse Occupata';
+    sH+=`<div class="sp">${FE[f]} ${f}: <strong>${st}</strong></div>`;
+  });
+  s.innerHTML=sH;
+
+  let bc="Tutti i contatti";
+  if(fC&&fCat) bc=`${fC} ➔ ${CL[fCat]}`;
+  else if(fC) bc=fC;
+  else if(fCat) bc=CL[fCat];
+  $('breadcrumbs').innerHTML=bc;
+
+  let pH=`<div class="pill ${!fPill?'active':''}" onclick="sp(null)">Tutti lo stato</div>
+          <div class="pill ${fPill==='🟢 Libera'?'active':''}" onclick="sp('🟢 Libera')">🟢 Libere</div>
+          <div class="pill ${fPill==='🟡 Forse Occupata'?'active':''}" onclick="sp('🟡 Forse Occupata')">🟡 Forse</div>
+          <div class="pill ${fPill==='🔴 Occupata'?'active':''}" onclick="sp('🔴 Occupata')">🔴 Occupate</div>`;
+  $('filterPills').innerHTML=pH;
+
+  let res=contacts;
+  if(fC) res=res.filter(x=>x.cartella===fC);
+  if(fCat) res=res.filter(x=>x.categoria===fCat);
+  if(fPill) res=res.filter(x=>calcolaStatoCasa(x)===fPill);
+  
+  const q=$('searchInp').value.trim().toLowerCase();
+  if(q){
+    res=res.filter(x=>(x.nome||'').toLowerCase().includes(q)||(x.note||'').toLowerCase().includes(q)||(x.tel||'').toLowerCase().includes(q));
+  }
+
+  const mc=$('mainContent');
+  if(!res.length){
+    mc.innerHTML=`<div class="es"><span class="bi">📭</span><div>Nessun contatto trovato</div></div>`;
+    return;
+  }
+
+  mc.innerHTML=`<div class="cg">${res.map(c=>{
+    const st=calcolaStatoCasa(c);
+    let cls='';if(st==='🔴 Occupata')cls='occ';else if(st==='🟡 Forse Occupata')cls='frs';else if(st==='🟢 Libera')cls='lib';
+    return `<div class="cc ${cls}" onclick="openDetail('${c.id}')">
+      <div class="cch">
+        <div class="cn">${c.nome||'Senza Nome'}</div>
+        <div class="ct">${c.tel||''}</div>
+      </div>
+      <div class="ccb">
+        <span class="cfld">${FE[c.cartella]||'📁'} ${c.cartella||'—'}</span>
+        <span class="atag">${CE[c.categoria]} ${CL[c.categoria]}</span>
+      </div>
+      ${c.periodo_da?`<div class="ccp">📅 ${fd(c.periodo_da)} → ${fd(c.periodo_a)}</div>`:''}
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function sp(p){fPill=p;render();}
+
+// MOBILE
+function onMobC(){
+  const v=$('mob_cartella').value;
+  fC=v||null;fCat=null;$('mob_categoria').value='';
+  document.querySelectorAll('.sf').forEach(x=>{x.classList.remove('open');x.nextElementSibling.classList.remove('open');});
+  render();
+}
+function onMobCat(){fCat=$('mob_categoria').value||null;render();}
+
+// FORM REST RESET E APERTURE MODIFICATE
+function openAdd(){
+  if(!isAdmin) return;
+  alert('Funzionalità form non espansa in questo snippet di anteprima.');
+}
+
+function openEdit(id){
+  if(!isAdmin) return;
+  alert('Funzionalità di modifica non espansa in questo snippet di anteprima.');
+}
+
+function closeForm(){}
+function rAL(){}
+
+// ── DETTAGLI ──
+function openDetail(id){
+  const c=contacts.find(x=>x.id===id);if(!c)return;
+  alert('Dettagli contatto: ' + c.nome + '\nStruttura: ' + c.cartella + '\nCategoria: ' + CL[c.categoria]);
+}
+
+window.onload = function() {
+  checkSession();
+  load();
+};
+</script>
 </body>
 </html>
