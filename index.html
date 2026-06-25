@@ -1,347 +1,410 @@
+
 <!DOCTYPE html>
 <html lang="it">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <title>Gestionale Contatti</title>
 <style>
-:root{
---cream:#F5F0E8;--ww:#FDFAF5;
---terra:#C4714A;--terra-dk:#9E5535;
---forest:#3A5A40;--navy:#1E2D40;--navy2:#2E3D50;
---gold:#C9A84C;--dk:#1A1A1A;--mid:#4A4A4A;--lt:#888;
---border:rgba(60,40,20,0.12);--sh:0 4px 20px rgba(30,15,5,0.10);
---r:12px;--rs:8px;
---font:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif;
---font-serif:Georgia,'Times New Roman',serif;
-}
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-body{font-family:var(--font);background:var(--cream);color:var(--dk);min-height:100vh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased;}
+  :root{
+    --cream:#F5F0E8;--ww:#FDFAF5;
+    --terra:#C4714A;--terra-dk:#9E5535;
+    --forest:#3A5A40;--navy:#1E2D40;--navy2:#2E3D50;
+    --gold:#C9A84C;--dk:#1A1A1A;--mid:#4A4A4A;--lt:#888;
+    --border:rgba(60,40,20,0.12);--sh:0 4px 20px rgba(30,15,5,0.10);
+    --r:12px;--rs:8px;
+    --font:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif;
+    --font-serif:Georgia,'Times New Roman',serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  body{font-family:var(--font);background:var(--cream);color:var(--dk);min-height:100vh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased;}
 
-/* SCHERMATA LOGIN */
-.login-screen {position:fixed;inset:0;background:var(--cream);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;}
-.login-box {background:white;padding:30px;border-radius:var(--r);box-shadow:var(--sh);width:100%;max-width:380px;border:1px solid var(--border);text-align:center;}
-.login-box h2 {font-family:var(--font-serif);color:var(--navy);margin-bottom:8px;font-size:1.6rem;}
-.login-box p {font-size:0.85rem;color:var(--lt);margin-bottom:20px;}
-.login-field {display:flex;flex-direction:column;gap:6px;text-align:left;margin-bottom:14px;position:relative;}
-.login-field label {font-size:0.75rem;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:0.05em;}
-.login-field input {padding:11px 12px;border:1px solid var(--border);border-radius:var(--rs);font-family:var(--font);font-size:0.95rem;background:var(--ww);outline:none;}
-.login-field input:focus {border-color:var(--terra);background:white;}
-.pass-wrapper {position:relative;display:flex;flex-direction:column;}
-.toggle-password {position:absolute;right:12px;bottom:11px;background:none;border:none;cursor:pointer;color:var(--lt);font-size:1.1rem;display:flex;align-items:center;justify-content:center;}
-.login-btn-admin {width:100%;padding:12px;background:var(--terra);color:white;border:none;border-radius:var(--rs);font-family:var(--font);font-size:0.95rem;font-weight:600;cursor:pointer;margin-top:10px;margin-bottom:12px;}
-.login-btn-admin:active {background:var(--terra-dk);}
-.login-btn-guest {background:none;border:none;color:var(--forest);font-size:0.88rem;font-weight:600;cursor:pointer;text-decoration:underline;}
-.login-err {color:#d9534f;font-size:0.8rem;margin-top:8px;display:none;font-weight:500;}
+  /* SCHERMATA LOGIN */
+  .login-screen {position:fixed;inset:0;background:var(--cream);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;}
+  .login-box {background:white;padding:30px;border-radius:var(--r);box-shadow:var(--sh);width:100%;max-width:380px;border:1px solid var(--border);text-align:center;}
+  .login-box h2 {font-family:var(--font-serif);color:var(--navy);margin-bottom:8px;font-size:1.6rem;}
+  .login-box p {font-size:0.85rem;color:var(--lt);margin-bottom:20px;}
+  .login-field {display:flex;flex-direction:column;gap:6px;text-align:left;margin-bottom:14px;position:relative;}
+  .login-field label {font-size:0.75rem;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:0.05em;}
+  .login-field input {padding:11px 12px;border:1px solid var(--border);border-radius:var(--rs);font-family:var(--font);font-size:0.95rem;background:var(--ww);outline:none;}
+  .login-field input:focus {border-color:var(--terra);background:white;}
+  .pass-wrapper {position:relative;display:flex;flex-direction:column;}
+  .toggle-password {position:absolute;right:12px;bottom:11px;background:none;border:none;cursor:pointer;color:var(--lt);font-size:1.1rem;display:flex;align-items:center;justify-content:center;}
+  .login-btn-admin {width:100%;padding:12px;background:var(--terra);color:white;border:none;border-radius:var(--rs);font-family:var(--font);font-size:0.95rem;font-weight:600;cursor:pointer;margin-top:10px;margin-bottom:12px;}
+  .login-btn-admin:active {background:var(--terra-dk);}
+  .login-btn-guest {background:none;border:none;color:var(--forest);font-size:0.88rem;font-weight:600;cursor:pointer;text-decoration:underline;}
+  .login-err {color:#d9534f;font-size:0.8rem;margin-top:8px;display:none;font-weight:500;}
 
-/* INTERFACCIA PRINCIPALE */
-header{background:var(--navy);color:white;padding:0 20px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,0.25);}
-header h1{font-family:var(--font-serif);font-size:1.2rem;font-weight:700;}
-header h1 span{color:var(--gold);}
-.hright{display:flex;gap:10px;align-items:center;}
+  /* INTERFACCIA PRINCIPALE */
+  header{background:var(--navy);color:white;padding:0 20px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,0.25);}
+  header h1{font-family:var(--font-serif);font-size:1.2rem;font-weight:700;}
+  header h1 span{color:var(--gold);}
+  .hright{display:flex;gap:10px;align-items:center;}
 
-.sync-banner{color:rgba(255,255,255,0.85);font-size:0.72rem;text-align:center;padding:5px;display:none;align-items:center;justify-content:center;gap:6px;}
-.sync-banner.show{display:flex;}
-.sync-banner.loading{background:#2a3f55;}
-.sync-banner.ok{background:#2d5a3d;}
-.sync-banner.err{background:#5a2d2d;}
-.sync-banner .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
-.sync-banner.loading .dot{background:var(--gold);animation:pulse 1s infinite;}
-.sync-banner.ok .dot{background:#4CAF50;}
-.sync-banner.err .dot{background:#f44336;}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+  .sync-banner{color:rgba(255,255,255,0.85);font-size:0.72rem;text-align:center;padding:5px;display:none;align-items:center;justify-content:center;gap:6px;}
+  .sync-banner.show{display:flex;}
+  .sync-banner.loading{background:#2a3f55;}
+  .sync-banner.ok{background:#2d5a3d;}
+  .sync-banner.err{background:#5a2d2d;}
+  .sync-banner .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+  .sync-banner.loading .dot{background:var(--gold);animation:pulse 1s infinite;}
+  .sync-banner.ok .dot{background:#4CAF50;}
+  .sync-banner.err .dot{background:#f44336;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
 
-.btn-hdr{background:var(--terra);color:white;border:none;padding:7px 15px;border-radius:var(--rs);font-family:var(--font);font-size:0.85rem;font-weight:600;cursor:pointer;}
-.btn-hdr:active{background:var(--terra-dk);}
-.btn-logout{background:transparent;color:white;border:1px solid rgba(255,255,255,0.3);padding:5px 10px;border-radius:var(--rs);font-size:0.75rem;cursor:pointer;}
+  .btn-hdr{background:var(--terra);color:white;border:none;padding:7px 15px;border-radius:var(--rs);font-family:var(--font);font-size:0.85rem;font-weight:600;cursor:pointer;}
+  .btn-hdr:active{background:var(--terra-dk);}
+  .btn-logout{background:transparent;color:white;border:1px solid rgba(255,255,255,0.3);padding:5px 10px;border-radius:var(--rs);font-size:0.75rem;cursor:pointer;}
 
-/* MOBILE NAV */
-.mob-nav{display:none;background:var(--navy2);padding:10px 12px;gap:8px;flex-direction:column;}
-.mob-sel{width:100%;padding:11px 12px;border:none;border-radius:var(--rs);font-family:var(--font);font-size:0.95rem;font-weight:500;background:#243550;color:white;outline:none;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%23aaa' d='M5 6L0 0h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}
-.mob-sel option{background:#1E2D40;}
-.mob-sel optgroup{background:#1E2D40;font-style:normal;font-weight:700;color:rgba(255,255,255,0.5);}
-.mob-cat{display:none;}
-.mob-cat.vis{display:block;}
-.mob-new{width:100%;padding:12px;background:var(--terra);color:white;border:none;border-radius:var(--rs);font-family:var(--font);font-size:1rem;font-weight:600;cursor:pointer;margin-top:2px;}
-.mob-new:active{background:var(--terra-dk);}
+  /* MOBILE NAV */
+  .mob-nav{display:none;background:var(--navy2);padding:10px 12px;gap:8px;flex-direction:column;}
+  .mob-sel{width:100%;padding:11px 12px;border:none;border-radius:var(--rs);font-family:var(--font);font-size:0.95rem;font-weight:500;background:#243550;color:white;outline:none;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%23aaa' d='M5 6L0 0h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}
+  .mob-sel option{background:#1E2D40;}
+  .mob-sel optgroup{background:#1E2D40;font-style:normal;font-weight:700;color:rgba(255,255,255,0.5);}
+  .mob-cat{display:none;}
+  .mob-cat.vis{display:block;}
+  .mob-new{width:100%;padding:12px;background:var(--terra);color:white;border:none;border-radius:var(--rs);font-family:var(--font);font-size:1rem;font-weight:600;cursor:pointer;margin-top:2px;}
+  .mob-new:active{background:var(--terra-dk);}
 
-.app-body{display:flex;flex:1;min-height:0;}
+  .app-body{display:flex;flex:1;min-height:0;}
 
-/* SIDEBAR */
-aside{width:260px;min-width:260px;background:var(--ww);border-right:1px solid var(--border);overflow-y:auto;padding:14px 0;}
-.sf{padding:9px 16px;font-weight:600;font-size:0.76rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--lt);display:flex;align-items:center;gap:7px;cursor:pointer;user-select:none;}
-.sf .ch{margin-left:auto;transition:transform 0.18s;font-size:0.62rem;}
-.sf.open .ch{transform:rotate(90deg);}
-.si-wrap{display:none;}
-.si-wrap.open{display:block;}
-.si{padding:8px 16px 8px 36px;font-size:0.84rem;color:var(--mid);cursor:pointer;display:flex;align-items:center;gap:6px;border-left:3px solid transparent;}
-.si.sub{padding-left:52px;font-size:0.8rem;}
-.si:hover,.si-all:hover{background:rgba(196,113,74,0.06);color:var(--terra);}
-.si.active,.si-all.active{background:rgba(196,113,74,0.10);color:var(--terra);border-left-color:var(--terra);font-weight:600;}
-.si-all{padding:8px 16px;font-size:0.84rem;color:var(--mid);cursor:pointer;display:flex;align-items:center;gap:6px;border-left:3px solid transparent;}
+  /* SIDEBAR */
+  aside{width:260px;min-width:260px;background:var(--ww);border-right:1px solid var(--border);overflow-y:auto;padding:14px 0;}
+  .sf{padding:9px 16px;font-weight:600;font-size:0.76rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--lt);display:flex;align-items:center;gap:7px;cursor:pointer;user-select:none;}
+  .sf .ch{margin-left:auto;transition:transform 0.18s;font-size:0.62rem;}
+  .sf.open .ch{transform:rotate(90deg);}
+  .si-wrap{display:none;}
+  .si-wrap.open{display:block;}
+  .si{padding:8px 16px 8px 36px;font-size:0.84rem;color:var(--mid);cursor:pointer;display:flex;align-items:center;gap:6px;border-left:3px solid transparent;}
+  .si.sub{padding-left:52px;font-size:0.8rem;}
+  .si:hover,.si-all:hover{background:rgba(196,113,74,0.06);color:var(--terra);}
+  .si.active,.si-all.active{background:rgba(196,113,74,0.10);color:var(--terra);border-left-color:var(--terra);font-weight:600;}
+  .si-all{padding:8px 16px;font-size:0.84rem;color:var(--mid);cursor:pointer;display:flex;align-items:center;gap:6px;border-left:3px solid transparent;}
+  
+  .si-group{padding:7px 16px 7px 36px;font-size:0.76rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--lt);display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none;}
+  .si-group .ch2{margin-left:auto;transition:transform 0.18s;font-size:0.6rem;}
+  .si-group.open .ch2{transform:rotate(90deg);}
+  .si-sub-wrap{display:none;}
+  .si-sub-wrap.open{display:block;}
+  .bdg{margin-left:auto;background:var(--terra);color:white;font-size:0.67rem;font-weight:600;padding:2px 6px;border-radius:20px;min-width:18px;text-align:center;}
+  .bdg.z{background:var(--border);color:var(--lt);}
 
-.si-group{padding:7px 16px 7px 36px;font-size:0.76rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--lt);display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none;}
-.si-group .ch2{margin-left:auto;transition:transform 0.18s;font-size:0.6rem;}
-.si-group.open .ch2{transform:rotate(90deg);}
-.si-sub-wrap{display:none;}
-.si-sub-wrap.open{display:block;}
-.bdg{margin-left:auto;background:var(--terra);color:white;font-size:0.67rem;font-weight:600;padding:2px 6px;border-radius:20px;min-width:18px;text-align:center;}
-.bdg.z{background:var(--border);color:var(--lt);}
+  main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+  .sbar{display:flex;border-bottom:1px solid var(--border);background:var(--ww);padding:0 20px;overflow-x:auto;scrollbar-width:none;}
+  .sbar::-webkit-scrollbar{display:none;}
+  .sp{padding:8px 14px;font-size:0.78rem;color:var(--lt);white-space:nowrap;display:flex;align-items:center;gap:5px;}
+  .sp strong{color:var(--dk);font-size:0.98rem;font-weight:700;}
+  .topbar{background:var(--ww);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .bc{font-size:0.82rem;color:var(--lt);}
+  .fps{display:flex;gap:6px;flex-wrap:wrap;}
+  .pill{padding:5px 12px;border-radius:20px;font-size:0.76rem;font-weight:500;border:1px solid var(--border);cursor:pointer;background:white;color:var(--mid);white-space:nowrap;}
+  .pill:hover{border-color:var(--terra);color:var(--terra);}
+  .pill.active{background:var(--terra);color:white;border-color:var(--terra);}
+  .sbox{margin-left:auto;position:relative;}
+  .sbox input{padding:8px 12px 8px 32px;border:1px solid var(--border);border-radius:20px;font-family:var(--font);font-size:0.85rem;background:var(--cream);width:190px;outline:none;}
+  .sbox input:focus{border-color:var(--terra);}
+  .si-ico{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--lt);font-size:0.8rem;}
 
-main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
-.sbar{display:flex;border-bottom:1px solid var(--border);background:var(--ww);padding:0 20px;overflow-x:auto;scrollbar-width:none;}
-.sbar::-webkit-scrollbar{display:none;}
-.sp{padding:8px 14px;font-size:0.78rem;color:var(--lt);white-space:nowrap;display:flex;align-items:center;gap:5px;}
-.sp strong{color:var(--dk);font-size:0.98rem;font-weight:700;}
-.topbar{background:var(--ww);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-.bc{font-size:0.82rem;color:var(--lt);}
-.fps{display:flex;gap:6px;flex-wrap:wrap;}
-.pill{padding:5px 12px;border-radius:20px;font-size:0.76rem;font-weight:500;border:1px solid var(--border);cursor:pointer;background:white;color:var(--mid);white-space:nowrap;}
-.pill:hover{border-color:var(--terra);color:var(--terra);}
-.pill.active{background:var(--terra);color:white;border-color:var(--terra);}
-.sbox{margin-left:auto;position:relative;}
-.sbox input{padding:8px 12px 8px 32px;border:1px solid var(--border);border-radius:20px;font-family:var(--font);font-size:0.85rem;background:var(--cream);width:190px;outline:none;}
-.sbox input:focus{border-color:var(--terra);}
-.si-ico{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--lt);font-size:0.8rem;}
+  .ca{flex:1;overflow-y:auto;padding:16px 20px;-webkit-overflow-scrolling:touch;}
+  .cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px;}
+  .es{display:flex;flex-direction:column;align-items:center;justify-content:center;height:240px;color:var(--lt);gap:10px;}
 
-.ca{flex:1;overflow-y:auto;padding:16px 20px;-webkit-overflow-scrolling:touch;}
-.cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px;}
-.es{display:flex;flex-direction:column;align-items:center;justify-content:center;height:240px;color:var(--lt);gap:10px;}
-.es .bi{font-size:2rem;}
+  .cc{background:white;border-radius:var(--r);border:1px solid var(--border);padding:16px;cursor:pointer;position:relative;overflow:hidden;}
+  .cc::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;}
+  .cc.cat-stagionale::before{background:var(--forest);}
+  .cc.cat-annuale::before{background:var(--gold);}
+  .cc.cat-semestrale::before{background:var(--terra);}
+  .cc.cat-estate::before{background:#E89B4A;}
+  .cc.cat-argentini-estate::before{background:#5A7AB5;}
+  .cc.cat-argentini-inverno::before{background:#3A5A8A;}
+  .cc.cat-solo-info::before{background:#8A2BE2;}
+  .cc:active{opacity:0.85;}
 
-.cc{background:white;border-radius:var(--r);border:1px solid var(--border);padding:16px;cursor:pointer;position:relative;overflow:hidden;}
-.cc::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;}
-.cc.lib::before{background:#4CAF50;}
-.cc.frs::before{background:#FFC107;}
-.cc.occ::before{background:#F44336;}
-.cch{display:flex;justify-content:space-between;align-items:start;margin-bottom:10px;gap:8px;}
-.cn{font-family:var(--font-serif);font-size:1.1rem;font-weight:700;color:var(--navy);flex:1;word-break:break-word;}
-.ct{font-size:0.8rem;color:var(--mid);font-weight:500;white-space:nowrap;}
-.ccb{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
-.cfld, .atag{font-size:0.7rem;font-weight:600;padding:2px 8px;border-radius:4px;background:var(--cream);color:var(--mid);}
-.atag{background:rgba(196,113,74,0.08);color:var(--terra);}
-.ccp{font-size:0.75rem;color:var(--lt);font-weight:500;}
+  .ctop{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;}
+  .av{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;flex-shrink:0;color:white;}
+  .cn{font-weight:600;font-size:0.95rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .cs{font-size:0.75rem;color:var(--lt);margin-top:1px;}
+  .cbs{display:flex;gap:5px;margin-bottom:9px;flex-wrap:wrap;}
+  .tag{font-size:0.68rem;font-weight:600;padding:3px 8px;border-radius:10px;}
+  .tag.cat{color:white;}
+  .tag.cat.stagionale{background:var(--forest);}
+  .tag.cat.annuale{background:var(--gold);color:#333;}
+  .tag.cat.semestrale{background:var(--terra);}
+  .tag.cat.estate{background:#E89B4A;}
+  .tag.cat.argentini-estate{background:#5A7AB5;}
+  .tag.cat.argentini-inverno{background:#3A5A8A;}
+  .tag.cat.solo-info{background:#8A2BE2;}
+  .tag.info{background:var(--cream);color:var(--mid);border:1px solid var(--border);}
+  .tag.apt{background:rgba(201,168,76,0.15);color:#8A6010;border:1px solid rgba(201,168,76,0.4);}
+  .tag.status{font-size:0.75rem;}
+  
+  .cp{font-size:0.78rem;color:var(--mid);margin-bottom:5px;}
+  .cnote{font-size:0.76rem;color:var(--lt);line-height:1.4;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+  .cf{margin-top:10px;padding-top:10px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+  .cc-ct{font-size:0.76rem;color:var(--lt);}
+  .cc-ct strong{color:var(--mid);}
+  .cact{display:flex;gap:5px;}
+  .ib{width:30px;height:30px;border:none;border-radius:6px;background:var(--cream);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.82rem;color:var(--mid);}
+  .ib:active{background:var(--terra);color:white;}
+  .ib.d:active{background:#d9534f;color:white;}
 
-/* MODULI / OVERLAY POPUP */
-.ov{position:fixed;inset:0;background:rgba(26,15,5,0.4);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(2px);}
-.ov.open{display:flex;}
-.box {background:white;border-radius:var(--r);box-shadow:var(--sh);width:100%;max-width:540px;max-height:90vh;display:flex;flex-direction:column;animation:pop 0.2s ease-out;}
-@keyframes pop{from{transform:scale(0.96);opacity:0;}to{transform:scale(1);opacity:1;}}
-.box-h{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
-.box-h h3{font-family:var(--font-serif);color:var(--navy);font-size:1.25rem;}
-.box-c{padding:20px;overflow-y:auto;flex:1;}
-.box-f{padding:14px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px;background:var(--ww);border-radius:0 0 var(--r) var(--r);}
+  /* MODAL */
+  .ov{position:fixed;inset:0;background:rgba(10,10,10,0.55);z-index:200;display:none;align-items:flex-end;justify-content:center;}
+  .ov.open{display:flex;animation:fi 0.15s;}
+  @keyframes fi{from{opacity:0}to{opacity:1}}
+  .modal{background:white;border-radius:18px 18px 0 0;width:100%;max-width:680px;max-height:93vh;overflow-y:auto;-webkit-overflow-scrolling:touch;animation:su 0.2s ease-out;padding-bottom:env(safe-area-inset-bottom,12px);}
+  @keyframes su{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+  .mh{padding:18px 20px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:white;z-index:1;border-radius:18px 18px 0 0;}
+  .mh::before{content:'';display:block;width:32px;height:4px;background:var(--border);border-radius:2px;position:absolute;top:7px;left:50%;transform:translateX(-50%);}
+  .mt{font-family:var(--font-serif);font-size:1.15rem;color:var(--navy);font-weight:700;}
+  .xb{width:28px;height:28px;border:1px solid var(--border);border-radius:6px;background:none;cursor:pointer;font-size:0.88rem;color:var(--lt);display:flex;align-items:center;justify-content:center;}
+  .mb{padding:18px 20px;}
+  .fg{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .fg .full{grid-column:1/-1;}
+  .fl{display:flex;flex-direction:column;gap:5px;}
+  .fl label{font-size:0.73rem;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:0.06em;}
+  .fl input,.fl select,.fl textarea{padding:10px 12px;border:1px solid var(--border);border-radius:var(--rs);font-family:var(--font);font-size:0.92rem;color:var(--dk);background:var(--cream);outline:none;-webkit-appearance:none;appearance:none;width:100%;}
+  .fl input:focus,.fl select:focus,.fl textarea:focus{border-color:var(--terra);background:white;}
+  .fl textarea{resize:vertical;min-height:76px;}
+  .sdiv{grid-column:1/-1;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--terra);padding:7px 0 3px;border-bottom:1px solid rgba(196,113,74,0.2);margin-top:5px;}
+  .al{display:flex;flex-direction:column;gap:6px;margin-top:4px;}
+  .ai{display:flex;gap:7px;align-items:center;padding:8px 10px;background:var(--cream);border-radius:var(--rs);border:1px solid var(--border);font-size:0.81rem;}
+  .ai .ad{font-weight:600;color:var(--navy);font-size:0.78rem;min-width:120px;}
+  .ai .an{flex:1;color:var(--mid);}
+  .aadd{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;}
+  .aadd input{flex:1;min-width:110px;}
+  .mf{padding:12px 20px 18px;display:flex;gap:8px;justify-content:flex-end;border-top:1px solid var(--border);}
+  .btn{padding:10px 20px;border:none;border-radius:var(--rs);font-family:var(--font);font-size:0.9rem;font-weight:600;cursor:pointer;}
+  .btn-p{background:var(--terra);color:white;}
+  .btn-p:active{background:var(--terra-dk);}
+  .btn-g{background:var(--cream);color:var(--mid);}
+  .dg{display:grid;grid-template-columns:1fr 1fr;gap:12px 18px;}
+  .di .dl{font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--lt);margin-bottom:2px;}
+  .di .dv{font-size:0.88rem;}
+  .di.full{grid-column:1/-1;}
+  .dn{background:var(--cream);border-radius:var(--rs);padding:10px 12px;font-size:0.84rem;color:var(--mid);line-height:1.55;white-space:pre-wrap;}
+  .atag{display:inline-flex;align-items:center;gap:5px;background:rgba(201,168,76,0.12);color:#7A5810;border:1px solid rgba(201,168,76,0.35);border-radius:20px;padding:3px 10px;font-size:0.78rem;font-weight:500;margin:2px;}
 
-/* CLASSI FORM COMODE */
-.form-grid{display:flex;flex-wrap:wrap;gap:12px;}
-.fl{display:flex;flex-direction:column;gap:5px;width:calc(50% - 6px);min-width:200px;}
-.fl.full{width:100%;}
-.fl label{font-size:0.75rem;font-weight:600;color:var(--mid);text-transform:uppercase;}
-.fl input, .fl select, .fl textarea{padding:9px 12px;border:1px solid var(--border);border-radius:var(--rs);font-family:var(--font);font-size:0.9rem;background:var(--ww);outline:none;}
-.fl input:focus, .fl select:focus, .fl textarea:focus{border-color:var(--terra);background:white;}
+  .av-0{background:var(--forest)}.av-1{background:var(--terra)}.av-2{background:#5A7AB5}
+  .av-3{background:var(--gold);color:#333}.av-4{background:#B5845A}.av-5{background:#3A5A8A}
 
-/* SCHEDA DETTAGLIO ADAPTIVE */
-.dgrid{display:flex;flex-direction:column;gap:10px;}
-.di{display:flex;border-bottom:1px solid rgba(0,0,0,0.04);padding-bottom:8px;}
-.di.full{flex-direction:column;gap:4px;}
-.dl{font-size:0.75rem;font-weight:600;color:var(--lt);text-transform:uppercase;width:150px;flex-shrink:0;}
-.dv{font-size:0.92rem;color:var(--dk);font-weight:500;}
-.dn{font-size:0.9rem;background:var(--cream);padding:10px;border-radius:var(--rs);white-space:pre-wrap;color:var(--dk);line-height:1.4;}
-
-.btn{padding:8px 16px;border:none;border-radius:var(--rs);font-family:var(--font);font-size:0.88rem;font-weight:600;cursor:pointer;}
-.btn.prim{background:var(--terra);color:white;}
-.btn.prim:active{background:var(--terra-dk);}
-.btn.sec{background:transparent;border:1px solid var(--border);color:var(--mid);}
-.btn.danger{background:#d9534f;color:white;}
-
-@media(max-width:768px){
-  aside{display:none;}
-  .mob-nav{display:flex;}
-  header h1{font-size:1.1rem;}
-  .btn-hdr{display:none;}
-  .topbar{padding:10px 12px;}
-  .sbox{width:100%;margin-top:4px;}
-  .sbox input{width:100%;}
-  .ca{padding:12px;}
-  .cg{grid-template-columns:1fr;}
-  .fl{width:100%;}
-}
+  @media(min-width:701px){
+    .ov{align-items:center;padding:16px;}
+    .modal{border-radius:14px;max-height:88vh;}
+    .mh{border-radius:14px 14px 0 0;}
+    .mh::before{display:none;}
+    .cc:hover{box-shadow:var(--sh);}
+    .ib:hover{background:var(--terra);color:white;}
+    .ib.d:hover{background:#d9534f;color:white;}
+  }
+  @media(max-width:700px){
+    aside{display:none;}
+    .btn-hdr{display:none;}
+    .mob-nav{display:flex;}
+    .topbar{padding:8px 12px;gap:8px;}
+    .fps{display:none;}
+    .sbox{margin-left:0;width:100%;}
+    .sbox input{width:100%!important;}
+    .bc{display:none;}
+    .ca{padding:10px 12px;}
+    .cg{grid-template-columns:1fr;gap:9px;}
+    .sbar{padding:0 10px;}
+    .sp{padding:7px 8px;font-size:0.72rem;}
+    .fg{grid-template-columns:1fr;}
+    .fg .full{grid-column:1;}
+  }
 </style>
 </head>
 <body>
 
-<div id="loginScreen" class="login-screen" style="display:none;">
+<!-- SCHERMATA LOGIN DI BENVENUTO -->
+<div class="login-screen" id="loginScreen">
   <div class="login-box">
-    <h2>Gestionale Contatti</h2>
-    <p>Inserisci le tue credenziali per accedere</p>
+    <h2>🏠 Gestionale Case</h2>
+    <p>Inserisci le credenziali oppure accedi come Ospite</p>
     
     <div class="login-field">
-      <label for="l_user">Utente</label>
-      <input type="text" id="l_user" placeholder="Nome utente">
+      <label>Nome Utente</label>
+      <input type="text" id="l_user" placeholder="es. Francesco" autocomplete="username">
     </div>
-    
-    <div class="login-field">
-      <label for="l_pass">Password</label>
-      <div class="pass-wrapper">
-        <input type="password" id="l_pass" placeholder="Password">
-        <button type="button" class="toggle-password" onclick="togglePasswordVisibility()">👁️</button>
-      </div>
+    <div class="login-field pass-wrapper">
+      <label>Password</label>
+      <input type="password" id="l_pass" placeholder="••••••••" autocomplete="current-password">
+      <button type="button" class="toggle-password" onclick="togglePasswordVisibility()">👁️</button>
     </div>
     
     <button class="login-btn-admin" onclick="eseguiLogin()">Accedi come Amministratore</button>
-    <button class="login-btn-guest" onclick="accessoOspite()">Entra come Ospite (Sola Lettura)</button>
-    <div id="loginError" class="login-err">Credenziali non valide</div>
+    <button class="login-btn-guest" onclick="accessoLibero()">Entra con Accesso Libero (Sola Lettura)</button>
+    
+    <div class="login-err" id="loginError">Username o Password errati.</div>
   </div>
 </div>
 
 <header>
-  <h1>Gestionale <span>Contatti</span></h1>
+  <h1>🏠 Gestionale <span>Contatti</span> <span id="roleBadge" style="font-size:0.7rem; background:rgba(255,255,255,0.2); padding:3px 7px; border-radius:10px; font-family:var(--font)"></span></h1>
   <div class="hright">
-    <div id="banner" class="sync-banner"><span class="dot"></span><span id="banner-txt"></span></div>
-    <span id="roleBadge" class="bdg" style="padding: 4px 10px; font-size: 0.8rem;"></span>
-    <button id="hdr_btn_nuovo" class="btn-hdr" onclick="openAdd()">+ Nuovo Contatto</button>
+    <button class="btn-hdr" id="hdr_btn_nuovo" onclick="openAdd()">＋ Nuovo</button>
     <button class="btn-logout" onclick="logout()">Esci</button>
   </div>
 </header>
 
+<div class="sync-banner" id="banner">
+  <span class="dot"></span><span id="bannerTxt"></span>
+</div>
+
 <div class="mob-nav">
-  <select id="mob_cartella" class="mob-sel" onchange="onMobC()"></select>
-  <select id="mob_categoria" class="mob-sel" onchange="onMobCat()"></select>
-  <button id="mob_btn_nuovo" class="mob-new" onclick="openAdd()">+ Nuovo Contatto</button>
+  <select class="mob-sel" id="mob_cartella" onchange="onMobC()">
+    <option value="">🏠 Tutte le case</option>
+    <option value="Casa Paese Piano 1°">🏠 Casa Paese Piano 1°</option>
+    <option value="Casa Paese Ultimo Piano">🏡 Casa Paese Ultimo Piano</option>
+    <option value="Casa Stazione">🚉 Casa Stazione</option>
+    <option value="Monolocale">📐 Monolocale</option>
+  </select>
+  <select class="mob-sel mob-cat" id="mob_categoria" onchange="onMobCat()">
+    <option value="">📋 Tutte le categorie</option>
+    <option value="stagionale">🌿 Stagionale</option>
+    <option value="annuale">📆 Annuale</option>
+    <option value="semestrale">🗓️ Semestrale</option>
+    <option value="estate">☀️ Estate</option>
+    <option value="solo-info">🟣 Solo Informazioni</option>
+    <optgroup label="🇦🇷 Argentini">
+      <option value="argentini-estate">🇦🇷 Argentini Estate</option>
+      <option value="argentini-inverno">🇦🇷 Argentini Inverno</option>
+    </optgroup>
+  </select>
+  <button class="mob-new" id="mob_btn_nuovo" onclick="openAdd()">＋ Nuovo Contatto</button>
 </div>
 
 <div class="app-body">
   <aside id="sidebar"></aside>
   <main>
-    <div class="sbar" id="statbar"></div>
+    <div class="sbar" id="sbar"></div>
     <div class="topbar">
-      <div class="bc" id="breadcrumbs">Tutti i contatti</div>
-      <div class="fps" id="filterPills"></div>
+      <div class="bc" id="bc"></div>
+      <div class="fps" id="fps"></div>
       <div class="sbox">
         <span class="si-ico">🔍</span>
-        <input type="text" id="searchInp" placeholder="Cerca nome o note..." oninput="render()">
+        <input type="search" placeholder="Cerca…" id="srch" oninput="render()" autocomplete="off">
       </div>
     </div>
-    <div class="ca" id="mainContent"></div>
+    <div class="ca">
+      <div class="cg" id="cg"></div>
+      <div class="es" id="es" style="display:none"><span class="bi">📭</span><span>Nessun contatto</span></div>
+    </div>
   </main>
 </div>
 
-<div id="fov" class="ov">
-  <div class="box">
-    <div class="box-h">
-      <h3 id="ftitle">Nuovo Contatto</h3>
-      <button class="btn sec" style="padding:4px 8px;" onclick="closeForm()">✕</button>
-    </div>
-    <div class="box-c">
-      <div class="form-grid">
-        <div class="fl"><label>Nome e Cognome</label><input type="text" id="f_nome"></div>
-        <div class="fl"><label>Telefono</label><input type="text" id="f_tel"></div>
-        <div class="fl"><label>Email</label><input type="text" id="f_email"></div>
-        <div class="fl"><label>Sito / Provenienza</label><input type="text" id="f_creato_da"></div>
-        
-        <div class="fl">
-          <label>Struttura / Casa</label>
+<div class="ov" id="fov">
+  <div class="modal">
+    <div class="mh"><div class="mt" id="ftitle">Nuovo Contatto</div><button class="xb" onclick="closeForm()">✕</button></div>
+    <div class="mb">
+      <div class="fg">
+        <div class="sdiv">👤 Anagrafica</div>
+        <div class="fl"><label>Nome *</label><input type="text" id="f_nome" placeholder="Mario Rossi" autocomplete="name"></div>
+        <div class="fl"><label>Telefono</label><input type="tel" id="f_tel" placeholder="+39 000 000 0000"></div>
+        <div class="fl"><label>Email</label><input type="email" id="f_email" placeholder="email@esempio.it"></div>
+        <div class="fl"><label>Provenienza</label><input type="text" id="f_sito" placeholder="Airbnb, Booking, Subito…"></div>
+        <div class="sdiv">🏠 Struttura & Categoria</div>
+        <div class="fl"><label>Cartella *</label>
           <select id="f_cartella">
-            <option value="Casa Paese Piano 1°">Casa Paese Piano 1°</option>
-            <option value="Casa Paese Ultimo Piano">Casa Paese Ultimo Piano</option>
-            <option value="Casa Stazione">Casa Stazione</option>
-            <option value="Monolocale">Monolocale</option>
+            <option value="">— Seleziona —</option>
+            <option>Casa Paese Piano 1°</option>
+            <option>Casa Paese Ultimo Piano</option>
+            <option>Casa Stazione</option>
+            <option>Monolocale</option>
+          </select>
+        </div>
+        <div class="fl"><label>Categoria *</label>
+          <select id="f_categoria">
+            <option value="">— Seleziona —</option>
+            <option value="stagionale">🌿 Stagionale</option>
+            <option value="annuale">📆 Annuale</option>
+            <option value="semestrale">🗓️ Semestrale</option>
+            <option value="estate">☀️ Estate</option>
+            <option value="solo-info">🟣 Solo Informazioni</option>
+            <optgroup label="🇦🇷 Argentini">
+              <option value="argentini-estate">🇦🇷 Argentini Estate</option>
+              <option value="argentini-inverno">🇦🇷 Argentini Inverno</option>
+            </optgroup>
           </select>
         </div>
         
-        <div class="fl">
-          <label>Categoria Contratto</label>
-          <select id="f_categoria">
-            <option value="stagionale">Stagionale</option>
-            <option value="annuale">Annuale</option>
-            <option value="semestrale">Semestrale</option>
-            <option value="estate">Estate</option>
-            <option value="argentini-estate">Argentini Estate</option>
-            <option value="argentini-inverno">Argentini Inverno</option>
-            <option value="solo-info">Solo Info</option>
-          </select>
-        </div>
-
-        <div class="fl full">
-          <label>Stato Occupazione Manuale (Pallino)</label>
+        <!-- SELETTORE DISPONIBILITÀ (PALLINI) -->
+        <div class="fl full"><label>Stato Occupazione (Pallino)</label>
           <select id="f_stato_manuale">
             <option value="auto">⚙️ Calcola automaticamente (In base alle date)</option>
-            <option value="🟢 Libera">🟢 Forza Libera</option>
-            <option value="🟡 Forse Occupata">🟡 Forza Forse Occupata</option>
-            <option value="🔴 Occupata">🔴 Forza Occupata</option>
+            <option value="🟢 Libera">🟢 Libera</option>
+            <option value="🔴 Occupata">🔴 Occupata</option>
+            <option value="🟡 Forse Occupata">🟡 Forse Occupata</option>
             <option value="nessuno">⚪ Nessun pallino</option>
           </select>
         </div>
 
-        <div class="fl"><label>Periodo Dal</label><input type="date" id="f_periodo_dal"></div>
-        <div class="fl"><label>Periodo Al</label><input type="date" id="f_periodo_al"></div>
-        <div class="fl full"><label>Note sul Periodo</label><input type="text" id="f_note_periodo" placeholder="es. Agosto intero, 3 settimane..."></div>
-        <div class="fl"><label>Data Ricezione Contatto</label><input type="datetime-local" id="f_data_contatto"></div>
-        <div class="fl"><label>Chi ha preso il contatto?</label><input type="text" id="f_provenienza" placeholder="es. Francesco, Web, Passaparola..."></div>
-        <div class="fl full"><label>Note e Richieste</label><textarea id="f_note" rows="3"></textarea></div>
+        <div class="sdiv">📅 Periodi</div>
+        <div class="fl"><label>Da</label><input type="date" id="f_periodo_da"></div>
+        <div class="fl"><label>A</label><input type="date" id="f_periodo_a"></div>
+        <div class="fl full"><label>Dettagli periodo</label><input type="text" id="f_periodo_note" placeholder="es. solo week-end, luglio-agosto…"></div>
+        <div class="sdiv">📞 Contatto ricevuto</div>
+        <div class="fl"><label>Data contatto</label><input type="date" id="f_data_contatto"></div>
+        <div class="fl"><label>Chi ha parlato</label><input type="text" id="f_chi" placeholder="es. Io, Tu, Marco…"></div>
+        <div class="sdiv">📝 Note</div>
+        <div class="fl full"><label>Note e motivazioni</label><textarea id="f_note" placeholder="Perché vuole la casa, preferenze, famiglia…"></textarea></div>
+        <div class="sdiv">🗓️ Appuntamenti</div>
+        <div class="full">
+          <div class="al" id="al"></div>
+          <div class="aadd" id="apt_add_container">
+            <input type="datetime-local" id="apt_data" style="flex:0 0 auto">
+            <input type="text" id="apt_note" placeholder="Motivo…" style="flex:1">
+            <button class="btn btn-g" onclick="addApt()" style="padding:9px 13px;flex-shrink:0">＋</button>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="box-f">
-      <button class="btn sec" onclick="closeForm()">Annulla</button>
-      <button class="btn prim" onclick="salvaForm()">Salva</button>
-    </div>
+    <div class="mf" id="form_actions"><button class="btn btn-g" onclick="closeForm()">Annulla</button><button class="btn btn-p" onclick="saveContact()">💾 Salva</button></div>
   </div>
 </div>
 
-<div id="dov" class="ov">
-  <div class="box">
-    <div class="box-h">
-      <h3 id="dtitle">Dettaglio Contatto</h3>
-      <button class="btn sec" style="padding:4px 8px;" onclick="closeDetail()">✕</button>
-    </div>
-    <div class="box-c">
-      <div class="dgrid" id="d_grid"></div>
-    </div>
-    <div class="box-f" style="justify-content:space-between;">
-      <button id="d_btn_del" class="btn danger" onclick="eliminaContatto()">Elimina</button>
-      <div style="display:flex; gap:10px;">
-        <button class="btn sec" onclick="closeDetail()">Chiudi</button>
-        <button id="d_btn_edit" class="btn prim" onclick="avviaModificaDettaglio()">Modifica</button>
-      </div>
-    </div>
+<div class="ov" id="dov">
+  <div class="modal">
+    <div class="mh"><div class="mt" id="dtitle">Dettaglio</div><button class="xb" onclick="closeDetail()">✕</button></div>
+    <div class="mb" id="dbody"></div>
+    <div class="mf"><button class="btn btn-g" onclick="closeDetail()">Chiudi</button><button class="btn btn-p" id="ebtn">✏️ Modifica</button></div>
   </div>
 </div>
 
 <script>
-// ── CREDENZIALI ──
 const ADMIN_USER = 'Francesco';
 const ADMIN_PASS = 'Gestionale2026';
-const VITTO_USER = 'Vittoria';
-const VITTO_PASS = 'Gestionale2026';
+const ADMIN_USER = 'Vittoria';
+const ADMIN_PASS = 'Gestionale2026';
 
-// ── SUPABASE CONFIG ──
 const SB_URL='https://szpyhbtfoxdsatcrksfo.supabase.co';
 const SB_KEY='sb_publishable_H0cfXThFKxloHuJfyGPD0A_PflUFQY_';
 const HDR={'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY};
 
-let contacts=[];
-let fC=null,fCat=null,fPill=null;
+let contacts=[],editId=null,curApts=[],fC=null,fCat=null,saving=false;
 let isAdmin=false; 
 
 const FL=['Casa Paese Piano 1°','Casa Paese Ultimo Piano','Casa Stazione','Monolocale'];
 const CATS=['stagionale','annuale','semestrale','estate','argentini-estate','argentini-inverno','solo-info'];
 const CL={
-stagionale:'Stagionale',annuale:'Annuale',semestrale:'Semestrale',estate:'Estate',
-'argentini-estate':'Argentini Estate','argentini-inverno':'Argentini Inverno','solo-info':'Solo Info'
+  stagionale:'Stagionale',annuale:'Annuale',semestrale:'Semestrale',estate:'Estate',
+  'argentini-estate':'Argentini Estate','argentini-inverno':'Argentini Inverno','solo-info':'Solo Informazioni'
 };
 const CE={
-stagionale:'🍂',annuale:'📅',semestrale:'⏳',estate:'☀️',
-'argentini-estate':'🇦🇷☀️','argentini-inverno':'🇦🇷❄️','solo-info':'ℹ️'
+  stagionale:'🌿',annuale:'📆',semestrale:'🗓️',estate:'☀️',
+  'argentini-estate':'🇦🇷','argentini-inverno':'🇦🇷','solo-info':'🟣'
 };
-const FE={'Casa Paese Piano 1°':'🏠','Casa Paese Ultimo Piano':'🌇','Casa Stazione':'🚉','Monolocale':'📦'};
+const FE={'Casa Paese Piano 1°':'🏠','Casa Paese Ultimo Piano':'🏡','Casa Stazione':'🚉','Monolocale':'📐'};
+const AVC=['av-0','av-1','av-2','av-3','av-4','av-5'];
 
-let editId=null;
-let bT=null;
-
-const uid=()=>Math.random().toString(36).substring(2,11);
-const fd=d=>{if(!d)return'—';const t=new Date(d);return isNaN(t)?d:t.toLocaleDateString('it-IT',{day:'2-digit',month:'short',year:'numeric'});};
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const ini=n=>(n||'?').split(' ').map(w=>w[0]||'').join('').slice(0,2).toUpperCase()||'?';
+const avc=n=>{let h=0;for(let c of(n||''))h=(h*31+c.charCodeAt(0))%AVC.length;return AVC[h];};
+const fd=d=>{if(!d)return'';const t=new Date(d);return isNaN(t)?d:t.toLocaleDateString('it-IT',{day:'2-digit',month:'short',year:'numeric'});};
+const fdt=d=>{if(!d)return'';const t=new Date(d);return isNaN(t)?d:t.toLocaleDateString('it-IT',{day:'2-digit',month:'short',year:'numeric'})+' '+t.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});};
 const $=id=>document.getElementById(id);
 
 function togglePasswordVisibility() {
@@ -352,26 +415,23 @@ function togglePasswordVisibility() {
 function eseguiLogin(){
   const user = $('l_user').value.trim();
   const pass = $('l_pass').value;
-  if((user === ADMIN_USER && pass === ADMIN_PASS) || (user === VITTO_USER && pass === VITTO_PASS)){
+  if(user === ADMIN_USER && pass === ADMIN_PASS){
     isAdmin = true;
     $('loginError').style.display = 'none';
-    localStorage.setItem('gestionale_logged', 'admin');
-    localStorage.setItem('gestionale_user', user);
-    initApp();
+    $('loginScreen').style.display = 'none';
+    applicaRuolo();
   } else {
     $('loginError').style.display = 'block';
   }
 }
 
-function accesoOspite(){
+function accessoLibero(){
   isAdmin = false;
-  localStorage.setItem('gestionale_logged', 'guest');
-  localStorage.setItem('gestionale_user', 'Ospite');
-  initApp();
+  $('loginScreen').style.display = 'none';
+  applicaRuolo();
 }
 
 function logout(){
-  localStorage.clear();
   isAdmin = false;
   $('l_user').value = '';
   $('l_pass').value = '';
@@ -379,21 +439,17 @@ function logout(){
   $('loginScreen').style.display = 'flex';
 }
 
-function checkSession(){
-  const s = localStorage.getItem('gestionale_logged');
-  if(s === 'admin'){ isAdmin = true; initApp(); }
-  else if(s === 'guest'){ isAdmin = false; initApp(); }
-  else { $('loginScreen').style.display = 'flex'; }
-}
-
-function initApp(){
-  $('loginScreen').style.display = 'none';
-  const u = localStorage.getItem('gestionale_user') || 'Utente';
-  $('roleBadge').textContent = isAdmin ? u + " (Admin)" : "OSPITE (Lettura)";
-  $('roleBadge').style.background = isAdmin ? "var(--terra)" : "#5bc0de";
+function applicaRuolo(){
+  if(isAdmin){
+    $('roleBadge').textContent = "ADMIN";
+    $('roleBadge').style.background = "#d9534f";
+  } else {
+    $('roleBadge').textContent = "OSPITE (Lettura)";
+    $('roleBadge').style.background = "#5bc0de";
+  }
   $('hdr_btn_nuovo').style.display = isAdmin ? 'block' : 'none';
   $('mob_btn_nuovo').style.display = isAdmin ? 'block' : 'none';
-  load();
+  render();
 }
 
 function calcolaStatoCasa(c){
@@ -401,67 +457,46 @@ function calcolaStatoCasa(c){
     return (c.stato_manuale === 'nessuno') ? '' : c.stato_manuale;
   }
   if(c.categoria === 'solo-info') return ''; 
-  if(!c.periodo_dal || !c.periodo_al) return '🟢 Libera';
-
+  if(!c.periodo_da || !c.periodo_a) return '🟢 Libera';
+  
   const oggi = new Date(); oggi.setHours(0,0,0,0);
-  const dataInizio = new Date(c.periodo_dal);
-  const dataFine = new Date(c.periodo_al);
-
+  const dataInizio = new Date(c.periodo_da);
+  const dataFine = new Date(c.periodo_a);
+  
   if(oggi >= dataInizio && oggi <= dataFine) return '🔴 Occupata';
+  
   const diffGiorni = Math.ceil((dataInizio - oggi) / (1000 * 60 * 60 * 24));
   if(diffGiorni > 0 && diffGiorni <= 7) return '🟡 Forse Occupata';
-
+  
   return '🟢 Libera';
 }
 
+let bT=null;
 function banner(state,txt){
   const b=$('banner');
   b.className='sync-banner show '+state;
-  $('banner-txt').textContent=txt;
-  clearTimeout(bT);
+  $('bannerTxt').textContent=txt;
+  if(bT)clearTimeout(bT);
   if(state==='ok'||state==='err') bT=setTimeout(()=>b.classList.remove('show'),2500);
 }
 
-// ── API ADATTATA AD ESTRARRE I DATI DAL CAMPO JSONB ──
 async function dbRead(){
-  const r=await fetch(`${SB_URL}/rest/v1/contacts?select=id,dati&order=aggiornato_alle.desc`,{headers:HDR});
+  const r=await fetch(`${SB_URL}/rest/v1/contacts?select=*&order=updated_at.desc`,{headers:HDR});
   if(!r.ok)throw new Error('read');
-  const rawRows = await r.json();
-  
-  return rawRows.map(row => {
-    let extracted = {};
-    if (row.dati) {
-      if (typeof row.dati === 'string') {
-        try { extracted = JSON.parse(row.dati); } catch(e){}
-      } else {
-        extracted = row.dati;
-      }
-    }
-    extracted.id = row.id || extracted.id;
-    return extracted;
+  const rows=await r.json();
+  return rows.map(row=>({...row.data,id:row.id}));
+}
+async function dbUpsert(c){
+  if(!isAdmin) return;
+  const r=await fetch(`${SB_URL}/rest/v1/contacts`,{
+    method:'POST',
+    headers:{...HDR,'Prefer':'resolution=merge-duplicates'},
+    body:JSON.stringify({id:c.id,data:c,updated_at:new Date().toISOString()})
   });
+  if(!r.ok)throw new Error('upsert');
 }
-
-async function dbWrite(data){
-  const isNew=!editId;
-  const url=isNew?`${SB_URL}/rest/v1/contacts`:`${SB_URL}/rest/v1/contacts?id=eq.${data.id}`;
-  const m=isNew?'POST':'PATCH';
-  
-  const payload = isNew ? {
-    id: data.id,
-    dati: data,
-    aggiornato_alle: new Date().toISOString()
-  } : {
-    dati: data,
-    aggiornato_alle: new Date().toISOString()
-  };
-
-  const h={...HDR}; if(!isNew) h['Prefer']='resolution=merge-duplicates';
-  const r=await fetch(url,{method:m,headers:h,body:JSON.stringify(payload)});
-  if(!r.ok)throw new Error('write');
-}
-
 async function dbDelete(id){
+  if(!isAdmin) return;
   const r=await fetch(`${SB_URL}/rest/v1/contacts?id=eq.${id}`,{method:'DELETE',headers:HDR});
   if(!r.ok)throw new Error('delete');
 }
@@ -469,217 +504,337 @@ async function dbDelete(id){
 function load(){
   const cached=localStorage.getItem('sb_cache');
   if(cached){try{contacts=JSON.parse(cached);}catch(e){contacts=[];}}
-  buildSidebar();buildMobNav();render();
-  banner('loading','Sincronizzazione...');
-  dbRead().then(d=>{
-    contacts=d;
-    localStorage.setItem('sb_cache',JSON.stringify(d));
-    banner('ok','Dati aggiornati');
-    buildSidebar();buildMobNav();render();
-  }).catch(e=>{
-    console.error(e);
-    banner('err','Errore sincr. Cache offline');
-  });
+  syncFresh();
+}
+async function syncFresh(){
+  banner('loading','Aggiornamento…');
+  try{
+    const fresh=await dbRead();
+    const changed=JSON.stringify(fresh)!==JSON.stringify(contacts);
+    contacts=fresh;
+    localStorage.setItem('sb_cache',JSON.stringify(contacts));
+    if(changed)render();
+    banner('ok','Aggiornato ✓');
+  }catch(e){
+    banner('err','Errore connessione');
+    if(!contacts.length){contacts=JSON.parse(localStorage.getItem('sb_cache')||'[]');render();}
+  }
 }
 
 function buildSidebar(){
   let h=`<div class="si-all ${!fC&&!fCat?'active':''}" onclick="sf(null,null)"><span>📋</span>Tutti<span class="bdg ${!contacts.length?'z':''}">${contacts.length}</span></div>`;
   FL.forEach(folder=>{
-    const cF=contacts.filter(x=>x.cartella===folder);
-    h+=`<div class="sf" onclick="togF(this,'${folder}')"><span>${FE[folder]||'📁'}</span>${folder}<span class="bdg ${!cF.length?'z':''}">${cF.length}</span><span class="ch">▶</span></div><div class="si-wrap">`;
-    CATS.forEach(cat=>{
-      const cC=cF.filter(x=>x.categoria===cat);
-      if(cC.length) h+=`<div class="si sub ${fC===folder&&fCat===cat?'active':''}" onclick="sf('${folder}','${cat}')"><span>${CE[cat]}</span>${CL[cat]}<span class="bdg">${cC.length}</span></div>`;
-    });
-    h+=`</div>`;
-  });
-  h+=`<div class="si-group" onclick="togArg(this)"><span>🇦🇷</span>Gruppo Argentini<span class="ch2">▶</span></div><div class="si-sub-wrap">`;
-  const cEst=contacts.filter(x=>x.categoria==='argentini-estate');
-  h+=`<div class="si sub ${fCat==='argentini-estate'?'active':''}" onclick="sf(null,'argentini-estate')"><span>☀️</span>Argentini Estate<span class="bdg ${!cEst.length?'z':''}">${cEst.length}</span></div>`;
-  const cInv=contacts.filter(x=>x.categoria==='argentini-inverno');
-  h+=`<div class="si sub ${fCat==='argentini-inverno'?'active':''}" onclick="sf(null,'argentini-inverno')"><span>❄️</span>Argentini Inverno<span class="bdg ${!cInv.length?'z':''}">${cInv.length}</span></div>`;
-  h+=`</div>`;
-  $('sidebar').innerHTML=h;
-}
+    const fc=contacts.filter(c=>c.cartella===folder);
+    const open=fC===folder;
+    h+=`<div>
+      <div class="sf ${open?'open':''}" onclick="togF(this,'${folder}')">
+        <span>${FE[folder]}</span><span style="flex:1">${folder}</span><span class="ch">▶</span>
+      </div>
+      <div class="si-wrap ${open?'open':''}">
+        <div class="si ${fC===folder&&!fCat?'active':''}" onclick="sf('${folder}',null)">
+          <span>📂</span>Tutti<span class="bdg ${!fc.length?'z':''}">${fc.length}</span>
+        </div>`;
 
-function buildMobNav(){
-  let h=`<option value="">📁 Tutte le strutture</option>`;
-  FL.forEach(f=>h+=`<option value="${f}">${f}</option>`);
-  $('mob_cartella').innerHTML=h;
-  let c=`<option value="">🏷️ Tutte le categorie</option>`;
-  CATS.forEach(cat=>c+=`<option value="${cat}">${CL[cat]}</option>`);
-  $('mob_categoria').innerHTML=c;
+    ['stagionale','annuale','semestrale','estate','solo-info'].forEach(cat=>{
+      const n=fc.filter(c=>c.categoria===cat).length;
+      h+=`<div class="si ${fC===folder&&fCat===cat?'active':''}" onclick="sf('${folder}','${cat}')">
+        <span>${CE[cat]}</span>${CL[cat]}<span class="bdg ${!n?'z':''}">${n}</span>
+      </div>`;
+    });
+
+    const nArg=fc.filter(c=>c.categoria==='argentini-estate'||c.categoria==='argentini-inverno').length;
+    const argOpen=fC===folder&&(fCat==='argentini-estate'||fCat==='argentini-inverno');
+    h+=`<div class="si-group ${argOpen?'open':''}" onclick="togArg(this)">
+        <span>🇦🇷</span><span style="flex:1">Argentini</span>
+        <span class="bdg ${!nArg?'z':''}">${nArg}</span>
+        <span class="ch2">▶</span>
+      </div>
+      <div class="si-sub-wrap ${argOpen?'open':''}">`;
+    ['argentini-estate','argentini-inverno'].forEach(cat=>{
+      const n=fc.filter(c=>c.categoria===cat).length;
+      h+=`<div class="si sub ${fC===folder&&fCat===cat?'active':''}" onclick="sf('${folder}','${cat}')">
+          <span>${CE[cat]}</span>${CL[cat]}<span class="bdg ${!n?'z':''}">${n}</span>
+        </div>`;
+    });
+    h+=`</div></div></div>`;
+  });
+  $('sidebar').innerHTML=h;
 }
 
 function togF(el,folder){
   const wasOpen=el.classList.contains('open');
-  document.querySelectorAll('.sf').forEach(x=>{x.classList.remove('open');x.nextElementSibling.classList.remove('open');});
+  document.querySelectorAll('.sf.open').forEach(e=>{e.classList.remove('open');e.nextElementSibling.classList.remove('open');});
   if(!wasOpen){el.classList.add('open');el.nextElementSibling.classList.add('open');sf(folder,null);}
   else sf(null,null);
 }
 function togArg(el){el.classList.toggle('open');el.nextElementSibling.classList.toggle('open');}
 function sf(c,cat){fC=c;fCat=cat;render();}
-function sp(p){fPill=p;render();}
+
+let argPillsOpen=false;
+function buildPills(){
+  const isArg=fCat==='argentini-estate'||fCat==='argentini-inverno';
+  if(isArg) argPillsOpen=true;
+  let h=`<span class="pill ${!fCat?'active':''}" onclick="sf(fC,null)">Tutte</span>`;
+  ['stagionale','annuale','semestrale','estate','solo-info'].forEach(cat=>{
+    h+=`<span class="pill ${fCat===cat?'active':''}" onclick="sf(fC,'${cat}')">${CE[cat]} ${CL[cat]}</span>`;
+  });
+  h+=`<span class="pill ${isArg?'active':''}" onclick="toggleArgPills()">🇦🇷 Argentini ${argPillsOpen?'▴':'▾'}</span>`;
+  if(argPillsOpen){
+    h+=`<span class="pill ${fCat==='argentini-estate'?'active':''}" onclick="sf(fC,'argentini-estate')" style="margin-left:8px">↳ Estate</span>`;
+    h+=`<span class="pill ${fCat==='argentini-inverno'?'active':''}" onclick="sf(fC,'argentini-inverno')" style="margin-left:8px">↳ Inverno</span>`;
+  }
+  $('fps').innerHTML=h;
+}
+function toggleArgPills(){
+  argPillsOpen=!argPillsOpen;
+  if(!argPillsOpen&&(fCat==='argentini-estate'||fCat==='argentini-inverno')) sf(fC,null);
+  else buildPills();
+}
+
+function buildStats(){
+  const now=new Date();
+  const up=contacts.filter(c=>(c.appuntamenti||[]).some(a=>new Date(a.data)>=now)).length;
+  const nArg=contacts.filter(c=>c.categoria==='argentini-estate'||c.categoria==='argentini-inverno').length;
+  $('sbar').innerHTML=`
+    <div class="sp"><strong>${contacts.length}</strong>&nbsp;tot</div>
+    <div class="sp"><strong>${contacts.filter(c=>c.categoria==='annuale').length}</strong>&nbsp;ann</div>
+    <div class="sp"><strong>${contacts.filter(c=>c.categoria==='estate').length}</strong>&nbsp;est</div>
+    <div class="sp"><strong>${contacts.filter(c=>c.categoria==='stagionale').length}</strong>&nbsp;stag</div>
+    <div class="sp"><strong>${contacts.filter(c=>c.categoria==='solo-info').length}</strong>&nbsp;info</div>
+    <div class="sp">🇦🇷&nbsp;<strong>${nArg}</strong></div>
+    <div class="sp">🗓️&nbsp;<strong>${up}</strong>&nbsp;apt</div>`;
+}
+
+function buildBc(){
+  let p=[];
+  if(fC)p.push(FE[fC]+' '+fC);
+  if(fCat)p.push(CE[fCat]+' '+CL[fCat]);
+  $('bc').textContent=p.length?p.join(' › '):'📋 Tutti';
+}
+
+function getF(){
+  const q=$('srch').value.toLowerCase();
+  return contacts.filter(c=>{
+    if(c.cartella === "Casa Paese Piano 2°") c.cartella = "Casa Paese Ultimo Piano";
+    if(fC&&c.cartella!==fC)return false;
+    if(fCat&&c.categoria!==fCat)return false;
+    if(q&&![c.nome,c.tel,c.email,c.sito,c.chi,c.note,c.periodo_note].join(' ').toLowerCase().includes(q))return false;
+    return true;
+  });
+}
 
 function render(){
-  const s=$('statbar');
-  let sH=``;
-  FL.forEach(f=>{
-    const list=contacts.filter(x=>x.cartella===f);
-    let st='🟢 Libera';
-    if(list.find(x=>calcolaStatoCasa(x)==='🔴 Occupata')) st='🔴 Occupata';
-    else if(list.find(x=>calcolaStatoCasa(x)==='🟡 Forse Occupata')) st='🟡 Forse Occupata';
-    sH+=`<div class="sp">${FE[f]} ${f}: <strong>${st}</strong></div>`;
+  buildSidebar();buildPills();buildStats();buildBc();
+  const grid=$('cg'),es=$('es'),fl=getF();
+  if(!fl.length){grid.innerHTML='';es.style.display='flex';return;}
+  es.style.display='none';
+  const now=new Date();
+  fl.sort((a,b)=>{
+    const an=(a.appuntamenti||[]).filter(x=>new Date(x.data)>=now)[0];
+    const bn=(b.appuntamenti||[]).filter(x=>new Date(x.data)>=now)[0];
+    return(an&&!bn)?-1:(!an&&bn)?1:0;
   });
-  s.innerHTML=sH;
-
-  let bc="Tutti i contatti";
-  if(fC&&fCat) bc=`${fC} ➔ ${CL[fCat]}`;
-  else if(fC) bc=fC;
-  else if(fCat) bc=CL[fCat];
-  $('breadcrumbs').innerHTML=bc;
-
-  $('filterPills').innerHTML=`<div class="pill ${!fPill?'active':''}" onclick="sp(null)">Tutti lo stato</div>
-          <div class="pill ${fPill==='🟢 Libera'?'active':''}" onclick="sp('🟢 Libera')">🟢 Libere</div>
-          <div class="pill ${fPill==='🟡 Forse Occupata'?'active':''}" onclick="sp('🟡 Forse Occupata')">🟡 Forse</div>
-          <div class="pill ${fPill==='🔴 Occupata'?'active':''}" onclick="sp('🔴 Occupata')">🔴 Occupate</div>`;
-
-  let res=contacts;
-  if(fC) res=res.filter(x=>x.cartella===fC);
-  if(fCat) res=res.filter(x=>x.categoria===fCat);
-  if(fPill) res=res.filter(x=>calcolaStatoCasa(x)===fPill);
-  
-  const q=$('searchInp').value.trim().toLowerCase();
-  if(q){
-    res=res.filter(x=>(x.nome||'').toLowerCase().includes(q)||(x.note||'').toLowerCase().includes(q)||(x.tel||'').toLowerCase().includes(q));
-  }
-
-  const mc=$('mainContent');
-  if(!res.length){
-    mc.innerHTML=`<div class="es"><span class="bi">📭</span><div>Nessun contatto trovato</div></div>`;
-    return;
-  }
-
-  mc.innerHTML=`<div class="cg">${res.map(c=>{
-    const st=calcolaStatoCasa(c);
-    let cls='';if(st==='🔴 Occupata')cls='occ';else if(st==='🟡 Forse Occupata')cls='frs';else if(st==='🟢 Libera')cls='lib';
-    return `<div class="cc ${cls}" onclick="openDetail('${c.id}')">
-      <div class="cch">
-        <div class="cn">${c.nome||'Senza Nome'}</div>
-        <div class="ct">${c.tel||''}</div>
+  grid.innerHTML=fl.map(c=>{
+    const nx=(c.appuntamenti||[]).filter(a=>new Date(a.data)>=now).sort((a,b)=>new Date(a.data)-new Date(b.data))[0];
+    const statoCasa = calcolaStatoCasa(c);
+    
+    return`<div class="cc cat-${c.categoria}" onclick="openDetail('${c.id}')">
+      <div class="ctop">
+        <div class="av ${avc(c.nome)}">${ini(c.nome)}</div>
+        <div style="flex:1;min-width:0"><div class="cn">${c.nome}</div><div class="cs">${c.sito||'—'} · ${c.cartella}</div></div>
       </div>
-      <div class="ccb">
-        <span class="cfld">${FE[c.cartella]||'📁'} ${c.cartella||'—'}</span>
-        <span class="atag">${CE[c.categoria]||''} ${CL[c.categoria]||'Senza Cat.'}</span>
+      <div class="cbs">
+        <span class="tag cat ${c.categoria}">${CE[c.categoria]} ${CL[c.categoria]}</span>
+        ${statoCasa ? `<span class="tag info status">${statoCasa}</span>` : ''}
+        ${c.tel?`<span class="tag info">📞 ${c.tel}</span>`:''}
+        ${nx?`<span class="tag apt">🗓️ ${fd(nx.data)}</span>`:''}
       </div>
-      ${c.periodo_dal?`<div class="ccp">📅 ${fd(c.periodo_dal)} → ${fd(c.periodo_al)}</div>`:''}
+      ${c.periodo_da||c.periodo_a?`<div class="cp">📅 ${fd(c.periodo_da)}${c.periodo_da&&c.periodo_a?' → ':''}${fd(c.periodo_a)}${c.periodo_note?' · '+c.periodo_note:''}</div>`:(c.periodo_note?`<div class="cp">📅 ${c.periodo_note}</div>`:'')}
+      ${c.note?`<div class="cnote">${c.note}</div>`:''}
+      <div class="cf">
+        <div class="cc-ct">Con: <strong>${c.chi||'—'}</strong>${c.data_contatto?' · '+fd(c.data_contatto):''}</div>
+        <div class="cact" style="display: ${isAdmin ? 'flex' : 'none'}">
+          <button class="ib" onclick="event.stopPropagation();openEdit('${c.id}')">✏️</button>
+          <button class="ib d" onclick="event.stopPropagation();delContact('${c.id}')">🗑️</button>
+        </div>
+      </div>
     </div>`;
-  }).join('')}</div>`;
+  }).join('');
 }
 
 function onMobC(){
-  fC=$('mob_cartella').value||null; fCat=null; $('mob_categoria').value='';
-  document.querySelectorAll('.sf').forEach(x=>{x.classList.remove('open');x.nextElementSibling.classList.remove('open');});
+  const v=$('mob_cartella').value,ce=$('mob_categoria');
+  fC=v||null;fCat=null;ce.value='';
+  v?ce.classList.add('vis'):ce.classList.remove('vis');
   render();
 }
 function onMobCat(){fCat=$('mob_categoria').value||null;render();}
 
+// ── CORREZIONE APERTURA NUOVO CONTATTO ──
 function openAdd(){
   if(!isAdmin) return;
-  editId=null;
+  editId=null;curApts=[];
   $('ftitle').textContent='Nuovo Contatto';
-  ['nome','tel','email','cartella','categoria','periodo_dal','periodo_al','note_periodo','data_contatto','provenienza','note','creato_da'].forEach(k=>$('f_'+k).value='');
-  $('f_stato_manuale').value = 'auto';
-  $('fov').classList.add('open');
+  ['nome','tel','email','sito','cartella','categoria','periodo_da','periodo_a','periodo_note','data_contatto','chi','note'].forEach(k=>$('f_'+k).value='');
+  
+  // Ora viene svuotato/resettato correttamente su "auto" ad ogni nuova inserzione
+  $('f_stato_manuale').value = 'auto'; 
+  
+  $('apt_add_container').style.display = 'flex';
+  $('form_actions').style.display = 'flex';
+  rAL();$('fov').classList.add('open');
 }
 
+// ── CORREZIONE APERTURA MODIFICA CONTATTO ──
 function openEdit(id){
   if(!isAdmin) return;
-  const c=contacts.find(x=>x.id===id); if(!c)return;
-  editId=id;
-  $('ftitle').textContent='Modifica Contatto';
-  ['nome','tel','email','cartella','categoria','periodo_dal','periodo_al','note_periodo','data_contatto','provenienza','note','creato_da'].forEach(k=>$('f_'+k).value=c[k]||'');
-  $('f_stato_manuale').value = c.stato_manuale || 'auto';
-  $('fov').classList.add('open');
+  const c=contacts.find(x=>x.id===id);if(!c)return;
+  editId=id;curApts=JSON.parse(JSON.stringify(c.appuntamenti||[]));
+  $('ftitle').textContent='Modifica';
+  ['nome','tel','email','sito','cartella','categoria','periodo_da','periodo_a','periodo_note','data_contatto','chi','note'].forEach(k=>$('f_'+k).value=c[k]||'');
+  
+  // Ora carica e seleziona correttamente lo stato salvato in precedenza
+  $('f_stato_manuale').value = c.stato_manuale || 'auto'; 
+  
+  $('apt_add_container').style.display = 'flex';
+  $('form_actions').style.display = 'flex';
+  rAL();$('fov').classList.add('open');
 }
 
 function closeForm(){$('fov').classList.remove('open');}
 
-async function salvaForm(){
-  const nome=$('f_nome').value.trim();
-  if(!nome){alert('Inserisci almeno il nome.');return;}
+function addApt(){
+  if(!isAdmin) return;
+  const d=$('apt_data').value,n=$('apt_note').value.trim();
+  if(!d)return alert('Inserisci data e ora');
+  curApts.push({id:uid(),data:d,note:n});
+  $('apt_data').value='';$('apt_note').value='';rAL();
+}
+function remApt(id){
+  if(!isAdmin) return;
+  curApts=curApts.filter(a=>a.id!==id);rAL();
+}
+function rAL(){
+  $('al').innerHTML=!curApts.length
+    ?'<div style="color:var(--lt);font-size:0.78rem;padding:2px 0">Nessun appuntamento</div>'
+    :curApts.map(a=>`<div class="ai"><span class="ad">🗓️ ${fdt(a.data)}</span><span class="an">${a.note||'—'}</span>${isAdmin ? `<button class="ib d" onclick="remApt('${a.id}')">✕</button>` : ''}</div>`).join('');
+}
+
+async function saveContact(){
+  if(!isAdmin) return;
+  const nome=$('f_nome').value.trim(),cartella=$('f_cartella').value,categoria=$('f_categoria').value;
+  if(!nome)return alert('Nome obbligatorio');
+  if(!cartella)return alert('Seleziona una cartella');
+  if(!categoria)return alert('Seleziona una categoria');
+  if(saving)return;saving=true;
   
   const data={
-    id:editId||uid(),
-    nome,
-    tel:$('f_tel').value.trim(),
-    email:$('f_email').value.trim(),
-    cartella:$('f_cartella').value,
-    categoria:$('f_categoria').value,
-    stato_manuale:$('f_stato_manuale').value,
-    periodo_dal:$('f_periodo_dal').value||null,
-    periodo_al:$('f_periodo_al').value||null,
-    note_periodo:$('f_note_periodo').value.trim(),
-    data_contatto:$('f_data_contatto').value||null,
-    provenienza:$('f_provenienza').value.trim(),
-    note:$('f_note').value.trim(),
-    creato_da:$('f_creato_da').value.trim()
+    id:editId||uid(),nome,
+    tel:$('f_tel').value.trim(),email:$('f_email').value.trim(),
+    sito:$('f_sito').value.trim(),cartella,categoria,
+    stato_manuale:$('f_stato_manuale').value, // Salva l'input
+    periodo_da:$('f_periodo_da').value,periodo_a:$('f_periodo_a').value,
+    periodo_note:$('f_periodo_note').value.trim(),
+    data_contatto:$('f_data_contatto').value,
+    chi:$('f_chi').value.trim(),note:$('f_note').value.trim(),
+    appuntamenti:JSON.parse(JSON.stringify(curApts)),
+    createdAt:editId?(contacts.find(c=>c.id===editId)||{}).createdAt||new Date().toISOString():new Date().toISOString(),
+    updatedAt:new Date().toISOString()
   };
-
-  banner('loading','Salvataggio...');
+  
+  if(editId){const i=contacts.findIndex(c=>c.id===editId);if(i>=0)contacts[i]=data;}
+  else contacts.unshift(data);
+  
+  localStorage.setItem('sb_cache',JSON.stringify(contacts));
+  closeForm();render();
+  banner('loading','Salvataggio…');
   try{
-    await dbWrite(data);
-    closeForm();
-    banner('ok','Salvato con successo');
-    load();
+    await dbUpsert(data);
+    banner('ok','Salvato su Cloud ✓');
   }catch(e){
-    banner('err','Errore nel salvataggio');
+    banner('err','Salvato solo in locale');
+  }finally{
+    saving=false;
+  }
+}
+
+async function delContact(id){
+  if(!isAdmin) return;
+  if(!confirm('Eliminare questo contatto definitivamente?'))return;
+  contacts=contacts.filter(c=>c.id!==id);
+  localStorage.setItem('sb_cache',JSON.stringify(contacts));
+  render();
+  banner('loading','Eliminazione…');
+  try{
+    await dbDelete(id);
+    banner('ok','Eliminato da Cloud ✓');
+  }catch(e){
+    banner('err','Errore eliminazione Cloud');
   }
 }
 
 function openDetail(id){
-  const c=contacts.find(x=>x.id===id); if(!c)return;
-  editId=id;
-  $('dtitle').textContent=c.nome||'Senza Nome';
-  
-  let h=`
-    <div class="di"><div class="dl">Telefono</div><div class="dv">${c.tel||'—'}</div></div>
-    <div class="di"><div class="dl">Email</div><div class="dv">${c.email?`<a href="mailto:${c.email}">${c.email}</a>`:'—'}</div></div>
-    <div class="di"><div class="dl">Provenienza</div><div class="dv">${c.provenienza||'—'}</div></div>
-    <div class="di"><div class="dl">Struttura</div><div class="dv">${FE[c.cartella]||'📁'} ${c.cartella||'—'}</div></div>
-    <div class="di"><div class="dl">Categoria</div><div class="dv"><span class="atag">${CE[c.categoria]||''} ${CL[c.categoria]||'—'}</span></div></div>
-    <div class="di"><div class="dl">Periodo</div><div class="dv">${fd(c.periodo_dal)} ➔ ${fd(c.periodo_al)}</div></div>
-    <div class="di"><div class="dl">Note periodo</div><div class="dv">${c.note_periodo||'—'}</div></div>
-    <div class="di"><div class="dl">Ricevuto il</div><div class="dv">${fd(c.data_contatto)}</div></div>
-    <div class="di"><div class="dl">Sito/Creato da</div><div class="dv">${c.creato_da||'—'}</div></div>
-    <div class="di full"><div class="dl">Note e Richieste</div><div class="dn">${c.note||'Nessuna nota'}</div></div>
-  `;
-  $('d_grid').innerHTML=h;
-  $('d_btn_del').style.display=isAdmin?'block':'none';
-  $('d_btn_edit').style.display=isAdmin?'block':'none';
+  const c=contacts.find(x=>x.id===id);if(!c)return;
+  $('dtitle').textContent=c.nome;
+  let aptsHtml=!(c.appuntamenti||[]).length 
+    ?'<div>Nessuno</div>'
+    :c.appuntamenti.map(a=>`<div style="margin-bottom:4px"><strong>🗓️ ${fdt(a.data)}</strong> — ${a.note||'—'}</div>`).join('');
+
+  const statoCasa = calcolaStatoCasa(c);
+
+  $('dbody').innerHTML=`
+    <div class="dg">
+      <div class="di">
+        <div class="dl">Telefono</div>
+        <div class="dv">${c.tel?`<a href="tel:${c.tel}">${c.tel}</a>`:'—'}</div>
+      </div>
+      <div class="di">
+        <div class="dl">Email</div>
+        <div class="dv">${c.email?`<a href="mailto:${c.email}">${c.email}</a>`:'—'}</div>
+      </div>
+      <div class="di">
+        <div class="dl">Provenienza / Sito</div>
+        <div class="dv">${c.sito||'—'}</div>
+      </div>
+      <div class="di">
+        <div class="dl">Struttura / Categoria</div>
+        <div class="dv">${FE[c.cartella] || '📐'} ${c.cartella} / <span class="atag">${CE[c.categoria]} ${CL[c.categoria]}</span></div>
+      </div>
+      ${statoCasa ? `<div class="di"><div class="dl">Stato Occupazione</div><div class="dv"><strong>${statoCasa}</strong> ${c.stato_manuale && c.stato_manuale !== 'auto' ? '<span style="font-size:0.75rem; color:var(--lt)">(Forzato Manualmente)</span>' : ''}</div></div>` : ''}
+      <div class="di">
+        <div class="dl">Periodo</div>
+        <div class="dv">${fd(c.periodo_da)} → ${fd(c.periodo_a)}</div>
+      </div>
+      <div class="di">
+        <div class="dl">Note periodo</div>
+        <div class="dv">${c.periodo_note||'—'}</div>
+      </div>
+      <div class="di">
+        <div class="dl">Contatto ricevuto il</div>
+        <div class="dv">${fd(c.data_contatto)} da: <strong>${c.chi||'—'}</strong></div>
+      </div>
+      <div class="di full">
+        <div class="dl">Note e Motivazioni</div>
+        <div class="dn">${c.note||'Nessuna nota'}</div>
+      </div>
+      <div class="di full">
+        <div class="dl">Appuntamenti / Storico</div>
+        <div class="dv">${aptsHtml}</div>
+      </div>
+    </div>`;
+    
+  const ebtn = $('ebtn');
+  if(isAdmin){
+    ebtn.style.display = "block";
+    ebtn.onclick=()=>{closeDetail();openEdit(id);};
+  } else {
+    ebtn.style.display = "none";
+  }
   $('dov').classList.add('open');
 }
-
 function closeDetail(){$('dov').classList.remove('open');}
-function avviaModificaDettaglio(){ closeDetail(); openEdit(editId); }
 
-async function _internalDelete(){
-  banner('loading','Eliminazione...');
-  try{
-    await dbDelete(editId);
-    closeDetail();
-    banner('ok','Eliminato');
-    load();
-  }catch(e){
-    banner('err','Errore nell\'eliminazione');
-  }
-}
-function eliminaContatto(){
-  if(!confirm('Vuoi davvero eliminare questo contatto?')) return;
-  _internalDelete();
-}
-
-window.onload = function() { checkSession(); };
+window.onload = load;
 </script>
 </body>
 </html>
