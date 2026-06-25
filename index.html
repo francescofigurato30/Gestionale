@@ -116,7 +116,7 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
 .cc.lib::before{background:#4CAF50;}
 .cc.frs::before{background:#FFC107;}
 .cc.occ::before{background:#F44336;}
-.cch{display:flex;justify-content:between;align-items:start;margin-bottom:10px;gap:8px;}
+.cch{display:flex;justify-content:space-between;align-items:start;margin-bottom:10px;gap:8px;}
 .cn{font-family:var(--font-serif);font-size:1.1rem;font-weight:700;color:var(--navy);flex:1;word-break:break-word;}
 .ct{font-size:0.8rem;color:var(--mid);font-weight:500;white-space:nowrap;}
 .ccb{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
@@ -127,12 +127,12 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
 /* MODULI / OVERLAY POPUP */
 .ov{position:fixed;inset:0;background:rgba(26,15,5,0.4);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(2px);}
 .ov.open{display:flex;}
-.box{background:white;border-radius:var(--r);box-shadow:var(--sh);width:100%;max-width:540px;max-height:90vh;display:flex;flex-direction:column;animation:pop 0.2s ease-out;}
+.box {background:white;border-radius:var(--r);box-shadow:var(--sh);width:100%;max-width:540px;max-height:90vh;display:flex;flex-direction:column;animation:pop 0.2s ease-out;}
 @keyframes pop{from{transform:scale(0.96);opacity:0;}to{transform:scale(1);opacity:1;}}
-.box-h{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:between;align-items:center;}
+.box-h{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
 .box-h h3{font-family:var(--font-serif);color:var(--navy);font-size:1.25rem;}
 .box-c{padding:20px;overflow-y:auto;flex:1;}
-.box-f{padding:14px 20px;border-top:1px solid var(--border);display:flex;justify-content:end;gap:10px;background:var(--ww);border-radius:0 0 var(--r) var(--r);}
+.box-f{padding:14px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px;background:var(--ww);border-radius:0 0 var(--r) var(--r);}
 
 /* CLASSI FORM COMODE */
 .form-grid{display:flex;flex-wrap:wrap;gap:12px;}
@@ -172,6 +172,7 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
 </head>
 <body>
 
+<!-- SCHERMATA LOGIN -->
 <div id="loginScreen" class="login-screen">
   <div class="login-box">
     <h2>Gestionale Contatti</h2>
@@ -196,6 +197,7 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
   </div>
 </div>
 
+<!-- HEADER PRINCIPALE -->
 <header>
   <h1>Gestionale <span>Contatti</span></h1>
   <div class="hright">
@@ -228,6 +230,7 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
   </main>
 </div>
 
+<!-- POPUP MODULO COMPLETO -->
 <div id="fov" class="ov">
   <div class="box">
     <div class="box-h">
@@ -236,14 +239,14 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
     </div>
     <div class="box-c">
       <div class="form-grid">
-        <div class="fl"><label>Nome e Cognome</label><input type="text" id="f_nome"></div>
-        <div class="fl"><label>Telefono</label><input type="text" id="f_tel"></div>
+        <div class="fl"><label>Nome e Cognome</label><input type="text" id="f_name"></div>
+        <div class="fl"><label>Telefono</label><input type="text" id="f_phone"></div>
         <div class="fl"><label>Email</label><input type="text" id="f_email"></div>
-        <div class="fl"><label>Sito / Provenienza</label><input type="text" id="f_sito"></div>
+        <div class="fl"><label>Sito / Provenienza</label><input type="text" id="f_created_by"></div>
         
         <div class="fl">
           <label>Struttura / Casa</label>
-          <select id="f_cartella">
+          <select id="f_folder">
             <option value="Casa Paese Piano 1°">Casa Paese Piano 1°</option>
             <option value="Casa Paese Ultimo Piano">Casa Paese Ultimo Piano</option>
             <option value="Casa Stazione">Casa Stazione</option>
@@ -253,7 +256,7 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
         
         <div class="fl">
           <label>Categoria Contratto</label>
-          <select id="f_categoria">
+          <select id="f_category">
             <option value="stagionale">Stagionale</option>
             <option value="annuale">Annuale</option>
             <option value="semestrale">Semestrale</option>
@@ -266,7 +269,7 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
 
         <div class="fl full">
           <label>Stato Occupazione Manuale (Pallino)</label>
-          <select id="f_stato_manuale">
+          <select id="f_status_manual">
             <option value="auto">⚙️ Calcola automaticamente (In base alle date)</option>
             <option value="🟢 Libera">🟢 Forza Libera</option>
             <option value="🟡 Forse Occupata">🟡 Forza Forse Occupata</option>
@@ -275,12 +278,12 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
           </select>
         </div>
 
-        <div class="fl"><label>Periodo Dal</label><input type="date" id="f_periodo_da"></div>
-        <div class="fl"><label>Periodo Al</label><input type="date" id="f_periodo_a"></div>
-        <div class="fl full"><label>Note sul Periodo</label><input type="text" id="f_periodo_note" placeholder="es. Agosto intero, 3 settimane..."></div>
-        <div class="fl"><label>Data Ricezione Contatto</label><input type="datetime-local" id="f_data_contatto"></div>
-        <div class="fl"><label>Chi ha preso il contatto?</label><input type="text" id="f_chi" placeholder="es. Francesco, Web, Passaparola..."></div>
-        <div class="fl full"><label>Note e Richieste</label><textarea id="f_note" rows="3"></textarea></div>
+        <div class="fl"><label>Periodo Dal</label><input type="date" id="f_period_from"></div>
+        <div class="fl"><label>Periodo Al</label><input type="date" id="f_period_to"></div>
+        <div class="fl full"><label>Note sul Periodo</label><input type="text" id="f_period_notes" placeholder="es. Agosto intero, 3 settimane..."></div>
+        <div class="fl"><label>Data Ricezione Contatto</label><input type="datetime-local" id="f_contact_date"></div>
+        <div class="fl"><label>Chi ha preso il contatto?</label><input type="text" id="f_source" placeholder="es. Francesco, Web, Passaparola..."></div>
+        <div class="fl full"><label>Note e Richieste</label><textarea id="f_notes" rows="3"></textarea></div>
       </div>
     </div>
     <div class="box-f">
@@ -290,16 +293,17 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
   </div>
 </div>
 
+<!-- POPUP DETTAGLI CONTATTO -->
 <div id="dov" class="ov">
   <div class="box">
     <div class="box-h">
       <h3 id="dtitle">Dettaglio Contatto</h3>
       <button class="btn sec" style="padding:4px 8px;" onclick="closeDetail()">✕</button>
     </div>
-    <div class="box-c id="detailContent"">
+    <div class="box-c">
       <div class="dgrid" id="d_grid"></div>
     </div>
-    <div class="box-f" style="justify-content:between;">
+    <div class="box-f" style="justify-content:space-between;">
       <button id="d_btn_del" class="btn danger" onclick="eliminaContatto()">Elimina</button>
       <div style="display:flex; gap:10px;">
         <button class="btn sec" onclick="closeDetail()">Chiudi</button>
@@ -310,14 +314,13 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
 </div>
 
 <script>
-// ── CREDENZIALI AGGIORNATE ──
+// ── CREDENZIALI ──
 const ADMIN_USER = 'Francesco';
 const ADMIN_PASS = 'Gestionale2026';
-
 const VITTO_USER = 'Vittoria';
 const VITTO_PASS = 'Gestionale2026';
 
-// ── SUPABASE ──
+// ── SUPABASE CONFIG ──
 const SB_URL='https://szpyhbtfoxdsatcrksfo.supabase.co';
 const SB_KEY='sb_publishable_H0cfXThFKxloHuJfyGPD0A_PflUFQY_';
 const HDR={'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY};
@@ -327,7 +330,6 @@ let fC=null,fCat=null,fPill=null;
 let isAdmin=false; 
 
 const FL=['Casa Paese Piano 1°','Casa Paese Ultimo Piano','Casa Stazione','Monolocale'];
-
 const CATS=['stagionale','annuale','semestrale','estate','argentini-estate','argentini-inverno','solo-info'];
 const CL={
 stagionale:'Stagionale',annuale:'Annuale',semestrale:'Semestrale',estate:'Estate',
@@ -340,31 +342,21 @@ stagionale:'🍂',annuale:'📅',semestrale:'⏳',estate:'☀️',
 const FE={'Casa Paese Piano 1°':'🏠','Casa Paese Ultimo Piano':'🌇','Casa Stazione':'🚉','Monolocale':'📦'};
 
 let editId=null;
+let bT=null;
 
 const uid=()=>Math.random().toString(36).substring(2,11);
 const fd=d=>{if(!d)return'—';const t=new Date(d);return isNaN(t)?d:t.toLocaleDateString('it-IT',{day:'2-digit',month:'short',year:'numeric'});};
-const fdt=d=>{if(!d)return'';const t=new Date(d);return isNaN(t)?d:t.toLocaleDateString('it-IT',{day:'2-digit',month:'short',year:'numeric'})+' '+t.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});};
 const $=id=>document.getElementById(id);
 
-// ── LOGICA MOSTRA/NASCONDI PASSWORD ──
 function togglePasswordVisibility() {
   const passInput = $('l_pass');
-  if (passInput.type === 'password') {
-    passInput.type = 'text';
-  } else {
-    passInput.type = 'password';
-  }
+  passInput.type = (passInput.type === 'password') ? 'text' : 'password';
 }
 
-// ── LOGICA DI ACCESSO / LOGIN ──
 function eseguiLogin(){
   const user = $('l_user').value.trim();
   const pass = $('l_pass').value;
-    
-  const isFrancesco = (user === ADMIN_USER && pass === ADMIN_PASS);
-  const isVittoria = (user === VITTO_USER && pass === VITTO_PASS);
-
-  if(isFrancesco || isVittoria){
+  if((user === ADMIN_USER && pass === ADMIN_PASS) || (user === VITTO_USER && pass === VITTO_PASS)){
     isAdmin = true;
     $('loginError').style.display = 'none';
     localStorage.setItem('gestionale_logged', 'admin');
@@ -393,43 +385,31 @@ function logout(){
 
 function checkSession(){
   const s = localStorage.getItem('gestionale_logged');
-  if(s === 'admin'){
-    isAdmin = true;
-    initApp();
-  } else if(s === 'guest'){
-    isAdmin = false;
-    initApp();
-  } else {
-    $('loginScreen').style.display = 'flex';
-  }
+  if(s === 'admin'){ isAdmin = true; initApp(); }
+  else if(s === 'guest'){ isAdmin = false; initApp(); }
+  else { $('loginScreen').style.display = 'flex'; }
 }
 
 function initApp(){
   $('loginScreen').style.display = 'none';
   const u = localStorage.getItem('gestionale_user') || 'Utente';
-  if(isAdmin){
-    $('roleBadge').textContent = u + " (Admin)";
-    $('roleBadge').style.background = "var(--terra)";
-  } else {
-    $('roleBadge').textContent = "OSPITE (Lettura)";
-    $('roleBadge').style.background = "#5bc0de";
-  }
-    
+  $('roleBadge').textContent = isAdmin ? u + " (Admin)" : "OSPITE (Lettura)";
+  $('roleBadge').style.background = isAdmin ? "var(--terra)" : "#5bc0de";
   $('hdr_btn_nuovo').style.display = isAdmin ? 'block' : 'none';
   $('mob_btn_nuovo').style.display = isAdmin ? 'block' : 'none';
   load();
 }
 
 function calcolaStatoCasa(c){
-  if(c.stato_manuale && c.stato_manuale !== 'auto'){
-    return (c.stato_manuale === 'nessuno') ? '' : c.stato_manuale;
+  if(c.status_manual && c.status_manual !== 'auto'){
+    return (c.status_manual === 'nessuno') ? '' : c.status_manual;
   }
-  if(c.categoria === 'solo-info') return ''; 
-  if(!c.periodo_da || !c.periodo_a) return '🟢 Libera';
+  if(c.category === 'solo-info') return ''; 
+  if(!c.period_from || !c.period_to) return '🟢 Libera';
 
   const oggi = new Date(); oggi.setHours(0,0,0,0);
-  const dataInizio = new Date(c.periodo_da);
-  const dataFine = new Date(c.periodo_a);
+  const dataInizio = new Date(c.period_from);
+  const dataFine = new Date(c.period_to);
 
   if(oggi >= dataInizio && oggi <= dataFine) return '🔴 Occupata';
   const diffGiorni = Math.ceil((dataInizio - oggi) / (1000 * 60 * 60 * 24));
@@ -445,7 +425,6 @@ function banner(state,txt){
   clearTimeout(bT);
   if(state==='ok'||state==='err') bT=setTimeout(()=>b.classList.remove('show'),2500);
 }
-let bT=null;
 
 // ── API SUPABASE ──
 async function dbRead(){
@@ -454,7 +433,7 @@ async function dbRead(){
   return await r.json();
 }
 async function dbWrite(data){
-  const isNew=!data.id;
+  const isNew=!editId;
   const url=isNew?`${SB_URL}/rest/v1/contacts`:`${SB_URL}/rest/v1/contacts?id=eq.${data.id}`;
   const m=isNew?'POST':'PATCH';
   const h={...HDR}; if(!isNew) h['Prefer']='resolution=merge-duplicates';
@@ -466,7 +445,6 @@ async function dbDelete(id){
   if(!r.ok)throw new Error('delete');
 }
 
-// ── LOAD ──
 function load(){
   const cached=localStorage.getItem('sb_cache');
   if(cached){try{contacts=JSON.parse(cached);}catch(e){contacts=[];}}
@@ -483,22 +461,21 @@ function load(){
   });
 }
 
-// ── SIDEBAR & NAV ──
 function buildSidebar(){
   let h=`<div class="si-all ${!fC&&!fCat?'active':''}" onclick="sf(null,null)"><span>📋</span>Tutti<span class="bdg ${!contacts.length?'z':''}">${contacts.length}</span></div>`;
   FL.forEach(folder=>{
-    const cF=contacts.filter(x=>x.cartella===folder);
+    const cF=contacts.filter(x=>x.folder===folder);
     h+=`<div class="sf" onclick="togF(this,'${folder}')"><span>${FE[folder]||'📁'}</span>${folder}<span class="bdg ${!cF.length?'z':''}">${cF.length}</span><span class="ch">▶</span></div><div class="si-wrap">`;
     CATS.forEach(cat=>{
-      const cC=cF.filter(x=>x.categoria===cat);
+      const cC=cF.filter(x=>x.category===cat);
       if(cC.length) h+=`<div class="si sub ${fC===folder&&fCat===cat?'active':''}" onclick="sf('${folder}','${cat}')"><span>${CE[cat]}</span>${CL[cat]}<span class="bdg">${cC.length}</span></div>`;
     });
     h+=`</div>`;
   });
   h+=`<div class="si-group" onclick="togArg(this)"><span>🇦🇷</span>Gruppo Argentini<span class="ch2">▶</span></div><div class="si-sub-wrap">`;
-  const cEst=contacts.filter(x=>x.categoria==='argentini-estate');
+  const cEst=contacts.filter(x=>x.category==='argentini-estate');
   h+=`<div class="si sub ${fCat==='argentini-estate'?'active':''}" onclick="sf(null,'argentini-estate')"><span>☀️</span>Argentini Estate<span class="bdg ${!cEst.length?'z':''}">${cEst.length}</span></div>`;
-  const cInv=contacts.filter(x=>x.categoria==='argentini-inverno');
+  const cInv=contacts.filter(x=>x.category==='argentini-inverno');
   h+=`<div class="si sub ${fCat==='argentini-inverno'?'active':''}" onclick="sf(null,'argentini-inverno')"><span>❄️</span>Argentini Inverno<span class="bdg ${!cInv.length?'z':''}">${cInv.length}</span></div>`;
   h+=`</div>`;
   $('sidebar').innerHTML=h;
@@ -523,12 +500,11 @@ function togArg(el){el.classList.toggle('open');el.nextElementSibling.classList.
 function sf(c,cat){fC=c;fCat=cat;render();}
 function sp(p){fPill=p;render();}
 
-// ── RENDER CARD GENERATION ──
 function render(){
   const s=$('statbar');
   let sH=``;
   FL.forEach(f=>{
-    const list=contacts.filter(x=>x.cartella===f);
+    const list=contacts.filter(x=>x.folder===f);
     let st='🟢 Libera';
     if(list.find(x=>calcolaStatoCasa(x)==='🔴 Occupata')) st='🔴 Occupata';
     else if(list.find(x=>calcolaStatoCasa(x)==='🟡 Forse Occupata')) st='🟡 Forse Occupata';
@@ -548,13 +524,13 @@ function render(){
           <div class="pill ${fPill==='🔴 Occupata'?'active':''}" onclick="sp('🔴 Occupata')">🔴 Occupate</div>`;
 
   let res=contacts;
-  if(fC) res=res.filter(x=>x.cartella===fC);
-  if(fCat) res=res.filter(x=>x.categoria===fCat);
+  if(fC) res=res.filter(x=>x.folder===fC);
+  if(fCat) res=res.filter(x=>x.category===fCat);
   if(fPill) res=res.filter(x=>calcolaStatoCasa(x)===fPill);
   
   const q=$('searchInp').value.trim().toLowerCase();
   if(q){
-    res=res.filter(x=>(x.nome||'').toLowerCase().includes(q)||(x.note||'').toLowerCase().includes(q)||(x.tel||'').toLowerCase().includes(q));
+    res=res.filter(x=>(x.name||'').toLowerCase().includes(q)||(x.notes||'').toLowerCase().includes(q)||(x.phone||'').toLowerCase().includes(q));
   }
 
   const mc=$('mainContent');
@@ -568,19 +544,18 @@ function render(){
     let cls='';if(st==='🔴 Occupata')cls='occ';else if(st==='🟡 Forse Occupata')cls='frs';else if(st==='🟢 Libera')cls='lib';
     return `<div class="cc ${cls}" onclick="openDetail('${c.id}')">
       <div class="cch">
-        <div class="cn">${c.nome||'Senza Nome'}</div>
-        <div class="ct">${c.tel||''}</div>
+        <div class="cn">${c.name||'Senza Nome'}</div>
+        <div class="ct">${c.phone||''}</div>
       </div>
       <div class="ccb">
-        <span class="cfld">${FE[c.cartella]||'📁'} ${c.cartella||'—'}</span>
-        <span class="atag">${CE[c.categoria]} ${CL[c.categoria]}</span>
+        <span class="cfld">${FE[c.folder]||'📁'} ${c.folder||'—'}</span>
+        <span class="atag">${CE[c.category]} ${CL[c.category]}</span>
       </div>
-      ${c.periodo_da?`<div class="ccp">📅 ${fd(c.periodo_da)} → ${fd(c.periodo_a)}</div>`:''}
+      ${c.period_from?`<div class="ccp">📅 ${fd(c.period_from)} → ${fd(c.period_to)}</div>`:''}
     </div>`;
   }).join('')}</div>`;
 }
 
-// MOBILE ACTIONS
 function onMobC(){
   fC=$('mob_cartella').value||null; fCat=null; $('mob_categoria').value='';
   document.querySelectorAll('.sf').forEach(x=>{x.classList.remove('open');x.nextElementSibling.classList.remove('open');});
@@ -588,13 +563,12 @@ function onMobC(){
 }
 function onMobCat(){fCat=$('mob_categoria').value||null;render();}
 
-// ── LOGICA COMPLETA FORM AZIONI ──
 function openAdd(){
   if(!isAdmin) return;
   editId=null;
   $('ftitle').textContent='Nuovo Contatto';
-  ['nome','tel','email','sito','cartella','categoria','periodo_da','periodo_a','periodo_note','data_contatto','chi','note'].forEach(k=>$('f_'+k).value='');
-  $('f_stato_manuale').value = 'auto';
+  ['name','phone','email','folder','category','period_from','period_to','period_notes','contact_date','source','notes'].forEach(k=>$('f_'+k).value='');
+  $('f_status_manual').value = 'auto';
   $('fov').classList.add('open');
 }
 
@@ -603,32 +577,31 @@ function openEdit(id){
   const c=contacts.find(x=>x.id===id); if(!c)return;
   editId=id;
   $('ftitle').textContent='Modifica Contatto';
-  ['nome','tel','email','sito','cartella','categoria','periodo_da','periodo_a','periodo_note','data_contatto','chi','note'].forEach(k=>$('f_'+k).value=c[k]||'');
-  $('f_stato_manuale').value = c.stato_manuale || 'auto';
+  ['name','phone','email','folder','category','period_from','period_to','period_notes','contact_date','source','notes'].forEach(k=>$('f_'+k).value=c[k]||'');
+  $('f_status_manual').value = c.status_manual || 'auto';
   $('fov').classList.add('open');
 }
 
 function closeForm(){$('fov').classList.remove('open');}
 
 async function salvaForm(){
-  const nome=$('f_nome').value.trim();
-  if(!nome){alert('Inserisci almeno il nome.');return;}
+  const name=$('f_name').value.trim();
+  if(!name){alert('Inserisci almeno il nome.');return;}
   
   const data={
     id:editId||uid(),
-    nome,
-    tel:$('f_tel').value.trim(),
+    name,
+    phone:$('f_phone').value.trim(),
     email:$('f_email').value.trim(),
-    sito:$('f_sito').value.trim(),
-    cartella:$('f_cartella').value,
-    categoria:$('f_categoria').value,
-    stato_manuale:$('f_stato_manuale').value,
-    periodo_da:$('f_periodo_da').value||null,
-    periodo_a:$('f_periodo_a').value||null,
-    periodo_note:$('f_periodo_note').value.trim(),
-    data_contatto:$('f_data_contatto').value||null,
-    chi:$('f_chi').value.trim(),
-    note:$('f_note').value.trim(),
+    folder:$('f_folder').value,
+    category:$('f_category').value,
+    status_manual:$('f_status_manual').value,
+    period_from:$('f_period_from').value||null,
+    period_to:$('f_period_to').value||null,
+    period_notes:$('f_period_notes').value.trim(),
+    contact_date:$('f_contact_date').value||null,
+    source:$('f_source').value.trim(),
+    notes:$('f_notes').value.trim(),
     updated_at:new Date().toISOString()
   };
 
@@ -643,36 +616,30 @@ async function salvaForm(){
   }
 }
 
-// ── LOGICA COMPLETA FINESTRA DETTAGLI ──
 function openDetail(id){
   const c=contacts.find(x=>x.id===id); if(!c)return;
   editId=id;
-  $('dtitle').textContent=c.nome||'Senza Nome';
+  $('dtitle').textContent=c.name||'Senza Nome';
   
   let h=`
-    <div class="di"><div class="dl">Telefono</div><div class="dv">${c.tel||'—'}</div></div>
+    <div class="di"><div class="dl">Telefono</div><div class="dv">${c.phone||'—'}</div></div>
     <div class="di"><div class="dl">Email</div><div class="dv">${c.email?`<a href="mailto:${c.email}">${c.email}</a>`:'—'}</div></div>
-    <div class="di"><div class="dl">Provenienza / Sito</div><div class="dv">${c.sito||'—'}</div></div>
-    <div class="di"><div class="dl">Struttura</div><div class="dv">${FE[c.cartella]||'📁'} ${c.cartella}</div></div>
-    <div class="di"><div class="dl">Categoria</div><div class="dv"><span class="atag">${CE[c.categoria]||''} ${CL[c.categoria]}</span></div></div>
-    <div class="di"><div class="dl">Periodo</div><div class="dv">${fd(c.periodo_da)} ➔ ${fd(c.periodo_a)}</div></div>
-    <div class="di"><div class="dl">Note periodo</div><div class="dv">${c.periodo_note||'—'}</div></div>
-    <div class="di"><div class="dl">Ricevuto il</div><div class="dv">${fd(c.data_contatto)} da: <strong>${c.chi||'—'}</strong></div></div>
-    <div class="di full"><div class="dl">Note e Richieste</div><div class="dn">${c.note||'Nessuna nota'}</div></div>
+    <div class="di"><div class="dl">Provenienza</div><div class="dv">${c.source||'—'}</div></div>
+    <div class="di"><div class="dl">Struttura</div><div class="dv">${FE[c.folder]||'📁'} ${c.folder}</div></div>
+    <div class="di"><div class="dl">Categoria</div><div class="dv"><span class="atag">${CE[c.category]||''} ${CL[c.category]}</span></div></div>
+    <div class="di"><div class="dl">Periodo</div><div class="dv">${fd(c.period_from)} ➔ ${fd(c.period_to)}</div></div>
+    <div class="di"><div class="dl">Note periodo</div><div class="dv">${c.period_notes||'—'}</div></div>
+    <div class="di"><div class="dl">Ricevuto il</div><div class="dv">${fd(c.contact_date)}</div></div>
+    <div class="di full"><div class="dl">Note e Richieste</div><div class="dn">${c.notes||'Nessuna nota'}</div></div>
   `;
   $('d_grid').innerHTML=h;
-  
   $('d_btn_del').style.display=isAdmin?'block':'none';
   $('d_btn_edit').style.display=isAdmin?'block':'none';
   $('dov').classList.add('open');
 }
 
 function closeDetail(){$('dov').classList.remove('open');}
-
-function avviaModificaDettaglio(){
-  closeDetail();
-  openEdit(editId);
-}
+function avviaModificaDettaglio(){ closeDetail(); openEdit(editId); }
 
 async function eliminaContatto(){
   if(!confirm('Vuoi davvero eliminare questo contatto?')) return;
@@ -687,9 +654,7 @@ async function eliminaContatto(){
   }
 }
 
-window.onload = function() {
-  checkSession();
-};
+window.onload = function() { checkSession(); };
 </script>
 </body>
 </html>
