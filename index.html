@@ -172,8 +172,7 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
 </head>
 <body>
 
-<!-- SCHERMATA LOGIN -->
-<div id="loginScreen" class="login-screen">
+<div id="loginScreen" class="login-screen" style="display:none;">
   <div class="login-box">
     <h2>Gestionale Contatti</h2>
     <p>Inserisci le tue credenziali per accedere</p>
@@ -197,7 +196,6 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
   </div>
 </div>
 
-<!-- HEADER PRINCIPALE -->
 <header>
   <h1>Gestionale <span>Contatti</span></h1>
   <div class="hright">
@@ -230,7 +228,6 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
   </main>
 </div>
 
-<!-- POPUP MODULO COMPLETO -->
 <div id="fov" class="ov">
   <div class="box">
     <div class="box-h">
@@ -239,14 +236,14 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
     </div>
     <div class="box-c">
       <div class="form-grid">
-        <div class="fl"><label>Nome e Cognome</label><input type="text" id="f_name"></div>
-        <div class="fl"><label>Telefono</label><input type="text" id="f_phone"></div>
+        <div class="fl"><label>Nome e Cognome</label><input type="text" id="f_nome"></div>
+        <div class="fl"><label>Telefono</label><input type="text" id="f_tel"></div>
         <div class="fl"><label>Email</label><input type="text" id="f_email"></div>
-        <div class="fl"><label>Sito / Provenienza</label><input type="text" id="f_created_by"></div>
+        <div class="fl"><label>Sito / Provenienza</label><input type="text" id="f_creato_da"></div>
         
         <div class="fl">
           <label>Struttura / Casa</label>
-          <select id="f_folder">
+          <select id="f_cartella">
             <option value="Casa Paese Piano 1°">Casa Paese Piano 1°</option>
             <option value="Casa Paese Ultimo Piano">Casa Paese Ultimo Piano</option>
             <option value="Casa Stazione">Casa Stazione</option>
@@ -256,7 +253,7 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
         
         <div class="fl">
           <label>Categoria Contratto</label>
-          <select id="f_category">
+          <select id="f_categoria">
             <option value="stagionale">Stagionale</option>
             <option value="annuale">Annuale</option>
             <option value="semestrale">Semestrale</option>
@@ -269,7 +266,7 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
 
         <div class="fl full">
           <label>Stato Occupazione Manuale (Pallino)</label>
-          <select id="f_status_manual">
+          <select id="f_stato_manuale">
             <option value="auto">⚙️ Calcola automaticamente (In base alle date)</option>
             <option value="🟢 Libera">🟢 Forza Libera</option>
             <option value="🟡 Forse Occupata">🟡 Forza Forse Occupata</option>
@@ -278,12 +275,12 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
           </select>
         </div>
 
-        <div class="fl"><label>Periodo Dal</label><input type="date" id="f_period_from"></div>
-        <div class="fl"><label>Periodo Al</label><input type="date" id="f_period_to"></div>
-        <div class="fl full"><label>Note sul Periodo</label><input type="text" id="f_period_notes" placeholder="es. Agosto intero, 3 settimane..."></div>
-        <div class="fl"><label>Data Ricezione Contatto</label><input type="datetime-local" id="f_contact_date"></div>
-        <div class="fl"><label>Chi ha preso il contatto?</label><input type="text" id="f_source" placeholder="es. Francesco, Web, Passaparola..."></div>
-        <div class="fl full"><label>Note e Richieste</label><textarea id="f_notes" rows="3"></textarea></div>
+        <div class="fl"><label>Periodo Dal</label><input type="date" id="f_periodo_dal"></div>
+        <div class="fl"><label>Periodo Al</label><input type="date" id="f_periodo_al"></div>
+        <div class="fl full"><label>Note sul Periodo</label><input type="text" id="f_note_periodo" placeholder="es. Agosto intero, 3 settimane..."></div>
+        <div class="fl"><label>Data Ricezione Contatto</label><input type="datetime-local" id="f_data_contatto"></div>
+        <div class="fl"><label>Chi ha preso il contatto?</label><input type="text" id="f_provenienza" placeholder="es. Francesco, Web, Passaparola..."></div>
+        <div class="fl full"><label>Note e Richieste</label><textarea id="f_note" rows="3"></textarea></div>
       </div>
     </div>
     <div class="box-f">
@@ -293,7 +290,6 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
   </div>
 </div>
 
-<!-- POPUP DETTAGLI CONTATTO -->
 <div id="dov" class="ov">
   <div class="box">
     <div class="box-h">
@@ -401,15 +397,15 @@ function initApp(){
 }
 
 function calcolaStatoCasa(c){
-  if(c.status_manual && c.status_manual !== 'auto'){
-    return (c.status_manual === 'nessuno') ? '' : c.status_manual;
+  if(c.stato_manuale && c.stato_manuale !== 'auto'){
+    return (c.stato_manuale === 'nessuno') ? '' : c.stato_manuale;
   }
-  if(c.category === 'solo-info') return ''; 
-  if(!c.period_from || !c.period_to) return '🟢 Libera';
+  if(c.categoria === 'solo-info') return ''; 
+  if(!c.periodo_dal || !c.periodo_al) return '🟢 Libera';
 
   const oggi = new Date(); oggi.setHours(0,0,0,0);
-  const dataInizio = new Date(c.period_from);
-  const dataFine = new Date(c.period_to);
+  const dataInizio = new Date(c.periodo_dal);
+  const dataFine = new Date(c.periodo_al);
 
   if(oggi >= dataInizio && oggi <= dataFine) return '🔴 Occupata';
   const diffGiorni = Math.ceil((dataInizio - oggi) / (1000 * 60 * 60 * 24));
@@ -426,20 +422,48 @@ function banner(state,txt){
   if(state==='ok'||state==='err') bT=setTimeout(()=>b.classList.remove('show'),2500);
 }
 
-// ── API SUPABASE ──
+// ── API SUPABASE ADATTATA A COLONNA JSONB ──
 async function dbRead(){
-  const r=await fetch(`${SB_URL}/rest/v1/contacts?select=*&order=updated_at.desc`,{headers:HDR});
+  const r=await fetch(`${SB_URL}/rest/v1/contacts?select=id,dati&order=aggiornato_alle.desc`,{headers:HDR});
   if(!r.ok)throw new Error('read');
-  return await r.json();
+  const rawRows = await r.json();
+  
+  // Estraiamo l'oggetto interno dalla colonna JSONB 'dati'
+  return rawRows.map(row => {
+    let extracted = {};
+    if (row.dati) {
+      if (typeof row.dati === 'string') {
+        try { extracted = JSON.parse(row.dati); } catch(e){}
+      } else {
+        extracted = row.dati;
+      }
+    }
+    // Manteniamo l'id allineato alla riga
+    extracted.id = row.id || extracted.id;
+    return extracted;
+  });
 }
+
 async function dbWrite(data){
   const isNew=!editId;
   const url=isNew?`${SB_URL}/rest/v1/contacts`:`${SB_URL}/rest/v1/contacts?id=eq.${data.id}`;
   const m=isNew?'POST':'PATCH';
+  
+  // Prepariamo il payload rispettando la struttura reale del DB (id, dati, aggiornato_alle)
+  const payload = isNew ? {
+    id: data.id,
+    dati: data,
+    aggiornato_alle: new Date().toISOString()
+  } : {
+    dati: data,
+    aggiornato_alle: new Date().toISOString()
+  };
+
   const h={...HDR}; if(!isNew) h['Prefer']='resolution=merge-duplicates';
-  const r=await fetch(url,{method:m,headers:h,body:JSON.stringify(data)});
+  const r=await fetch(url,{method:m,headers:h,body:JSON.stringify(payload)});
   if(!r.ok)throw new Error('write');
 }
+
 async function dbDelete(id){
   const r=await fetch(`${SB_URL}/rest/v1/contacts?id=eq.${id}`,{method:'DELETE',headers:HDR});
   if(!r.ok)throw new Error('delete');
@@ -464,18 +488,18 @@ function load(){
 function buildSidebar(){
   let h=`<div class="si-all ${!fC&&!fCat?'active':''}" onclick="sf(null,null)"><span>📋</span>Tutti<span class="bdg ${!contacts.length?'z':''}">${contacts.length}</span></div>`;
   FL.forEach(folder=>{
-    const cF=contacts.filter(x=>x.folder===folder);
+    const cF=contacts.filter(x=>x.cartella===folder);
     h+=`<div class="sf" onclick="togF(this,'${folder}')"><span>${FE[folder]||'📁'}</span>${folder}<span class="bdg ${!cF.length?'z':''}">${cF.length}</span><span class="ch">▶</span></div><div class="si-wrap">`;
     CATS.forEach(cat=>{
-      const cC=cF.filter(x=>x.category===cat);
+      const cC=cF.filter(x=>x.categoria===cat);
       if(cC.length) h+=`<div class="si sub ${fC===folder&&fCat===cat?'active':''}" onclick="sf('${folder}','${cat}')"><span>${CE[cat]}</span>${CL[cat]}<span class="bdg">${cC.length}</span></div>`;
     });
     h+=`</div>`;
   });
   h+=`<div class="si-group" onclick="togArg(this)"><span>🇦🇷</span>Gruppo Argentini<span class="ch2">▶</span></div><div class="si-sub-wrap">`;
-  const cEst=contacts.filter(x=>x.category==='argentini-estate');
+  const cEst=contacts.filter(x=>x.categoria==='argentini-estate');
   h+=`<div class="si sub ${fCat==='argentini-estate'?'active':''}" onclick="sf(null,'argentini-estate')"><span>☀️</span>Argentini Estate<span class="bdg ${!cEst.length?'z':''}">${cEst.length}</span></div>`;
-  const cInv=contacts.filter(x=>x.category==='argentini-inverno');
+  const cInv=contacts.filter(x=>x.categoria==='argentini-inverno');
   h+=`<div class="si sub ${fCat==='argentini-inverno'?'active':''}" onclick="sf(null,'argentini-inverno')"><span>❄️</span>Argentini Inverno<span class="bdg ${!cInv.length?'z':''}">${cInv.length}</span></div>`;
   h+=`</div>`;
   $('sidebar').innerHTML=h;
@@ -504,7 +528,7 @@ function render(){
   const s=$('statbar');
   let sH=``;
   FL.forEach(f=>{
-    const list=contacts.filter(x=>x.folder===f);
+    const list=contacts.filter(x=>x.cartella===f);
     let st='🟢 Libera';
     if(list.find(x=>calcolaStatoCasa(x)==='🔴 Occupata')) st='🔴 Occupata';
     else if(list.find(x=>calcolaStatoCasa(x)==='🟡 Forse Occupata')) st='🟡 Forse Occupata';
@@ -524,13 +548,13 @@ function render(){
           <div class="pill ${fPill==='🔴 Occupata'?'active':''}" onclick="sp('🔴 Occupata')">🔴 Occupate</div>`;
 
   let res=contacts;
-  if(fC) res=res.filter(x=>x.folder===fC);
-  if(fCat) res=res.filter(x=>x.category===fCat);
+  if(fC) res=res.filter(x=>x.cartella===fC);
+  if(fCat) res=res.filter(x=>x.categoria===fCat);
   if(fPill) res=res.filter(x=>calcolaStatoCasa(x)===fPill);
   
   const q=$('searchInp').value.trim().toLowerCase();
   if(q){
-    res=res.filter(x=>(x.name||'').toLowerCase().includes(q)||(x.notes||'').toLowerCase().includes(q)||(x.phone||'').toLowerCase().includes(q));
+    res=res.filter(x=>(x.nome||'').toLowerCase().includes(q)||(x.note||'').toLowerCase().includes(q)||(x.tel||'').toLowerCase().includes(q));
   }
 
   const mc=$('mainContent');
@@ -544,14 +568,14 @@ function render(){
     let cls='';if(st==='🔴 Occupata')cls='occ';else if(st==='🟡 Forse Occupata')cls='frs';else if(st==='🟢 Libera')cls='lib';
     return `<div class="cc ${cls}" onclick="openDetail('${c.id}')">
       <div class="cch">
-        <div class="cn">${c.name||'Senza Nome'}</div>
-        <div class="ct">${c.phone||''}</div>
+        <div class="cn">${c.nome||'Senza Nome'}</div>
+        <div class="ct">${c.tel||''}</div>
       </div>
       <div class="ccb">
-        <span class="cfld">${FE[c.folder]||'📁'} ${c.folder||'—'}</span>
-        <span class="atag">${CE[c.category]} ${CL[c.category]}</span>
+        <span class="cfld">${FE[c.cartella]||'📁'} ${c.cartella||'—'}</span>
+        <span class="atag">${CE[c.categoria]||''} ${CL[c.categoria]||'Senza Cat.'}</span>
       </div>
-      ${c.period_from?`<div class="ccp">📅 ${fd(c.period_from)} → ${fd(c.period_to)}</div>`:''}
+      ${c.periodo_dal?`<div class="ccp">📅 ${fd(c.periodo_dal)} → ${fd(c.periodo_al)}</div>`:''}
     </div>`;
   }).join('')}</div>`;
 }
@@ -567,8 +591,8 @@ function openAdd(){
   if(!isAdmin) return;
   editId=null;
   $('ftitle').textContent='Nuovo Contatto';
-  ['name','phone','email','folder','category','period_from','period_to','period_notes','contact_date','source','notes'].forEach(k=>$('f_'+k).value='');
-  $('f_status_manual').value = 'auto';
+  ['nome','tel','email','cartella','categoria','periodo_dal','periodo_al','note_periodo','data_contatto','provenienza','note','creato_da'].forEach(k=>$('f_'+k).value='');
+  $('f_stato_manuale').value = 'auto';
   $('fov').classList.add('open');
 }
 
@@ -577,32 +601,32 @@ function openEdit(id){
   const c=contacts.find(x=>x.id===id); if(!c)return;
   editId=id;
   $('ftitle').textContent='Modifica Contatto';
-  ['name','phone','email','folder','category','period_from','period_to','period_notes','contact_date','source','notes'].forEach(k=>$('f_'+k).value=c[k]||'');
-  $('f_status_manual').value = c.status_manual || 'auto';
+  ['nome','tel','email','cartella','categoria','periodo_dal','periodo_al','note_periodo','data_contatto','provenienza','note','creato_da'].forEach(k=>$('f_'+k).value=c[k]||'');
+  $('f_stato_manuale').value = c.stato_manuale || 'auto';
   $('fov').classList.add('open');
 }
 
 function closeForm(){$('fov').classList.remove('open');}
 
 async function salvaForm(){
-  const name=$('f_name').value.trim();
-  if(!name){alert('Inserisci almeno il nome.');return;}
+  const nome=$('f_nome').value.trim();
+  if(!nome){alert('Inserisci almeno il nome.');return;}
   
   const data={
     id:editId||uid(),
-    name,
-    phone:$('f_phone').value.trim(),
+    nome,
+    tel:$('f_tel').value.trim(),
     email:$('f_email').value.trim(),
-    folder:$('f_folder').value,
-    category:$('f_category').value,
-    status_manual:$('f_status_manual').value,
-    period_from:$('f_period_from').value||null,
-    period_to:$('f_period_to').value||null,
-    period_notes:$('f_period_notes').value.trim(),
-    contact_date:$('f_contact_date').value||null,
-    source:$('f_source').value.trim(),
-    notes:$('f_notes').value.trim(),
-    updated_at:new Date().toISOString()
+    cartella:$('f_cartella').value,
+    categoria:$('f_categoria').value,
+    stato_manuale:$('f_stato_manuale').value,
+    periodo_dal:$('f_periodo_dal').value||null,
+    periodo_al:$('f_periodo_al').value||null,
+    note_periodo:$('f_note_periodo').value.trim(),
+    data_contatto:$('f_data_contatto').value||null,
+    provenienza:$('f_provenienza').value.trim(),
+    note:$('f_note').value.trim(),
+    creato_da:$('f_creato_da').value.trim()
   };
 
   banner('loading','Salvataggio...');
@@ -619,18 +643,19 @@ async function salvaForm(){
 function openDetail(id){
   const c=contacts.find(x=>x.id===id); if(!c)return;
   editId=id;
-  $('dtitle').textContent=c.name||'Senza Nome';
+  $('dtitle').textContent=c.nome||'Senza Nome';
   
   let h=`
-    <div class="di"><div class="dl">Telefono</div><div class="dv">${c.phone||'—'}</div></div>
+    <div class="di"><div class="dl">Telefono</div><div class="dv">${c.tel||'—'}</div></div>
     <div class="di"><div class="dl">Email</div><div class="dv">${c.email?`<a href="mailto:${c.email}">${c.email}</a>`:'—'}</div></div>
-    <div class="di"><div class="dl">Provenienza</div><div class="dv">${c.source||'—'}</div></div>
-    <div class="di"><div class="dl">Struttura</div><div class="dv">${FE[c.folder]||'📁'} ${c.folder}</div></div>
-    <div class="di"><div class="dl">Categoria</div><div class="dv"><span class="atag">${CE[c.category]||''} ${CL[c.category]}</span></div></div>
-    <div class="di"><div class="dl">Periodo</div><div class="dv">${fd(c.period_from)} ➔ ${fd(c.period_to)}</div></div>
-    <div class="di"><div class="dl">Note periodo</div><div class="dv">${c.period_notes||'—'}</div></div>
-    <div class="di"><div class="dl">Ricevuto il</div><div class="dv">${fd(c.contact_date)}</div></div>
-    <div class="di full"><div class="dl">Note e Richieste</div><div class="dn">${c.notes||'Nessuna nota'}</div></div>
+    <div class="di"><div class="dl">Provenienza</div><div class="dv">${c.provenienza||'—'}</div></div>
+    <div class="di"><div class="dl">Struttura</div><div class="dv">${FE[c.cartella]||'📁'} ${c.cartella||'—'}</div></div>
+    <div class="di"><div class="dl">Categoria</div><div class="dv"><span class="atag">${CE[c.categoria]||''} ${CL[c.categoria]||'—'}</span></div></div>
+    <div class="di"><div class="dl">Periodo</div><div class="dv">${fd(c.periodo_dal)} ➔ ${fd(c.periodo_al)}</div></div>
+    <div class="di"><div class="dl">Note periodo</div><div class="dv">${c.note_periodo||'—'}</div></div>
+    <div class="di"><div class="dl">Ricevuto il</div><div class="dv">${fd(c.data_contatto)}</div></div>
+    <div class="di"><div class="dl">Sito/Creato da</div><div class="dv">${c.creato_da||'—'}</div></div>
+    <div class="di full"><div class="dl">Note e Richieste</div><div class="dn">${c.note||'Nessuna nota'}</div></div>
   `;
   $('d_grid').innerHTML=h;
   $('d_btn_del').style.display=isAdmin?'block':'none';
@@ -641,8 +666,7 @@ function openDetail(id){
 function closeDetail(){$('dov').classList.remove('open');}
 function avviaModificaDettaglio(){ closeDetail(); openEdit(editId); }
 
-async function eliminaContatto(){
-  if(!confirm('Vuoi davvero eliminare questo contatto?')) return;
+async function自由_eliminaContatto(){ // Rinominato internamente per sicurezza
   banner('loading','Eliminazione...');
   try{
     await dbDelete(editId);
@@ -652,6 +676,10 @@ async function eliminaContatto(){
   }catch(e){
     banner('err','Errore nell\'eliminazione');
   }
+}
+function eliminaContatto(){
+  if(!confirm('Vuoi davvero eliminare questo contatto?')) return;
+  自由_eliminaContatto();
 }
 
 window.onload = function() { checkSession(); };
