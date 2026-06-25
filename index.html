@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-web-app-capable" content="yes">
 <title>Gestionale Contatti</title>
 <style>
 :root{
@@ -113,6 +113,61 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
 
 .cc{background:white;border-radius:var(--r);border:1px solid var(--border);padding:16px;cursor:pointer;position:relative;overflow:hidden;}
 .cc::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;}
+.cc.lib::before{background:#4CAF50;}
+.cc.frs::before{background:#FFC107;}
+.cc.occ::before{background:#F44336;}
+.cch{display:flex;justify-content:between;align-items:start;margin-bottom:10px;gap:8px;}
+.cn{font-family:var(--font-serif);font-size:1.1rem;font-weight:700;color:var(--navy);flex:1;word-break:break-word;}
+.ct{font-size:0.8rem;color:var(--mid);font-weight:500;white-space:nowrap;}
+.ccb{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+.cfld, .atag{font-size:0.7rem;font-weight:600;padding:2px 8px;border-radius:4px;background:var(--cream);color:var(--mid);}
+.atag{background:rgba(196,113,74,0.08);color:var(--terra);}
+.ccp{font-size:0.75rem;color:var(--lt);font-weight:500;}
+
+/* MODULI / OVERLAY POPUP */
+.ov{position:fixed;inset:0;background:rgba(26,15,5,0.4);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(2px);}
+.ov.open{display:flex;}
+.box{background:white;border-radius:var(--r);box-shadow:var(--sh);width:100%;max-width:540px;max-height:90vh;display:flex;flex-direction:column;animation:pop 0.2s ease-out;}
+@keyframes pop{from{transform:scale(0.96);opacity:0;}to{transform:scale(1);opacity:1;}}
+.box-h{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:between;align-items:center;}
+.box-h h3{font-family:var(--font-serif);color:var(--navy);font-size:1.25rem;}
+.box-c{padding:20px;overflow-y:auto;flex:1;}
+.box-f{padding:14px 20px;border-top:1px solid var(--border);display:flex;justify-content:end;gap:10px;background:var(--ww);border-radius:0 0 var(--r) var(--r);}
+
+/* CLASSI FORM COMODE */
+.form-grid{display:flex;flex-wrap:wrap;gap:12px;}
+.fl{display:flex;flex-direction:column;gap:5px;width:calc(50% - 6px);min-width:200px;}
+.fl.full{width:100%;}
+.fl label{font-size:0.75rem;font-weight:600;color:var(--mid);text-transform:uppercase;}
+.fl input, .fl select, .fl textarea{padding:9px 12px;border:1px solid var(--border);border-radius:var(--rs);font-family:var(--font);font-size:0.9rem;background:var(--ww);outline:none;}
+.fl input:focus, .fl select:focus, .fl textarea:focus{border-color:var(--terra);background:white;}
+
+/* SCHEDA DETTAGLIO ADAPTIVE */
+.dgrid{display:flex;flex-direction:column;gap:10px;}
+.di{display:flex;border-bottom:1px solid rgba(0,0,0,0.04);padding-bottom:8px;}
+.di.full{flex-direction:column;gap:4px;}
+.dl{font-size:0.75rem;font-weight:600;color:var(--lt);text-transform:uppercase;width:150px;flex-shrink:0;}
+.dv{font-size:0.92rem;color:var(--dk);font-weight:500;}
+.dn{font-size:0.9rem;background:var(--cream);padding:10px;border-radius:var(--rs);white-space:pre-wrap;color:var(--dk);line-height:1.4;}
+
+.btn{padding:8px 16px;border:none;border-radius:var(--rs);font-family:var(--font);font-size:0.88rem;font-weight:600;cursor:pointer;}
+.btn.prim{background:var(--terra);color:white;}
+.btn.prim:active{background:var(--terra-dk);}
+.btn.sec{background:transparent;border:1px solid var(--border);color:var(--mid);}
+.btn.danger{background:#d9534f;color:white;}
+
+@media(max-width:768px){
+  aside{display:none;}
+  .mob-nav{display:flex;}
+  header h1{font-size:1.1rem;}
+  .btn-hdr{display:none;}
+  .topbar{padding:10px 12px;}
+  .sbox{width:100%;margin-top:4px;}
+  .sbox input{width:100%;}
+  .ca{padding:12px;}
+  .cg{grid-template-columns:1fr;}
+  .fl{width:100%;}
+}
 </style>
 </head>
 <body>
@@ -173,6 +228,87 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
   </main>
 </div>
 
+<div id="fov" class="ov">
+  <div class="box">
+    <div class="box-h">
+      <h3 id="ftitle">Nuovo Contatto</h3>
+      <button class="btn sec" style="padding:4px 8px;" onclick="closeForm()">✕</button>
+    </div>
+    <div class="box-c">
+      <div class="form-grid">
+        <div class="fl"><label>Nome e Cognome</label><input type="text" id="f_nome"></div>
+        <div class="fl"><label>Telefono</label><input type="text" id="f_tel"></div>
+        <div class="fl"><label>Email</label><input type="text" id="f_email"></div>
+        <div class="fl"><label>Sito / Provenienza</label><input type="text" id="f_sito"></div>
+        
+        <div class="fl">
+          <label>Struttura / Casa</label>
+          <select id="f_cartella">
+            <option value="Casa Paese Piano 1°">Casa Paese Piano 1°</option>
+            <option value="Casa Paese Ultimo Piano">Casa Paese Ultimo Piano</option>
+            <option value="Casa Stazione">Casa Stazione</option>
+            <option value="Monolocale">Monolocale</option>
+          </select>
+        </div>
+        
+        <div class="fl">
+          <label>Categoria Contratto</label>
+          <select id="f_categoria">
+            <option value="stagionale">Stagionale</option>
+            <option value="annuale">Annuale</option>
+            <option value="semestrale">Semestrale</option>
+            <option value="estate">Estate</option>
+            <option value="argentini-estate">Argentini Estate</option>
+            <option value="argentini-inverno">Argentini Inverno</option>
+            <option value="solo-info">Solo Info</option>
+          </select>
+        </div>
+
+        <div class="fl full">
+          <label>Stato Occupazione Manuale (Pallino)</label>
+          <select id="f_stato_manuale">
+            <option value="auto">⚙️ Calcola automaticamente (In base alle date)</option>
+            <option value="🟢 Libera">🟢 Forza Libera</option>
+            <option value="🟡 Forse Occupata">🟡 Forza Forse Occupata</option>
+            <option value="🔴 Occupata">🔴 Forza Occupata</option>
+            <option value="nessuno">⚪ Nessun pallino</option>
+          </select>
+        </div>
+
+        <div class="fl"><label>Periodo Dal</label><input type="date" id="f_periodo_da"></div>
+        <div class="fl"><label>Periodo Al</label><input type="date" id="f_periodo_a"></div>
+        <div class="fl full"><label>Note sul Periodo</label><input type="text" id="f_periodo_note" placeholder="es. Agosto intero, 3 settimane..."></div>
+        <div class="fl"><label>Data Ricezione Contatto</label><input type="datetime-local" id="f_data_contatto"></div>
+        <div class="fl"><label>Chi ha preso il contatto?</label><input type="text" id="f_chi" placeholder="es. Francesco, Web, Passaparola..."></div>
+        <div class="fl full"><label>Note e Richieste</label><textarea id="f_note" rows="3"></textarea></div>
+      </div>
+    </div>
+    <div class="box-f">
+      <button class="btn sec" onclick="closeForm()">Annulla</button>
+      <button class="btn prim" onclick="salvaForm()">Salva</button>
+    </div>
+  </div>
+</div>
+
+<div id="dov" class="ov">
+  <div class="box">
+    <div class="box-h">
+      <h3 id="dtitle">Dettaglio Contatto</h3>
+      <button class="btn sec" style="padding:4px 8px;" onclick="closeDetail()">✕</button>
+    </div>
+    <div class="box-c id="detailContent"">
+      <div class="dgrid" id="d_grid"></div>
+    </div>
+    <div class="box-f" style="justify-content:between;">
+      <button id="d_btn_del" class="btn danger" onclick="eliminaContatto()">Elimina</button>
+      <div style="display:flex; gap:10px;">
+        <button class="btn sec" onclick="closeDetail()">Chiudi</button>
+        <button id="d_btn_edit" class="btn prim" onclick="avviaModificaDettaglio()">Modifica</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 // ── CREDENZIALI AGGIORNATE ──
 const ADMIN_USER = 'Francesco';
@@ -187,7 +323,7 @@ const SB_KEY='sb_publishable_H0cfXThFKxloHuJfyGPD0A_PflUFQY_';
 const HDR={'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY};
 
 let contacts=[];
-let fC=null,fCat=null,fPill=null,searchQuery='';
+let fC=null,fCat=null,fPill=null;
 let isAdmin=false; 
 
 const FL=['Casa Paese Piano 1°','Casa Paese Ultimo Piano','Casa Stazione','Monolocale'];
@@ -204,8 +340,8 @@ stagionale:'🍂',annuale:'📅',semestrale:'⏳',estate:'☀️',
 const FE={'Casa Paese Piano 1°':'🏠','Casa Paese Ultimo Piano':'🌇','Casa Stazione':'🚉','Monolocale':'📦'};
 
 let editId=null;
-let curApts=[];
 
+const uid=()=>Math.random().toString(36).substring(2,11);
 const fd=d=>{if(!d)return'—';const t=new Date(d);return isNaN(t)?d:t.toLocaleDateString('it-IT',{day:'2-digit',month:'short',year:'numeric'});};
 const fdt=d=>{if(!d)return'';const t=new Date(d);return isNaN(t)?d:t.toLocaleDateString('it-IT',{day:'2-digit',month:'short',year:'numeric'})+' '+t.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});};
 const $=id=>document.getElementById(id);
@@ -239,7 +375,7 @@ function eseguiLogin(){
   }
 }
 
-function accesoOspite(){
+function accessoOspite(){
   isAdmin = false;
   localStorage.setItem('gestionale_logged', 'guest');
   localStorage.setItem('gestionale_user', 'Ospite');
@@ -247,8 +383,7 @@ function accesoOspite(){
 }
 
 function logout(){
-  localStorage.removeItem('gestionale_logged');
-  localStorage.removeItem('gestionale_user');
+  localStorage.clear();
   isAdmin = false;
   $('l_user').value = '';
   $('l_pass').value = '';
@@ -258,7 +393,6 @@ function logout(){
 
 function checkSession(){
   const s = localStorage.getItem('gestionale_logged');
-  const u = localStorage.getItem('gestionale_user');
   if(s === 'admin'){
     isAdmin = true;
     initApp();
@@ -283,15 +417,13 @@ function initApp(){
     
   $('hdr_btn_nuovo').style.display = isAdmin ? 'block' : 'none';
   $('mob_btn_nuovo').style.display = isAdmin ? 'block' : 'none';
-  render();
+  load();
 }
 
-// Logica disponibilità temporale delle case (Con override manuale)
 function calcolaStatoCasa(c){
   if(c.stato_manuale && c.stato_manuale !== 'auto'){
     return (c.stato_manuale === 'nessuno') ? '' : c.stato_manuale;
   }
-
   if(c.categoria === 'solo-info') return ''; 
   if(!c.periodo_da || !c.periodo_a) return '🟢 Libera';
 
@@ -300,15 +432,12 @@ function calcolaStatoCasa(c){
   const dataFine = new Date(c.periodo_a);
 
   if(oggi >= dataInizio && oggi <= dataFine) return '🔴 Occupata';
-
   const diffGiorni = Math.ceil((dataInizio - oggi) / (1000 * 60 * 60 * 24));
   if(diffGiorni > 0 && diffGiorni <= 7) return '🟡 Forse Occupata';
 
   return '🟢 Libera';
 }
 
-// ── BANNER ──
-let bT=null;
 function banner(state,txt){
   const b=$('banner');
   b.className='sync-banner show '+state;
@@ -316,6 +445,7 @@ function banner(state,txt){
   clearTimeout(bT);
   if(state==='ok'||state==='err') bT=setTimeout(()=>b.classList.remove('show'),2500);
 }
+let bT=null;
 
 // ── API SUPABASE ──
 async function dbRead(){
@@ -327,7 +457,7 @@ async function dbWrite(data){
   const isNew=!data.id;
   const url=isNew?`${SB_URL}/rest/v1/contacts`:`${SB_URL}/rest/v1/contacts?id=eq.${data.id}`;
   const m=isNew?'POST':'PATCH';
-  const h={...HDR};if(!isNew) h['Prefer']='resolution=merge-duplicates';
+  const h={...HDR}; if(!isNew) h['Prefer']='resolution=merge-duplicates';
   const r=await fetch(url,{method:m,headers:h,body:JSON.stringify(data)});
   if(!r.ok)throw new Error('write');
 }
@@ -341,7 +471,7 @@ function load(){
   const cached=localStorage.getItem('sb_cache');
   if(cached){try{contacts=JSON.parse(cached);}catch(e){contacts=[];}}
   buildSidebar();buildMobNav();render();
-  banner('loading','Sincronizzazione in corso...');
+  banner('loading','Sincronizzazione...');
   dbRead().then(d=>{
     contacts=d;
     localStorage.setItem('sb_cache',JSON.stringify(d));
@@ -349,11 +479,11 @@ function load(){
     buildSidebar();buildMobNav();render();
   }).catch(e=>{
     console.error(e);
-    banner('err','Errore sincr. Usa cache offline');
+    banner('err','Errore sincr. Cache offline');
   });
 }
 
-// ── SIDEBAR ──
+// ── SIDEBAR & NAV ──
 function buildSidebar(){
   let h=`<div class="si-all ${!fC&&!fCat?'active':''}" onclick="sf(null,null)"><span>📋</span>Tutti<span class="bdg ${!contacts.length?'z':''}">${contacts.length}</span></div>`;
   FL.forEach(folder=>{
@@ -365,14 +495,12 @@ function buildSidebar(){
     });
     h+=`</div>`;
   });
-  
   h+=`<div class="si-group" onclick="togArg(this)"><span>🇦🇷</span>Gruppo Argentini<span class="ch2">▶</span></div><div class="si-sub-wrap">`;
   const cEst=contacts.filter(x=>x.categoria==='argentini-estate');
   h+=`<div class="si sub ${fCat==='argentini-estate'?'active':''}" onclick="sf(null,'argentini-estate')"><span>☀️</span>Argentini Estate<span class="bdg ${!cEst.length?'z':''}">${cEst.length}</span></div>`;
   const cInv=contacts.filter(x=>x.categoria==='argentini-inverno');
   h+=`<div class="si sub ${fCat==='argentini-inverno'?'active':''}" onclick="sf(null,'argentini-inverno')"><span>❄️</span>Argentini Inverno<span class="bdg ${!cInv.length?'z':''}">${cInv.length}</span></div>`;
   h+=`</div>`;
-  
   $('sidebar').innerHTML=h;
 }
 
@@ -393,16 +521,16 @@ function togF(el,folder){
 }
 function togArg(el){el.classList.toggle('open');el.nextElementSibling.classList.toggle('open');}
 function sf(c,cat){fC=c;fCat=cat;render();}
+function sp(p){fPill=p;render();}
 
-let argPillsOpen=false;
+// ── RENDER CARD GENERATION ──
 function render(){
   const s=$('statbar');
   let sH=``;
   FL.forEach(f=>{
     const list=contacts.filter(x=>x.cartella===f);
     let st='🟢 Libera';
-    const occ=list.find(x=>calcolaStatoCasa(x)==='🔴 Occupata');
-    if(occ) st='🔴 Occupata';
+    if(list.find(x=>calcolaStatoCasa(x)==='🔴 Occupata')) st='🔴 Occupata';
     else if(list.find(x=>calcolaStatoCasa(x)==='🟡 Forse Occupata')) st='🟡 Forse Occupata';
     sH+=`<div class="sp">${FE[f]} ${f}: <strong>${st}</strong></div>`;
   });
@@ -414,11 +542,10 @@ function render(){
   else if(fCat) bc=CL[fCat];
   $('breadcrumbs').innerHTML=bc;
 
-  let pH=`<div class="pill ${!fPill?'active':''}" onclick="sp(null)">Tutti lo stato</div>
+  $('filterPills').innerHTML=`<div class="pill ${!fPill?'active':''}" onclick="sp(null)">Tutti lo stato</div>
           <div class="pill ${fPill==='🟢 Libera'?'active':''}" onclick="sp('🟢 Libera')">🟢 Libere</div>
           <div class="pill ${fPill==='🟡 Forse Occupata'?'active':''}" onclick="sp('🟡 Forse Occupata')">🟡 Forse</div>
           <div class="pill ${fPill==='🔴 Occupata'?'active':''}" onclick="sp('🔴 Occupata')">🔴 Occupate</div>`;
-  $('filterPills').innerHTML=pH;
 
   let res=contacts;
   if(fC) res=res.filter(x=>x.cartella===fC);
@@ -453,40 +580,115 @@ function render(){
   }).join('')}</div>`;
 }
 
-function sp(p){fPill=p;render();}
-
-// MOBILE
+// MOBILE ACTIONS
 function onMobC(){
-  const v=$('mob_cartella').value;
-  fC=v||null;fCat=null;$('mob_categoria').value='';
+  fC=$('mob_cartella').value||null; fCat=null; $('mob_categoria').value='';
   document.querySelectorAll('.sf').forEach(x=>{x.classList.remove('open');x.nextElementSibling.classList.remove('open');});
   render();
 }
 function onMobCat(){fCat=$('mob_categoria').value||null;render();}
 
-// FORM REST RESET E APERTURE MODIFICATE
+// ── LOGICA COMPLETA FORM AZIONI ──
 function openAdd(){
   if(!isAdmin) return;
-  alert('Funzionalità form non espansa in questo snippet di anteprima.');
+  editId=null;
+  $('ftitle').textContent='Nuovo Contatto';
+  ['nome','tel','email','sito','cartella','categoria','periodo_da','periodo_a','periodo_note','data_contatto','chi','note'].forEach(k=>$('f_'+k).value='');
+  $('f_stato_manuale').value = 'auto';
+  $('fov').classList.add('open');
 }
 
 function openEdit(id){
   if(!isAdmin) return;
-  alert('Funzionalità di modifica non espansa in questo snippet di anteprima.');
+  const c=contacts.find(x=>x.id===id); if(!c)return;
+  editId=id;
+  $('ftitle').textContent='Modifica Contatto';
+  ['nome','tel','email','sito','cartella','categoria','periodo_da','periodo_a','periodo_note','data_contatto','chi','note'].forEach(k=>$('f_'+k).value=c[k]||'');
+  $('f_stato_manuale').value = c.stato_manuale || 'auto';
+  $('fov').classList.add('open');
 }
 
-function closeForm(){}
-function rAL(){}
+function closeForm(){$('fov').classList.remove('open');}
 
-// ── DETTAGLI ──
+async function salvaForm(){
+  const nome=$('f_nome').value.trim();
+  if(!nome){alert('Inserisci almeno il nome.');return;}
+  
+  const data={
+    id:editId||uid(),
+    nome,
+    tel:$('f_tel').value.trim(),
+    email:$('f_email').value.trim(),
+    sito:$('f_sito').value.trim(),
+    cartella:$('f_cartella').value,
+    categoria:$('f_categoria').value,
+    stato_manuale:$('f_stato_manuale').value,
+    periodo_da:$('f_periodo_da').value||null,
+    periodo_a:$('f_periodo_a').value||null,
+    periodo_note:$('f_periodo_note').value.trim(),
+    data_contatto:$('f_data_contatto').value||null,
+    chi:$('f_chi').value.trim(),
+    note:$('f_note').value.trim(),
+    updated_at:new Date().toISOString()
+  };
+
+  banner('loading','Salvataggio...');
+  try{
+    await dbWrite(data);
+    closeForm();
+    banner('ok','Salvato con successo');
+    load();
+  }catch(e){
+    banner('err','Errore nel salvataggio');
+  }
+}
+
+// ── LOGICA COMPLETA FINESTRA DETTAGLI ──
 function openDetail(id){
-  const c=contacts.find(x=>x.id===id);if(!c)return;
-  alert('Dettagli contatto: ' + c.nome + '\nStruttura: ' + c.cartella + '\nCategoria: ' + CL[c.categoria]);
+  const c=contacts.find(x=>x.id===id); if(!c)return;
+  editId=id;
+  $('dtitle').textContent=c.nome||'Senza Nome';
+  
+  let h=`
+    <div class="di"><div class="dl">Telefono</div><div class="dv">${c.tel||'—'}</div></div>
+    <div class="di"><div class="dl">Email</div><div class="dv">${c.email?`<a href="mailto:${c.email}">${c.email}</a>`:'—'}</div></div>
+    <div class="di"><div class="dl">Provenienza / Sito</div><div class="dv">${c.sito||'—'}</div></div>
+    <div class="di"><div class="dl">Struttura</div><div class="dv">${FE[c.cartella]||'📁'} ${c.cartella}</div></div>
+    <div class="di"><div class="dl">Categoria</div><div class="dv"><span class="atag">${CE[c.categoria]||''} ${CL[c.categoria]}</span></div></div>
+    <div class="di"><div class="dl">Periodo</div><div class="dv">${fd(c.periodo_da)} ➔ ${fd(c.periodo_a)}</div></div>
+    <div class="di"><div class="dl">Note periodo</div><div class="dv">${c.periodo_note||'—'}</div></div>
+    <div class="di"><div class="dl">Ricevuto il</div><div class="dv">${fd(c.data_contatto)} da: <strong>${c.chi||'—'}</strong></div></div>
+    <div class="di full"><div class="dl">Note e Richieste</div><div class="dn">${c.note||'Nessuna nota'}</div></div>
+  `;
+  $('d_grid').innerHTML=h;
+  
+  $('d_btn_del').style.display=isAdmin?'block':'none';
+  $('d_btn_edit').style.display=isAdmin?'block':'none';
+  $('dov').classList.add('open');
+}
+
+function closeDetail(){$('dov').classList.remove('open');}
+
+function avviaModificaDettaglio(){
+  closeDetail();
+  openEdit(editId);
+}
+
+async function eliminaContatto(){
+  if(!confirm('Vuoi davvero eliminare questo contatto?')) return;
+  banner('loading','Eliminazione...');
+  try{
+    await dbDelete(editId);
+    closeDetail();
+    banner('ok','Eliminato');
+    load();
+  }catch(e){
+    banner('err','Errore nell\'eliminazione');
+  }
 }
 
 window.onload = function() {
   checkSession();
-  load();
 };
 </script>
 </body>
