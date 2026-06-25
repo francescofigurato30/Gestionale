@@ -127,7 +127,7 @@
   .cs{font-size:0.75rem;color:var(--lt);margin-top:1px;}
   .cbs{display:flex;gap:5px;margin-bottom:9px;flex-wrap:wrap;}
   .tag{font-size:0.68rem;font-weight:600;padding:3px 8px;border-radius:10px;}
-  .tag.cat{color:white;}
+  .tag.cat {color:white;}
   .tag.cat.stagionale{background:var(--forest);}
   .tag.cat.annuale{background:var(--gold);color:#333;}
   .tag.cat.semestrale{background:var(--terra);}
@@ -161,7 +161,7 @@
   .xb{width:28px;height:28px;border:1px solid var(--border);border-radius:6px;background:none;cursor:pointer;font-size:0.88rem;color:var(--lt);display:flex;align-items:center;justify-content:center;}
   .mb{padding:18px 20px;}
   .fg{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-  .fg .full{grid-column:1/-1;}
+  .fg .full{grid-column:1;}
   .fl{display:flex;flex-direction:column;gap:5px;}
   .fl label{font-size:0.73rem;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:0.06em;}
   .fl input,.fl select,.fl textarea{padding:10px 12px;border:1px solid var(--border);border-radius:var(--rs);font-family:var(--font);font-size:0.92rem;color:var(--dk);background:var(--cream);outline:none;-webkit-appearance:none;appearance:none;width:100%;}
@@ -197,6 +197,8 @@
     .cc:hover{box-shadow:var(--sh);}
     .ib:hover{background:var(--terra);color:white;}
     .ib.d:hover{background:#d9534f;color:white;}
+    .fg{grid-template-columns:1fr 1fr;}
+    .fg .full{grid-column:1/-1;}
   }
   @media(max-width:700px){
     aside{display:none;}
@@ -218,7 +220,7 @@
 </head>
 <body>
 
-<!-- SCHERMATA LOGIN DI BENVENUTO -->
+<!-- SCHERMATA LOGIN -->
 <div class="login-screen" id="loginScreen">
   <div class="login-box">
     <h2>🏠 Gestionale Case</h2>
@@ -226,7 +228,7 @@
     
     <div class="login-field">
       <label>Nome Utente</label>
-      <input type="text" id="l_user" placeholder="es. Francesco" autocomplete="username">
+      <input type="text" id="l_user" placeholder="Nome" autocomplete="username">
     </div>
     <div class="login-field pass-wrapper">
       <label>Password</label>
@@ -295,6 +297,7 @@
   </main>
 </div>
 
+<!-- FORM MODAL -->
 <div class="ov" id="fov">
   <div class="modal">
     <div class="mh"><div class="mt" id="ftitle">Nuovo Contatto</div><button class="xb" onclick="closeForm()">✕</button></div>
@@ -330,7 +333,6 @@
           </select>
         </div>
         
-        <!-- SELETTORE DISPONIBILITÀ (PALLINI) -->
         <div class="fl full"><label>Stato Occupazione (Pallino)</label>
           <select id="f_stato_manuale">
             <option value="auto">⚙️ Calcola automaticamente (In base alle date)</option>
@@ -365,6 +367,7 @@
   </div>
 </div>
 
+<!-- DETAIL MODAL -->
 <div class="ov" id="dov">
   <div class="modal">
     <div class="mh"><div class="mt" id="dtitle">Dettaglio</div><button class="xb" onclick="closeDetail()">✕</button></div>
@@ -374,8 +377,12 @@
 </div>
 
 <script>
+// CREDENZIALI AMMINISTRATORI
 const ADMIN_USER = 'Francesco';
 const ADMIN_PASS = 'Gestionale2026';
+
+const VITTO_USER = 'Vittoria';
+const VITTO_PASS = 'Gestionale2026';
 
 const SB_URL='https://szpyhbtfoxdsatcrksfo.supabase.co';
 const SB_KEY='sb_publishable_H0cfXThFKxloHuJfyGPD0A_PflUFQY_';
@@ -394,7 +401,7 @@ const CE={
   stagionale:'🌿',annuale:'📆',semestrale:'🗓️',estate:'☀️',
   'argentini-estate':'🇦🇷','argentini-inverno':'🇦🇷','solo-info':'🟣'
 };
-const FE={'Casa Paese Piano 1°':'🏠','Casa Paese Ultimo Piano':'🏡','Casa Stazione':'🚉','Monolocale':'📐'};
+const FE={'Casa Paese Piano 1°','🏠','Casa Paese Ultimo Piano':'🏡','Casa Stazione':'🚉','Monolocale':'📐'};
 const AVC=['av-0','av-1','av-2','av-3','av-4','av-5'];
 
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
@@ -412,7 +419,9 @@ function togglePasswordVisibility() {
 function eseguiLogin(){
   const user = $('l_user').value.trim();
   const pass = $('l_pass').value;
-  if(user === ADMIN_USER && pass === ADMIN_PASS){
+  
+  // Riconosce Francesco oppure Vittoria
+  if((user === ADMIN_USER && pass === ADMIN_PASS) || (user === VITTO_USER && pass === VITTO_PASS)){
     isAdmin = true;
     $('loginError').style.display = 'none';
     $('loginScreen').style.display = 'none';
@@ -667,32 +676,24 @@ function onMobC(){
 }
 function onMobCat(){fCat=$('mob_categoria').value||null;render();}
 
-// ── CORREZIONE APERTURA NUOVO CONTATTO ──
 function openAdd(){
   if(!isAdmin) return;
   editId=null;curApts=[];
   $('ftitle').textContent='Nuovo Contatto';
   ['nome','tel','email','sito','cartella','categoria','periodo_da','periodo_a','periodo_note','data_contatto','chi','note'].forEach(k=>$('f_'+k).value='');
-  
-  // Ora viene svuotato/resettato correttamente su "auto" ad ogni nuova inserzione
   $('f_stato_manuale').value = 'auto'; 
-  
   $('apt_add_container').style.display = 'flex';
   $('form_actions').style.display = 'flex';
   rAL();$('fov').classList.add('open');
 }
 
-// ── CORREZIONE APERTURA MODIFICA CONTATTO ──
 function openEdit(id){
   if(!isAdmin) return;
   const c=contacts.find(x=>x.id===id);if(!c)return;
   editId=id;curApts=JSON.parse(JSON.stringify(c.appuntamenti||[]));
   $('ftitle').textContent='Modifica';
   ['nome','tel','email','sito','cartella','categoria','periodo_da','periodo_a','periodo_note','data_contatto','chi','note'].forEach(k=>$('f_'+k).value=c[k]||'');
-  
-  // Ora carica e seleziona correttamente lo stato salvato in precedenza
   $('f_stato_manuale').value = c.stato_manuale || 'auto'; 
-  
   $('apt_add_container').style.display = 'flex';
   $('form_actions').style.display = 'flex';
   rAL();$('fov').classList.add('open');
@@ -729,7 +730,7 @@ async function saveContact(){
     id:editId||uid(),nome,
     tel:$('f_tel').value.trim(),email:$('f_email').value.trim(),
     sito:$('f_sito').value.trim(),cartella,categoria,
-    stato_manuale:$('f_stato_manuale').value, // Salva l'input
+    stato_manuale:$('f_stato_manuale').value,
     periodo_da:$('f_periodo_da').value,periodo_a:$('f_periodo_a').value,
     periodo_note:$('f_periodo_note').value.trim(),
     data_contatto:$('f_data_contatto').value,
