@@ -363,7 +363,7 @@ function eseguiLogin(){
   }
 }
 
-function accessoOspite(){
+function accesoOspite(){
   isAdmin = false;
   localStorage.setItem('gestionale_logged', 'guest');
   localStorage.setItem('gestionale_user', 'Ospite');
@@ -422,13 +422,12 @@ function banner(state,txt){
   if(state==='ok'||state==='err') bT=setTimeout(()=>b.classList.remove('show'),2500);
 }
 
-// ── API SUPABASE ADATTATA A COLONNA JSONB ──
+// ── API ADATTATA AD ESTRARRE I DATI DAL CAMPO JSONB ──
 async function dbRead(){
   const r=await fetch(`${SB_URL}/rest/v1/contacts?select=id,dati&order=aggiornato_alle.desc`,{headers:HDR});
   if(!r.ok)throw new Error('read');
   const rawRows = await r.json();
   
-  // Estraiamo l'oggetto interno dalla colonna JSONB 'dati'
   return rawRows.map(row => {
     let extracted = {};
     if (row.dati) {
@@ -438,7 +437,6 @@ async function dbRead(){
         extracted = row.dati;
       }
     }
-    // Manteniamo l'id allineato alla riga
     extracted.id = row.id || extracted.id;
     return extracted;
   });
@@ -449,7 +447,6 @@ async function dbWrite(data){
   const url=isNew?`${SB_URL}/rest/v1/contacts`:`${SB_URL}/rest/v1/contacts?id=eq.${data.id}`;
   const m=isNew?'POST':'PATCH';
   
-  // Prepariamo il payload rispettando la struttura reale del DB (id, dati, aggiornato_alle)
   const payload = isNew ? {
     id: data.id,
     dati: data,
@@ -666,7 +663,7 @@ function openDetail(id){
 function closeDetail(){$('dov').classList.remove('open');}
 function avviaModificaDettaglio(){ closeDetail(); openEdit(editId); }
 
-async function自由_eliminaContatto(){ // Rinominato internamente per sicurezza
+async function _internalDelete(){
   banner('loading','Eliminazione...');
   try{
     await dbDelete(editId);
@@ -679,7 +676,7 @@ async function自由_eliminaContatto(){ // Rinominato internamente per sicurezza
 }
 function eliminaContatto(){
   if(!confirm('Vuoi davvero eliminare questo contatto?')) return;
-  自由_eliminaContatto();
+  _internalDelete();
 }
 
 window.onload = function() { checkSession(); };
