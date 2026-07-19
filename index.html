@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>Gestionale Contatti</title>
@@ -33,6 +33,7 @@
   .toggle-password {position:absolute;right:12px;bottom:11px;background:none;border:none;cursor:pointer;color:var(--lt);font-size:1.1rem;display:flex;align-items:center;justify-content:center;}
   .login-btn-admin {width:100%;padding:12px;background:var(--terra);color:white;border:none;border-radius:var(--rs);font-family:var(--font);font-size:0.95rem;font-weight:600;cursor:pointer;margin-top:10px;margin-bottom:12px;}
   .login-btn-admin:active {background:var(--terra-dk);}
+  .login-btn-admin:disabled {background:#ccc; cursor:not-allowed;}
   .login-btn-guest {background:none;border:none;color:var(--forest);font-size:0.88rem;font-weight:600;cursor:pointer;text-decoration:underline;}
   .login-err {color:#d9534f;font-size:0.8rem;margin-top:8px;display:none;font-weight:500;}
 
@@ -49,7 +50,6 @@
   .sync-banner.err{background:#5a2d2d;}
   .sync-banner .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
   .sync-banner.loading .dot{background:var(--gold);animation:pulse 1s infinite;}
- 
   .sync-banner.ok .dot{background:#4CAF50;}
   .sync-banner.err .dot{background:#f44336;}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
@@ -58,20 +58,19 @@
   .btn-hdr:active{background:var(--terra-dk);}
   .btn-logout{background:transparent;color:white;border:1px solid rgba(255,255,255,0.3);padding:5px 10px;border-radius:var(--rs);font-size:0.75rem;cursor:pointer;}
 
-  /* MOBILE NAV */
-  .mob-nav{display:none;background:var(--navy2);padding:10px 12px;gap:8px;flex-direction:column;}
-  .mob-sel{width:100%;padding:11px 12px;border:none;border-radius:var(--rs);font-family:var(--font);font-size:0.95rem;font-weight:500;background:#243550;color:white;outline:none;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%23aaa' d='M5 6L0 0h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}
-  .mob-sel option{background:#1E2D40;}
-  .mob-sel optgroup{background:#1E2D40;font-style:normal;font-weight:700;color:rgba(255,255,255,0.5);}
-  .mob-cat{display:none;}
-  .mob-cat.vis{display:block;}
-  .mob-new{width:100%;padding:12px;background:var(--terra);color:white;border:none;border-radius:var(--rs);font-family:var(--font);font-size:1rem;font-weight:600;cursor:pointer;margin-top:2px;}
-  .mob-new:active{background:var(--terra-dk);}
+  /* PULSANTE FLUTTUANTE MOBILE */
+  .fab-new {display:none;position:fixed;bottom:24px;right:24px;width:56px;height:56px;border-radius:50%;background:var(--terra);color:white;font-size:1.8rem;border:none;box-shadow:0 4px 14px rgba(196,113,74,0.45);cursor:pointer;z-index:90;align-items:center;justify-content:center;line-height:1;}
+  .fab-new:active {background:var(--terra-dk);transform:scale(0.96);}
 
-  .app-body{display:flex;flex:1;min-height:0;}
+  /* NAVIGAZIONE MOBILE (Hamburger Menu) */
+  .mob-nav{display:none;background:var(--ww);padding:10px 16px;border-bottom:1px solid var(--border);}
+  .hamburger{background:none;border:none;font-size:1.4rem;color:var(--navy);display:flex;align-items:center;gap:8px;font-family:var(--font);font-weight:600;cursor:pointer;}
+  .sb-backdrop{display:none;}
+  
+  .app-body{display:flex;flex:1;min-height:0;position:relative;}
 
   /* SIDEBAR */
-  aside{width:260px;min-width:260px;background:var(--ww);border-right:1px solid var(--border);overflow-y:auto;padding:14px 0;}
+  aside{width:260px;min-width:260px;background:var(--ww);border-right:1px solid var(--border);overflow-y:auto;padding:14px 0;transition:left 0.3s ease;}
   .sf{padding:9px 16px;font-weight:600;font-size:0.76rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--lt);display:flex;align-items:center;gap:7px;cursor:pointer;user-select:none;}
   .sf .ch{margin-left:auto;transition:transform 0.18s;font-size:0.62rem;}
   .sf.open .ch{transform:rotate(90deg);}
@@ -99,7 +98,7 @@
   .topbar{background:var(--ww);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
   .bc{font-size:0.82rem;color:var(--lt);}
   .fps{display:flex;gap:6px;flex-wrap:wrap;}
-  .pill{padding:5px 12px;border-radius:20px;font-size:0.76rem;font-weight:500;border:1px solid var(--border);cursor:pointer;background:white;color:var(--mid);white-space:nowrap;}
+  .pill{padding:5px 12px;border-radius:20px;font-size:0.76rem;font-weight:500;border:1px solid var(--border);cursor:pointer;background:white;color:var(--mid);white-space:nowrap;user-select:none;}
   .pill:hover{border-color:var(--terra);color:var(--terra);}
   .pill.active{background:var(--terra);color:white;border-color:var(--terra);}
   .sbox{margin-left:auto;position:relative;}
@@ -199,16 +198,30 @@
     .ib:hover{background:var(--terra);color:white;}
     .ib.d:hover{background:#d9534f;color:white;}
   }
+  
+  /* REGOLE SPECIFICHE PER TELEFONO */
   @media(max-width:700px){
-    aside{display:none;}
+    /* La sidebar diventa un pannello a scomparsa (Off-canvas) */
+    aside{display:block; position:fixed; top:0; left:-100%; bottom:0; z-index:1000; box-shadow: 2px 0 10px rgba(0,0,0,0.2);}
+    aside.open{left:0;}
+    
+    /* Sfondo scuro quando si apre la sidebar */
+    .sb-backdrop{display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:999;}
+    .sb-backdrop.open{display:block;}
+
     .btn-hdr{display:none;}
-    .mob-nav{display:flex;}
-    .topbar{padding:8px 12px;gap:8px;}
-    .fps{display:none;}
+    .mob-nav{display:flex;} 
+    
+    .topbar{padding:10px 12px;flex-direction:column;align-items:stretch;gap:10px;}
+    
+    /* Pills a scorrimento orizzontale */
+    .fps{display:flex;flex-wrap:nowrap;overflow-x:auto;padding-bottom:5px;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
+    .fps::-webkit-scrollbar{display:none;}
+    
     .sbox{margin-left:0;width:100%;}
     .sbox input{width:100%!important;}
     .bc{display:none;}
-    .ca{padding:10px 12px;}
+    .ca{padding:10px 12px;padding-bottom:90px;} 
     .cg{grid-template-columns:1fr;gap:9px;}
     .sbar{padding:0 10px;}
     .sp{padding:7px 8px;font-size:0.72rem;}
@@ -223,7 +236,7 @@
 <div class="login-screen" id="loginScreen">
   <div class="login-box">
     <h2>🏠 Gestionale Case</h2>
-    <p>Inserisci le credenziali oppure accedi come Ospite</p>
+    <p>Area Riservata agli Amministratori</p>
     
     <div class="login-field">
       <label>Nome Utente</label>
@@ -235,15 +248,15 @@
       <button type="button" class="toggle-password" onclick="togglePasswordVisibility()">👁️</button>
     </div>
     
-    <button class="login-btn-admin" onclick="eseguiLogin()">Accedi come Amministratore</button>
-    <button class="login-btn-guest" onclick="accessoLibero()">Entra con Accesso Libero (Sola Lettura)</button>
+    <button class="login-btn-admin" id="btn_login" onclick="eseguiLogin()">Accedi</button>
+    <button class="login-btn-guest" onclick="accessoLibero()">Accesso Libero</button>
     
     <div class="login-err" id="loginError">Username o Password errati.</div>
   </div>
 </div>
 
 <header>
-  <h1>🏠 Gestionale <span>Contatti</span> <span id="roleBadge" style="font-size:0.7rem; background:rgba(255,255,255,0.2); padding:3px 7px; border-radius:10px; font-family:var(--font)"></span></h1>
+  <h1>🏠 Gestionale <span>Contatti</span> <span id="roleBadge" style="display:none;"></span></h1>
   <div class="hright">
     <button class="btn-hdr" id="hdr_btn_nuovo" onclick="openAdd()">＋ Nuovo</button>
     <button class="btn-logout" onclick="logout()">Esci</button>
@@ -254,28 +267,16 @@
   <span class="dot"></span><span id="bannerTxt"></span>
 </div>
 
+<!-- NAVIGAZIONE MOBILE (Sostituito il select con l'Hamburger) -->
 <div class="mob-nav">
-  <select class="mob-sel" id="mob_cartella" onchange="onMobC()">
-    <option value="">🏠 Tutte le case</option>
-    <option value="Casa Paese Piano 1°">🏠 Casa Paese Piano 1°</option>
-    <option value="Casa Paese Ultimo Piano">🏡 Casa Paese Ultimo Piano</option>
-    <option value="Casa Stazione">🚉 Casa Stazione</option>
-    <option value="Monolocale">📐 Monolocale</option>
-  </select>
-  <select class="mob-sel mob-cat" id="mob_categoria" onchange="onMobCat()">
-    <option value="">📋 Tutte le categorie</option>
-    <option value="stagionale">🌿 Stagionale</option>
-    <option value="annuale">📆 Annuale</option>
-    <option value="semestrale">🗓️ Semestrale</option>
-    <option value="estate">☀️ Estate</option>
-    <option value="solo-info">🟣 Solo Informazioni</option>
-    <optgroup label="🇦🇷 Argentini">
-      <option value="argentini-estate">🇦🇷 Argentini Estate</option>
-      <option value="argentini-inverno">🇦🇷 Argentini Inverno</option>
-    </optgroup>
-  </select>
-  <button class="mob-new" id="mob_btn_nuovo" onclick="openAdd()">＋ Nuovo Contatto</button>
+  <button class="hamburger" onclick="toggleSidebar()">☰ <span style="font-size:1rem; margin-left:4px;">Strutture & Filtri</span></button>
 </div>
+
+<!-- SFONDO SCURO PER SIDEBAR MOBILE -->
+<div class="sb-backdrop" id="sbBackdrop" onclick="toggleSidebar()"></div>
+
+<!-- PULSANTE FLUTTUANTE (Solo su mobile per gli Admin) -->
+<button class="fab-new" id="fab_btn_nuovo" onclick="openAdd()">＋</button>
 
 <div class="app-body">
   <aside id="sidebar"></aside>
@@ -283,7 +284,7 @@
     <div class="sbar" id="sbar"></div>
     <div class="topbar">
       <div class="bc" id="bc"></div>
-      <div class="fps" id="fps"></div>
+      <div class="fps" id="fps"></div> <!-- Pills a scorrimento -->
       <div class="sbox">
         <span class="si-ico">🔍</span>
         <input type="search" placeholder="Cerca…" id="srch" oninput="render()" autocomplete="off">
@@ -331,7 +332,6 @@
           </select>
         </div>
         
-        <!-- SELETTORE DISPONIBILITÀ -->
         <div class="fl full"><label>Stato Occupazione (Pallino)</label>
           <select id="f_stato_manuale">
             <option value="auto">⚙️ Calcola automaticamente (In base alle date)</option>
@@ -375,14 +375,12 @@
 </div>
 
 <script>
-const ADMIN_USERS = ['Francesco', 'Vittoria'];
-const ADMIN_PASS = 'Gestionale2026';
+// Rimossi gli array in chiaro ADMIN_USERS e ADMIN_PASS
 
 const SB_URL='https://szpyhbtfoxdsatcrksfo.supabase.co';
 const SB_KEY='sb_publishable_H0cfXThFKxloHuJfyGPD0A_PflUFQY_';
 const HDR={'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY};
 
-// RIGA FONDAMENTALE CHE RISOLVE L'ERRORE IN CONSOLE
 const $=id=>document.getElementById(id);
 
 let contacts=[],editId=null,curApts=[],fC=null,fCat=null,saving=false;
@@ -411,17 +409,48 @@ function togglePasswordVisibility() {
   passInput.type = (passInput.type === 'password') ? 'text' : 'password';
 }
 
-function eseguiLogin(){
+// LOGICA LOGIN COLLEGATA AL DATABASE SUPABASE (Tabella "utenti")
+async function eseguiLogin(){
   const user = $('l_user').value.trim();
   const pass = $('l_pass').value;
+  const btn = $('btn_login');
+  const err = $('loginError');
   
-  if(ADMIN_USERS.includes(user) && pass === ADMIN_PASS){
-    isAdmin = true;
-    $('loginError').style.display = 'none';
-    $('loginScreen').style.display = 'none';
-    applicaRuolo();
-  } else {
-    $('loginError').style.display = 'block';
+  if(!user || !pass){
+    err.textContent = "Inserisci username e password.";
+    err.style.display = 'block';
+    return;
+  }
+  
+  btn.textContent = "Verifica...";
+  btn.disabled = true;
+  err.style.display = 'none';
+
+  try {
+    // Interroghiamo la tabella "utenti" filtrando per username e password
+    const res = await fetch(`${SB_URL}/rest/v1/utenti?username=eq.${user}&password=eq.${pass}&select=*`, {headers:HDR});
+    
+    if(!res.ok) throw new Error("Errore API");
+    
+    const data = await res.json();
+    
+    if(data && data.length > 0){
+      // Trovata corrispondenza nel database
+      isAdmin = true;
+      err.style.display = 'none';
+      $('loginScreen').style.display = 'none';
+      applicaRuolo();
+    } else {
+      err.textContent = "Username o Password errati.";
+      err.style.display = 'block';
+    }
+  } catch(e) {
+    err.textContent = "Errore di connessione al server.";
+    err.style.display = 'block';
+    console.error(e);
+  } finally {
+    btn.textContent = "Accedi";
+    btn.disabled = false;
   }
 }
 
@@ -440,16 +469,31 @@ function logout(){
 }
 
 function applicaRuolo(){
-  if(isAdmin){
-    $('roleBadge').textContent = "ADMIN";
-    $('roleBadge').style.background = "#d9534f";
-  } else {
-    $('roleBadge').textContent = "OSPITE (Lettura)";
-    $('roleBadge').style.background = "#5bc0de";
-  }
+  $('roleBadge').style.display = 'none';
   $('hdr_btn_nuovo').style.display = isAdmin ? 'block' : 'none';
-  $('mob_btn_nuovo').style.display = isAdmin ? 'block' : 'none';
+  
+  if (isAdmin && window.innerWidth <= 700) {
+    $('fab_btn_nuovo').style.display = 'flex';
+  } else {
+    $('fab_btn_nuovo').style.display = 'none';
+  }
   render();
+}
+
+window.addEventListener('resize', () => {
+    if (isAdmin && window.innerWidth <= 700) {
+        $('fab_btn_nuovo').style.display = 'flex';
+    } else {
+        $('fab_btn_nuovo').style.display = 'none';
+    }
+});
+
+// FUNZIONE PER APRIRE/CHIUDERE LA SIDEBAR SU MOBILE
+function toggleSidebar(){
+  const sb = $('sidebar');
+  const bd = $('sbBackdrop');
+  sb.classList.toggle('open');
+  bd.classList.toggle('open');
 }
 
 function calcolaStatoCasa(c){
@@ -567,7 +611,15 @@ function togF(el,folder){
   else sf(null,null);
 }
 function togArg(el){el.classList.toggle('open');el.nextElementSibling.toggle('open');}
-function sf(c,cat){fC=c;fCat=cat;render();}
+
+// Aggiornato: quando clicchi un filtro dal menù, se sei da telefono, chiude la barra laterale
+function sf(c,cat){
+  fC=c;fCat=cat;render();
+  if(window.innerWidth <= 700) {
+    $('sidebar').classList.remove('open');
+    $('sbBackdrop').classList.remove('open');
+  }
+}
 
 let argPillsOpen=false;
 function buildPills(){
@@ -660,14 +712,6 @@ function render(){
     </div>`;
   }).join('');
 }
-
-function onMobC(){
-  const v=$('mob_cartella').value,ce=$('mob_categoria');
-  fC=v||null;fCat=null;ce.value='';
-  v?ce.classList.add('vis'):ce.classList.remove('vis');
-  render();
-}
-function onMobCat(){fCat=$('mob_categoria').value||null;render();}
 
 function openAdd(){
   if(!isAdmin) return;
