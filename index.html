@@ -432,6 +432,10 @@
 </div>
 
 <script>
+// Le vecchie credenziali, ripristinate per sbloccarti
+const ADMIN_USERS = ['Francesco', 'Vittoria'];
+const ADMIN_PASS = 'Gestionale2026';
+
 const SB_URL='https://szpyhbtfoxdsatcrksfo.supabase.co';
 const SB_KEY='sb_publishable_H0cfXThFKxloHuJfyGPD0A_PflUFQY_';
 const HDR={'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY};
@@ -465,50 +469,29 @@ function togglePasswordVisibility() {
   passInput.type = (passInput.type === 'password') ? 'text' : 'password';
 }
 
-// LOGICA LOGIN (Aggiornata per gestire i caratteri speciali)
-async function eseguiLogin(isSilent = false){
+// LOGICA LOGIN (Ripristinata alle credenziali fisse per aggirare la mancanza della tabella 'utenti')
+function eseguiLogin(){
   const user = $('l_user').value.trim();
   const pass = $('l_pass').value;
-  const btn = $('btn_login');
   const err = $('loginError');
   
-  if(!user || !pass){
-    if(!isSilent){ err.textContent = "Inserisci username e password."; err.style.display = 'block'; }
-    return;
-  }
-  
-  if(!isSilent){ btn.textContent = "Verifica..."; btn.disabled = true; err.style.display = 'none'; }
-
-  try {
-    // encodeURIComponent permette di usare caratteri speciali nella password senza rompere la richiesta
-    const url = `${SB_URL}/rest/v1/utenti?username=eq.${encodeURIComponent(user)}&password=eq.${encodeURIComponent(pass)}&select=*`;
-    const res = await fetch(url, {headers:HDR});
+  if(ADMIN_USERS.includes(user) && pass === ADMIN_PASS){
+    isAdmin = true;
     
-    if(!res.ok) throw new Error("Errore API");
-    const data = await res.json();
-    
-    if(data && data.length > 0){
-      isAdmin = true;
-      
-      if($('l_remember').checked) {
-        localStorage.setItem('gest_u', user);
-        localStorage.setItem('gest_p', pass);
-      } else {
-        localStorage.removeItem('gest_u');
-        localStorage.removeItem('gest_p');
-      }
-
-      err.style.display = 'none';
-      $('loginScreen').style.display = 'none';
-      applicaRuolo();
+    if($('l_remember').checked) {
+      localStorage.setItem('gest_u', user);
+      localStorage.setItem('gest_p', pass);
     } else {
-      if(!isSilent) { err.textContent = "Username o Password errati."; err.style.display = 'block'; }
+      localStorage.removeItem('gest_u');
+      localStorage.removeItem('gest_p');
     }
-  } catch(e) {
-    if(!isSilent) { err.textContent = "Errore di connessione."; err.style.display = 'block'; }
-    console.error(e);
-  } finally {
-    if(!isSilent) { btn.textContent = "Accedi"; btn.disabled = false; }
+
+    err.style.display = 'none';
+    $('loginScreen').style.display = 'none';
+    applicaRuolo();
+  } else {
+    err.textContent = "Username o Password errati.";
+    err.style.display = 'block';
   }
 }
 
@@ -584,19 +567,20 @@ function banner(state,txt){
   if(bT)clearTimeout(bT); if(state==='ok'||state==='err') bT=setTimeout(()=>b.classList.remove('show'),2500);
 }
 
+// === CORRETTE LE API PER CORRISPONDERE ALLE TUE COLONNE IN ITALIANO ("contatti", "dati", "aggiornato_alle") ===
 async function dbRead(){
-  const r=await fetch(`${SB_URL}/rest/v1/contacts?select=*&order=updated_at.desc`,{headers:HDR});
+  const r=await fetch(`${SB_URL}/rest/v1/contatti?select=*&order=aggiornato_alle.desc`,{headers:HDR});
   if(!r.ok)throw new Error('read');
-  const rows=await r.json(); return rows.map(row=>({...row.data,id:row.id}));
+  const rows=await r.json(); return rows.map(row=>({...row.dati,id:row.id}));
 }
 async function dbUpsert(c){
   if(!isAdmin) return;
-  const r=await fetch(`${SB_URL}/rest/v1/contacts`,{method:'POST',headers:{...HDR,'Prefer':'resolution=merge-duplicates'},body:JSON.stringify({id:c.id,data:c,updated_at:new Date().toISOString()})});
+  const r=await fetch(`${SB_URL}/rest/v1/contatti`,{method:'POST',headers:{...HDR,'Prefer':'resolution=merge-duplicates'},body:JSON.stringify({id:c.id,dati:c,aggiornato_alle:new Date().toISOString()})});
   if(!r.ok)throw new Error('upsert');
 }
 async function dbDelete(id){
   if(!isAdmin) return;
-  const r=await fetch(`${SB_URL}/rest/v1/contacts?id=eq.${id}`,{method:'DELETE',headers:HDR});
+  const r=await fetch(`${SB_URL}/rest/v1/contatti?id=eq.${id}`,{method:'DELETE',headers:HDR});
   if(!r.ok)throw new Error('delete');
 }
 
@@ -607,7 +591,7 @@ function load(){
     $('l_user').value = su;
     $('l_pass').value = sp;
     $('l_remember').checked = true;
-    eseguiLogin(true);
+    eseguiLogin();
   }
 
   const cached=localStorage.getItem('sb_cache');
