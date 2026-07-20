@@ -33,9 +33,13 @@
   .toggle-password {position:absolute;right:12px;bottom:11px;background:none;border:none;cursor:pointer;color:var(--lt);font-size:1.1rem;display:flex;align-items:center;justify-content:center;}
   .login-btn-admin {width:100%;padding:12px;background:var(--terra);color:white;border:none;border-radius:var(--rs);font-family:var(--font);font-size:0.95rem;font-weight:600;cursor:pointer;margin-top:10px;margin-bottom:12px;}
   .login-btn-admin:active {background:var(--terra-dk);}
-  .login-btn-admin:disabled {background:#ccc; cursor:not-allowed;}
   .login-btn-guest {background:none;border:none;color:var(--forest);font-size:0.88rem;font-weight:600;cursor:pointer;text-decoration:underline;}
   .login-err {color:#d9534f;font-size:0.8rem;margin-top:8px;display:none;font-weight:500;}
+  
+  /* RICORDAMI CHECKBOX */
+  .remember-row {display:flex; align-items:center; gap:8px; font-size:0.85rem; color:var(--mid); margin-bottom:15px; text-align:left;}
+  .remember-row input {width:16px; height:16px; accent-color:var(--terra); cursor:pointer;}
+  .remember-row label {cursor:pointer;}
 
   /* INTERFACCIA PRINCIPALE */
   header{background:var(--navy);color:white;padding:0 20px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,0.25);}
@@ -91,6 +95,17 @@
   .bdg.z{background:var(--border);color:var(--lt);}
 
   main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+  
+  /* DASHBOARD OPERATIVA (Aggiunta chirurgica) */
+  .dash-container{padding:12px 20px;background:white;border-bottom:1px solid var(--border);display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;}
+  .dash-container::-webkit-scrollbar{display:none;}
+  .dash-card{min-width:200px;padding:10px 14px;border-radius:var(--rs);border-left:4px solid var(--lt);background:var(--cream);font-size:0.85rem; flex-shrink:0;}
+  .dash-card.alert-in{border-left-color:var(--forest);background:rgba(58,90,64,0.08);}
+  .dash-card.alert-out{border-left-color:var(--terra);background:rgba(196,113,74,0.08);}
+  .dash-card.alert-apt{border-left-color:var(--gold);background:rgba(201,168,76,0.12);}
+  .dash-title{font-weight:700;color:var(--navy);margin-bottom:4px;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.05em;}
+  .dash-text{color:var(--mid);line-height:1.4;}
+
   .sbar{display:flex;border-bottom:1px solid var(--border);background:var(--ww);padding:0 20px;overflow-x:auto;scrollbar-width:none;}
   .sbar::-webkit-scrollbar{display:none;}
   .sp{padding:8px 14px;font-size:0.78rem;color:var(--lt);white-space:nowrap;display:flex;align-items:center;gap:5px;}
@@ -98,14 +113,17 @@
   .topbar{background:var(--ww);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
   .bc{font-size:0.82rem;color:var(--lt);}
   .fps{display:flex;gap:6px;flex-wrap:wrap;}
+  
   .pill{padding:5px 12px;border-radius:20px;font-size:0.76rem;font-weight:500;border:1px solid var(--border);cursor:pointer;background:white;color:var(--mid);white-space:nowrap;user-select:none;}
   .pill:hover{border-color:var(--terra);color:var(--terra);}
   .pill.active{background:var(--terra);color:white;border-color:var(--terra);}
-  .sbox{margin-left:auto;position:relative;}
-  .sbox input{padding:8px 12px 8px 32px;border:1px solid var(--border);border-radius:20px;font-family:var(--font);font-size:0.85rem;background:var(--cream);width:190px;outline:none;}
+  
+  .sbox{position:relative; width:100%; max-width:200px;}
+  .sbox input{padding:8px 12px 8px 32px;border:1px solid var(--border);border-radius:20px;font-family:var(--font);font-size:0.85rem;background:var(--cream);width:100%;outline:none;}
   .sbox input:focus{border-color:var(--terra);}
   .si-ico{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--lt);font-size:0.8rem;}
 
+  /* CARDS LISTA */
   .ca{flex:1;overflow-y:auto;padding:16px 20px;-webkit-overflow-scrolling:touch;}
   .cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px;}
   .es{display:flex;flex-direction:column;align-items:center;justify-content:center;height:240px;color:var(--lt);gap:10px;}
@@ -120,6 +138,7 @@
   .cc.cat-argentini-inverno::before{background:#3A5A8A;}
   .cc.cat-solo-info::before{background:#8A2BE2;}
   .cc:active{opacity:0.85;}
+  .cc:hover{box-shadow:var(--sh);}
 
   .ctop{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;}
   .av{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;flex-shrink:0;color:white;}
@@ -148,6 +167,24 @@
   .ib{width:30px;height:30px;border:none;border-radius:6px;background:var(--cream);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.82rem;color:var(--mid);}
   .ib:active{background:var(--terra);color:white;}
   .ib.d:active{background:#d9534f;color:white;}
+  @media(min-width:701px){
+    .ib:hover{background:var(--terra);color:white;}
+    .ib.d:hover{background:#d9534f;color:white;}
+  }
+
+  /* CALENDARIO TIMELINE */
+  .cal-container{display:none; flex-direction:column; flex:1; overflow:hidden; background:var(--cream);}
+  .cal-container.active{display:flex;}
+  .cal-wrapper{flex:1; overflow:auto; padding:10px 20px; position:relative;}
+  .cal-grid{display:grid; grid-template-columns: 140px repeat(30, minmax(40px, 1fr)); gap:1px; background:var(--border);}
+  .cal-header-row{display:contents;}
+  .cal-cell-hdr{background:var(--navy); color:white; padding:8px 4px; font-size:0.7rem; text-align:center; position:sticky; top:0; z-index:2;}
+  .cal-cell-hdr.house{left:0; z-index:3; text-align:left; padding-left:10px;}
+  .cal-row{display:contents;}
+  .cal-cell-house{background:var(--ww); padding:10px; font-size:0.8rem; font-weight:600; color:var(--navy); position:sticky; left:0; z-index:1; border-right:1px solid var(--border);}
+  .cal-cell-day{background:white; height:45px; position:relative;}
+  .cal-bar{position:absolute; top:4px; bottom:4px; left:0; right:0; background:var(--forest); border-radius:4px; color:white; font-size:0.65rem; padding:2px 6px; overflow:hidden; white-space:nowrap; cursor:pointer; opacity:0.95; z-index:5; display:flex; align-items:center; box-shadow:0 1px 3px rgba(0,0,0,0.2);}
+  .cal-bar:hover{opacity:1; z-index:10; transform:scale(1.02);}
 
   /* MODAL */
   .ov{position:fixed;inset:0;background:rgba(10,10,10,0.55);z-index:200;display:none;align-items:flex-end;justify-content:center;}
@@ -194,31 +231,22 @@
     .modal{border-radius:14px;max-height:88vh;}
     .mh{border-radius:14px 14px 0 0;}
     .mh::before{display:none;}
-    .cc:hover{box-shadow:var(--sh);}
-    .ib:hover{background:var(--terra);color:white;}
-    .ib.d:hover{background:#d9534f;color:white;}
   }
   
   /* REGOLE SPECIFICHE PER TELEFONO */
   @media(max-width:700px){
-    /* La sidebar diventa un pannello a scomparsa (Off-canvas) */
     aside{display:block; position:fixed; top:0; left:-100%; bottom:0; z-index:1000; box-shadow: 2px 0 10px rgba(0,0,0,0.2);}
     aside.open{left:0;}
-    
-    /* Sfondo scuro quando si apre la sidebar */
     .sb-backdrop{display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:999;}
     .sb-backdrop.open{display:block;}
-
     .btn-hdr{display:none;}
     .mob-nav{display:flex;} 
     
     .topbar{padding:10px 12px;flex-direction:column;align-items:stretch;gap:10px;}
-    
-    /* Pills a scorrimento orizzontale */
     .fps{display:flex;flex-wrap:nowrap;overflow-x:auto;padding-bottom:5px;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
     .fps::-webkit-scrollbar{display:none;}
     
-    .sbox{margin-left:0;width:100%;}
+    .sbox{margin-left:0;width:100%; max-width:none;}
     .sbox input{width:100%!important;}
     .bc{display:none;}
     .ca{padding:10px 12px;padding-bottom:90px;} 
@@ -232,7 +260,7 @@
 </head>
 <body>
 
-<!-- SCHERMATA LOGIN DI BENVENUTO -->
+<!-- SCHERMATA LOGIN -->
 <div class="login-screen" id="loginScreen">
   <div class="login-box">
     <h2>🏠 Gestionale Case</h2>
@@ -246,6 +274,12 @@
       <label>Password</label>
       <input type="password" id="l_pass" placeholder="••••••••" autocomplete="current-password">
       <button type="button" class="toggle-password" onclick="togglePasswordVisibility()">👁️</button>
+    </div>
+    
+    <!-- NUOVO: SPUNTA RICORDAMI -->
+    <div class="remember-row">
+      <input type="checkbox" id="l_remember" checked>
+      <label for="l_remember">Ricorda le mie credenziali</label>
     </div>
     
     <button class="login-btn-admin" id="btn_login" onclick="eseguiLogin()">Accedi</button>
@@ -267,36 +301,52 @@
   <span class="dot"></span><span id="bannerTxt"></span>
 </div>
 
-<!-- NAVIGAZIONE MOBILE (Sostituito il select con l'Hamburger) -->
 <div class="mob-nav">
   <button class="hamburger" onclick="toggleSidebar()">☰ <span style="font-size:1rem; margin-left:4px;">Strutture & Filtri</span></button>
 </div>
-
-<!-- SFONDO SCURO PER SIDEBAR MOBILE -->
 <div class="sb-backdrop" id="sbBackdrop" onclick="toggleSidebar()"></div>
-
-<!-- PULSANTE FLUTTUANTE (Solo su mobile per gli Admin) -->
 <button class="fab-new" id="fab_btn_nuovo" onclick="openAdd()">＋</button>
 
 <div class="app-body">
   <aside id="sidebar"></aside>
   <main>
+    
+    <!-- DASHBOARD OPERATIVA -->
+    <div class="dash-container" id="dashboard"></div>
+
     <div class="sbar" id="sbar"></div>
     <div class="topbar">
       <div class="bc" id="bc"></div>
-      <div class="fps" id="fps"></div> <!-- Pills a scorrimento -->
-      <div class="sbox">
-        <span class="si-ico">🔍</span>
-        <input type="search" placeholder="Cerca…" id="srch" oninput="render()" autocomplete="off">
+      <div class="fps" id="fps"></div>
+      
+      <!-- BOTTONI TOGGLE VISTA -->
+      <div style="margin-left:auto; display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+        <div style="display:flex; gap:5px;">
+          <button class="pill active" id="btnList" style="margin:0;" onclick="switchView('list')">📋 Lista</button>
+          <button class="pill" id="btnCal" style="margin:0;" onclick="switchView('calendar')">📅 Calendario</button>
+        </div>
+        <div class="sbox" style="margin:0;">
+          <span class="si-ico">🔍</span>
+          <input type="search" placeholder="Cerca…" id="srch" oninput="render()" autocomplete="off">
+        </div>
       </div>
     </div>
-    <div class="ca">
+    
+    <!-- VISTA LISTA (CARDS) -->
+    <div class="ca" id="viewList">
       <div class="cg" id="cg"></div>
       <div class="es" id="es" style="display:none"><span class="bi">📭</span><span>Nessun contatto</span></div>
     </div>
+
+    <!-- VISTA CALENDARIO TIMELINE -->
+    <div class="cal-container" id="viewCalendar">
+      <div class="cal-wrapper" id="calWrapper"></div>
+    </div>
+
   </main>
 </div>
 
+<!-- MODAL INSERIMENTO / MODIFICA -->
 <div class="ov" id="fov">
   <div class="modal">
     <div class="mh"><div class="mt" id="ftitle">Nuovo Contatto</div><button class="xb" onclick="closeForm()">✕</button></div>
@@ -346,6 +396,12 @@
         <div class="fl"><label>Da</label><input type="date" id="f_periodo_da"></div>
         <div class="fl"><label>A</label><input type="date" id="f_periodo_a"></div>
         <div class="fl full"><label>Dettagli periodo</label><input type="text" id="f_periodo_note" placeholder="es. solo week-end, luglio-agosto…"></div>
+        
+        <!-- CAMPI ECONOMICI -->
+        <div class="sdiv">💰 Dettagli Economici</div>
+        <div class="fl"><label>Prezzo Pattuito (€)</label><input type="number" id="f_prezzo" placeholder="es. 500"></div>
+        <div class="fl"><label>Caparra Versata (€)</label><input type="number" id="f_caparra" placeholder="es. 150"></div>
+
         <div class="sdiv">📞 Contatto ricevuto</div>
         <div class="fl"><label>Data contatto</label><input type="date" id="f_data_contatto"></div>
         <div class="fl"><label>Chi ha parlato</label><input type="text" id="f_chi" placeholder="es. Io, Tu, Marco…"></div>
@@ -366,6 +422,7 @@
   </div>
 </div>
 
+<!-- MODAL DETTAGLIO (Ripristinato) -->
 <div class="ov" id="dov">
   <div class="modal">
     <div class="mh"><div class="mt" id="dtitle">Dettaglio</div><button class="xb" onclick="closeDetail()">✕</button></div>
@@ -375,8 +432,6 @@
 </div>
 
 <script>
-// Rimossi gli array in chiaro ADMIN_USERS e ADMIN_PASS
-
 const SB_URL='https://szpyhbtfoxdsatcrksfo.supabase.co';
 const SB_KEY='sb_publishable_H0cfXThFKxloHuJfyGPD0A_PflUFQY_';
 const HDR={'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY};
@@ -384,7 +439,8 @@ const HDR={'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Be
 const $=id=>document.getElementById(id);
 
 let contacts=[],editId=null,curApts=[],fC=null,fCat=null,saving=false;
-let isAdmin=false;
+let isAdmin=false, currentView='list';
+
 const FL=['Casa Paese Piano 1°','Casa Paese Ultimo Piano','Casa Stazione','Monolocale'];
 const CATS=['stagionale','annuale','semestrale','estate','argentini-estate','argentini-inverno','solo-info'];
 const CL={
@@ -409,48 +465,48 @@ function togglePasswordVisibility() {
   passInput.type = (passInput.type === 'password') ? 'text' : 'password';
 }
 
-// LOGICA LOGIN COLLEGATA AL DATABASE SUPABASE (Tabella "utenti")
-async function eseguiLogin(){
+// LOGICA LOGIN E SALVATAGGIO CREDENZIALI
+async function eseguiLogin(isSilent = false){
   const user = $('l_user').value.trim();
   const pass = $('l_pass').value;
   const btn = $('btn_login');
   const err = $('loginError');
   
   if(!user || !pass){
-    err.textContent = "Inserisci username e password.";
-    err.style.display = 'block';
+    if(!isSilent){ err.textContent = "Inserisci username e password."; err.style.display = 'block'; }
     return;
   }
   
-  btn.textContent = "Verifica...";
-  btn.disabled = true;
-  err.style.display = 'none';
+  if(!isSilent){ btn.textContent = "Verifica..."; btn.disabled = true; err.style.display = 'none'; }
 
   try {
-    // Interroghiamo la tabella "utenti" filtrando per username e password
     const res = await fetch(`${SB_URL}/rest/v1/utenti?username=eq.${user}&password=eq.${pass}&select=*`, {headers:HDR});
-    
     if(!res.ok) throw new Error("Errore API");
-    
     const data = await res.json();
     
     if(data && data.length > 0){
-      // Trovata corrispondenza nel database
       isAdmin = true;
+      
+      // Salvataggio credenziali
+      if($('l_remember').checked) {
+        localStorage.setItem('gest_u', user);
+        localStorage.setItem('gest_p', pass);
+      } else {
+        localStorage.removeItem('gest_u');
+        localStorage.removeItem('gest_p');
+      }
+
       err.style.display = 'none';
       $('loginScreen').style.display = 'none';
       applicaRuolo();
     } else {
-      err.textContent = "Username o Password errati.";
-      err.style.display = 'block';
+      if(!isSilent) { err.textContent = "Username o Password errati."; err.style.display = 'block'; }
     }
   } catch(e) {
-    err.textContent = "Errore di connessione al server.";
-    err.style.display = 'block';
+    if(!isSilent) { err.textContent = "Errore di connessione."; err.style.display = 'block'; }
     console.error(e);
   } finally {
-    btn.textContent = "Accedi";
-    btn.disabled = false;
+    if(!isSilent) { btn.textContent = "Accedi"; btn.disabled = false; }
   }
 }
 
@@ -462,6 +518,9 @@ function accessoLibero(){
 
 function logout(){
   isAdmin = false;
+  // Quando si fa logout manuale rimuoviamo le credenziali
+  localStorage.removeItem('gest_u');
+  localStorage.removeItem('gest_p');
   $('l_user').value = '';
   $('l_pass').value = '';
   $('l_pass').type = 'password';
@@ -469,31 +528,27 @@ function logout(){
 }
 
 function applicaRuolo(){
-  $('roleBadge').style.display = 'none';
   $('hdr_btn_nuovo').style.display = isAdmin ? 'block' : 'none';
-  
-  if (isAdmin && window.innerWidth <= 700) {
-    $('fab_btn_nuovo').style.display = 'flex';
-  } else {
-    $('fab_btn_nuovo').style.display = 'none';
-  }
+  $('fab_btn_nuovo').style.display = (isAdmin && window.innerWidth <= 700) ? 'flex' : 'none';
   render();
 }
 
 window.addEventListener('resize', () => {
-    if (isAdmin && window.innerWidth <= 700) {
-        $('fab_btn_nuovo').style.display = 'flex';
-    } else {
-        $('fab_btn_nuovo').style.display = 'none';
-    }
+    $('fab_btn_nuovo').style.display = (isAdmin && window.innerWidth <= 700) ? 'flex' : 'none';
 });
 
-// FUNZIONE PER APRIRE/CHIUDERE LA SIDEBAR SU MOBILE
 function toggleSidebar(){
-  const sb = $('sidebar');
-  const bd = $('sbBackdrop');
-  sb.classList.toggle('open');
-  bd.classList.toggle('open');
+  $('sidebar').classList.toggle('open');
+  $('sbBackdrop').classList.toggle('open');
+}
+
+function switchView(mode){
+  currentView = mode;
+  $('btnList').classList.toggle('active', mode === 'list');
+  $('btnCal').classList.toggle('active', mode === 'calendar');
+  $('viewList').style.display = mode === 'list' ? 'block' : 'none';
+  $('viewCalendar').classList.toggle('active', mode === 'calendar');
+  render();
 }
 
 function calcolaStatoCasa(c){
@@ -514,28 +569,28 @@ function calcolaStatoCasa(c){
   return '🟢 Libera';
 }
 
+function getGCalLink(title, dateStr, note){
+  if(!dateStr) return '#';
+  const d = new Date(dateStr);
+  const d1 = d.toISOString().replace(/-|:|\.\d\d\d/g,"");
+  const d2 = new Date(d.getTime() + 3600000).toISOString().replace(/-|:|\.\d\d\d/g,""); // +1 ora di default
+  return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${d1}/${d2}&details=${encodeURIComponent(note||'')}`;
+}
+
 let bT=null;
 function banner(state,txt){
-  const b=$('banner');
-  b.className='sync-banner show '+state;
-  $('bannerTxt').textContent=txt;
-  if(bT)clearTimeout(bT);
-  if(state==='ok'||state==='err') bT=setTimeout(()=>b.classList.remove('show'),2500);
+  const b=$('banner'); b.className='sync-banner show '+state; $('bannerTxt').textContent=txt;
+  if(bT)clearTimeout(bT); if(state==='ok'||state==='err') bT=setTimeout(()=>b.classList.remove('show'),2500);
 }
 
 async function dbRead(){
   const r=await fetch(`${SB_URL}/rest/v1/contacts?select=*&order=updated_at.desc`,{headers:HDR});
   if(!r.ok)throw new Error('read');
-  const rows=await r.json();
-  return rows.map(row=>({...row.data,id:row.id}));
+  const rows=await r.json(); return rows.map(row=>({...row.data,id:row.id}));
 }
 async function dbUpsert(c){
   if(!isAdmin) return;
-  const r=await fetch(`${SB_URL}/rest/v1/contacts`,{
-    method:'POST',
-    headers:{...HDR,'Prefer':'resolution=merge-duplicates'},
-    body:JSON.stringify({id:c.id,data:c,updated_at:new Date().toISOString()})
-  });
+  const r=await fetch(`${SB_URL}/rest/v1/contacts`,{method:'POST',headers:{...HDR,'Prefer':'resolution=merge-duplicates'},body:JSON.stringify({id:c.id,data:c,updated_at:new Date().toISOString()})});
   if(!r.ok)throw new Error('upsert');
 }
 async function dbDelete(id){
@@ -545,6 +600,16 @@ async function dbDelete(id){
 }
 
 function load(){
+  // Auto-login se presente
+  const su = localStorage.getItem('gest_u');
+  const sp = localStorage.getItem('gest_p');
+  if(su && sp){
+    $('l_user').value = su;
+    $('l_pass').value = sp;
+    $('l_remember').checked = true;
+    eseguiLogin(true);
+  }
+
   const cached=localStorage.getItem('sb_cache');
   if(cached){try{contacts=JSON.parse(cached);}catch(e){contacts=[];}}
   syncFresh();
@@ -554,8 +619,7 @@ async function syncFresh(){
   try{
     const fresh=await dbRead();
     const changed=JSON.stringify(fresh)!==JSON.stringify(contacts);
-    contacts=fresh;
-    localStorage.setItem('sb_cache',JSON.stringify(contacts));
+    contacts=fresh; localStorage.setItem('sb_cache',JSON.stringify(contacts));
     if(changed)render();
     banner('ok','Aggiornato ✓');
   }catch(e){
@@ -564,40 +628,48 @@ async function syncFresh(){
   }
 }
 
+function buildDashboard(){
+  const dash=$('dashboard'); let alertsHtml='';
+  const oggi=new Date(); oggi.setHours(0,0,0,0);
+  const domani=new Date(oggi); domani.setDate(domani.getDate()+1);
+
+  contacts.forEach(c=>{
+    if(c.periodo_da){
+      const cin=new Date(c.periodo_da); cin.setHours(0,0,0,0);
+      if(cin.getTime()===oggi.getTime()) alertsHtml+=`<div class="dash-card alert-in"><div class="dash-title">🟢 Check-in Oggi</div><div class="dash-text">${c.nome} - ${c.cartella}</div></div>`;
+      if(cin.getTime()===domani.getTime()) alertsHtml+=`<div class="dash-card alert-in"><div class="dash-title">🟢 Check-in Domani</div><div class="dash-text">${c.nome} - ${c.cartella}</div></div>`;
+    }
+    if(c.periodo_a){
+      const cout=new Date(c.periodo_a); cout.setHours(0,0,0,0);
+      if(cout.getTime()===oggi.getTime()) alertsHtml+=`<div class="dash-card alert-out"><div class="dash-title">🔴 Check-out Oggi</div><div class="dash-text">${c.nome} - ${c.cartella}</div></div>`;
+    }
+    const saldo = (Number(c.prezzo)||0) - (Number(c.caparra)||0);
+    if(saldo>0 && c.periodo_da && new Date(c.periodo_da)<=oggi){
+       alertsHtml+=`<div class="dash-card alert-apt"><div class="dash-title">💰 Saldo in sospeso</div><div class="dash-text">${c.nome} deve ${saldo}€ per ${c.cartella}</div></div>`;
+    }
+  });
+  dash.innerHTML=alertsHtml||`<div class="dash-card"><div class="dash-title">☕ Nessuna urgenza</div><div class="dash-text">Tutto tranquillo per oggi.</div></div>`;
+}
+
 function buildSidebar(){
   let h=`<div class="si-all ${!fC&&!fCat?'active':''}" onclick="sf(null,null)"><span>📋</span>Tutti<span class="bdg ${!contacts.length?'z':''}">${contacts.length}</span></div>`;
   FL.forEach(folder=>{
     const fc=contacts.filter(c=>c.cartella===folder);
     const open=fC===folder;
-    h+=`<div>
-      <div class="sf ${open?'open':''}" onclick="togF(this,'${folder}')">
-        <span>${FE[folder]}</span><span style="flex:1">${folder}</span><span class="ch">▶</span>
-      </div>
+    h+=`<div><div class="sf ${open?'open':''}" onclick="togF(this,'${folder}')"><span>${FE[folder]}</span><span style="flex:1">${folder}</span><span class="ch">▶</span></div>
       <div class="si-wrap ${open?'open':''}">
-        <div class="si ${fC===folder&&!fCat?'active':''}" onclick="sf('${folder}',null)">
-          <span>📂</span>Tutti<span class="bdg ${!fc.length?'z':''}">${fc.length}</span>
-        </div>`;
-
+        <div class="si ${fC===folder&&!fCat?'active':''}" onclick="sf('${folder}',null)"><span>📂</span>Tutti<span class="bdg ${!fc.length?'z':''}">${fc.length}</span></div>`;
     ['stagionale','annuale','semestrale','estate','solo-info'].forEach(cat=>{
       const n=fc.filter(c=>c.categoria===cat).length;
-      h+=`<div class="si ${fC===folder&&fCat===cat?'active':''}" onclick="sf('${folder}','${cat}')">
-        <span>${CE[cat]}</span>${CL[cat]}<span class="bdg ${!n?'z':''}">${n}</span>
-      </div>`;
+      h+=`<div class="si ${fC===folder&&fCat===cat?'active':''}" onclick="sf('${folder}','${cat}')"><span>${CE[cat]}</span>${CL[cat]}<span class="bdg ${!n?'z':''}">${n}</span></div>`;
     });
-
     const nArg=fc.filter(c=>c.categoria==='argentini-estate'||c.categoria==='argentini-inverno').length;
     const argOpen=fC===folder&&(fCat==='argentini-estate'||fCat==='argentini-inverno');
-    h+=`<div class="si-group ${argOpen?'open':''}" onclick="togArg(this)">
-        <span>🇦🇷</span><span style="flex:1">Argentini</span>
-        <span class="bdg ${!nArg?'z':''}">${nArg}</span>
-        <span class="ch2">▶</span>
-      </div>
+    h+=`<div class="si-group ${argOpen?'open':''}" onclick="togArg(this)"><span>🇦🇷</span><span style="flex:1">Argentini</span><span class="bdg ${!nArg?'z':''}">${nArg}</span><span class="ch2">▶</span></div>
       <div class="si-sub-wrap ${argOpen?'open':''}">`;
     ['argentini-estate','argentini-inverno'].forEach(cat=>{
       const n=fc.filter(c=>c.categoria===cat).length;
-      h+=`<div class="si sub ${fC===folder&&fCat===cat?'active':''}" onclick="sf('${folder}','${cat}')">
-          <span>${CE[cat]}</span>${CL[cat]}<span class="bdg ${!n?'z':''}">${n}</span>
-        </div>`;
+      h+=`<div class="si sub ${fC===folder&&fCat===cat?'active':''}" onclick="sf('${folder}','${cat}')"><span>${CE[cat]}</span>${CL[cat]}<span class="bdg ${!n?'z':''}">${n}</span></div>`;
     });
     h+=`</div></div></div>`;
   });
@@ -607,24 +679,17 @@ function buildSidebar(){
 function togF(el,folder){
   const wasOpen=el.classList.contains('open');
   document.querySelectorAll('.sf.open').forEach(e=>{e.classList.remove('open');e.nextElementSibling.classList.remove('open');});
-  if(!wasOpen){el.classList.add('open');el.nextElementSibling.classList.add('open');sf(folder,null);}
-  else sf(null,null);
+  if(!wasOpen){el.classList.add('open');el.nextElementSibling.classList.add('open');sf(folder,null);} else sf(null,null);
 }
 function togArg(el){el.classList.toggle('open');el.nextElementSibling.toggle('open');}
-
-// Aggiornato: quando clicchi un filtro dal menù, se sei da telefono, chiude la barra laterale
 function sf(c,cat){
   fC=c;fCat=cat;render();
-  if(window.innerWidth <= 700) {
-    $('sidebar').classList.remove('open');
-    $('sbBackdrop').classList.remove('open');
-  }
+  if(window.innerWidth <= 700) {$('sidebar').classList.remove('open'); $('sbBackdrop').classList.remove('open');}
 }
 
 let argPillsOpen=false;
 function buildPills(){
-  const isArg=fCat==='argentini-estate'||fCat==='argentini-inverno';
-  if(isArg) argPillsOpen=true;
+  const isArg=fCat==='argentini-estate'||fCat==='argentini-inverno'; if(isArg) argPillsOpen=true;
   let h=`<span class="pill ${!fCat?'active':''}" onclick="sf(fC,null)">Tutte</span>`;
   ['stagionale','annuale','semestrale','estate','solo-info'].forEach(cat=>{
     h+=`<span class="pill ${fCat===cat?'active':''}" onclick="sf(fC,'${cat}')">${CE[cat]} ${CL[cat]}</span>`;
@@ -638,8 +703,7 @@ function buildPills(){
 }
 function toggleArgPills(){
   argPillsOpen=!argPillsOpen;
-  if(!argPillsOpen&&(fCat==='argentini-estate'||fCat==='argentini-inverno')) sf(fC,null);
-  else buildPills();
+  if(!argPillsOpen&&(fCat==='argentini-estate'||fCat==='argentini-inverno')) sf(fC,null); else buildPills();
 }
 
 function buildStats(){
@@ -657,9 +721,7 @@ function buildStats(){
 }
 
 function buildBc(){
-  let p=[];
-  if(fC)p.push(FE[fC]+' '+fC);
-  if(fCat)p.push(CE[fCat]+' '+CL[fCat]);
+  let p=[]; if(fC)p.push(FE[fC]+' '+fC); if(fCat)p.push(CE[fCat]+' '+CL[fCat]);
   $('bc').textContent=p.length?p.join(' › '):'📋 Tutti';
 }
 
@@ -674,10 +736,38 @@ function getF(){
   });
 }
 
+function buildCalendar(){
+  const wrapper=$('calWrapper'); const oggi=new Date(); oggi.setHours(0,0,0,0);
+  let html=`<div class="cal-grid"><div class="cal-header-row"><div class="cal-cell-hdr house">Struttura</div>`;
+  for(let i=0;i<30;i++){const d=new Date(oggi); d.setDate(d.getDate()+i); html+=`<div class="cal-cell-hdr">${d.getDate()}/${d.getMonth()+1}</div>`;}
+  html+=`</div>`;
+  FL.forEach(house=>{
+    html+=`<div class="cal-row"><div class="cal-cell-house">${house}</div>`;
+    for(let i=0;i<30;i++) html+=`<div class="cal-cell-day"></div>`;
+    const prenotazioni=contacts.filter(c=>c.cartella===house && c.periodo_da && c.periodo_a);
+    prenotazioni.forEach(p=>{
+      const start = new Date(p.periodo_da); start.setHours(0,0,0,0);
+      const end = new Date(p.periodo_a); end.setHours(0,0,0,0);
+      let colStart = Math.ceil((start-oggi)/(1000*60*60*24)) + 1;
+      let colEnd = Math.ceil((end-oggi)/(1000*60*60*24)) + 1;
+      if(colEnd >= 1 && colStart <= 30){
+        if(colStart<1) colStart=1; if(colEnd>30) colEnd=30;
+        const len = colEnd - colStart + 1;
+        html+=`<div class="cal-bar" style="grid-column: ${colStart+1} / span ${len};" onclick="openDetail('${p.id}')">${p.nome}</div>`;
+      }
+    });
+    html+=`</div>`;
+  });
+  html+=`</div>`; wrapper.innerHTML=html;
+}
+
 function render(){
-  buildSidebar();buildPills();buildStats();buildBc();
-  const grid=$('cg'),es=$('es'),fl=getF();
-  if(!fl.length){grid.innerHTML='';es.style.display='flex';return;}
+  buildDashboard();
+  if(currentView==='calendar'){ buildCalendar(); return; }
+  
+  buildSidebar(); buildPills(); buildStats(); buildBc();
+  const grid=$('cg'), es=$('es'), fl=getF();
+  if(!fl.length){grid.innerHTML=''; es.style.display='flex'; return;}
   es.style.display='none';
   const now=new Date();
   fl.sort((a,b)=>{
@@ -685,9 +775,12 @@ function render(){
     const bn=(b.appuntamenti||[]).filter(x=>new Date(x.data)>=now)[0];
     return(an&&!bn)?-1:(!an&&bn)?1:0;
   });
+
   grid.innerHTML=fl.map(c=>{
     const nx=(c.appuntamenti||[]).filter(a=>new Date(a.data)>=now).sort((a,b)=>new Date(a.data)-new Date(b.data))[0];
     const statoCasa = calcolaStatoCasa(c);
+    const saldo = (Number(c.prezzo)||0) - (Number(c.caparra)||0);
+    const soldiHtml = c.prezzo ? (saldo>0 ? `<span class="tag info" style="background:#fdf2f2;color:#d9534f;border-color:#f5c6c6;">💰 Da saldare: ${saldo}€</span>` : `<span class="tag info" style="background:#e8f5e9;color:var(--forest);border-color:#c8e6c9;">✅ Pagato</span>`) : '';
     
     return`<div class="cc cat-${c.categoria}" onclick="openDetail('${c.id}')">
       <div class="ctop">
@@ -697,6 +790,7 @@ function render(){
       <div class="cbs">
         <span class="tag cat ${c.categoria}">${CE[c.categoria]} ${CL[c.categoria]}</span>
         ${statoCasa ? `<span class="tag info status">${statoCasa}</span>` : ''}
+        ${soldiHtml}
         ${c.tel?`<span class="tag info">📞 ${c.tel}</span>`:''}
         ${nx?`<span class="tag apt">🗓️ ${fd(nx.data)}</span>`:''}
       </div>
@@ -714,10 +808,9 @@ function render(){
 }
 
 function openAdd(){
-  if(!isAdmin) return;
-  editId=null;curApts=[];
+  if(!isAdmin) return; editId=null; curApts=[];
   $('ftitle').textContent='Nuovo Contatto';
-  ['nome','tel','email','sito','cartella','categoria','periodo_da','periodo_a','periodo_note','data_contatto','chi','note'].forEach(k=>$('f_'+k).value='');
+  ['nome','tel','email','sito','cartella','categoria','periodo_da','periodo_a','periodo_note','data_contatto','chi','note','prezzo','caparra'].forEach(k=>$('f_'+k).value='');
   $('f_stato_manuale').value = 'auto'; 
   $('apt_add_container').style.display = 'flex';
   $('form_actions').style.display = 'flex';
@@ -725,11 +818,10 @@ function openAdd(){
 }
 
 function openEdit(id){
-  if(!isAdmin) return;
-  const c=contacts.find(x=>x.id===id);if(!c)return;
+  if(!isAdmin) return; const c=contacts.find(x=>x.id===id); if(!c)return;
   editId=id;curApts=JSON.parse(JSON.stringify(c.appuntamenti||[]));
   $('ftitle').textContent='Modifica';
-  ['nome','tel','email','sito','cartella','categoria','periodo_da','periodo_a','periodo_note','data_contatto','chi','note'].forEach(k=>$('f_'+k).value=c[k]||'');
+  ['nome','tel','email','sito','cartella','categoria','periodo_da','periodo_a','periodo_note','data_contatto','chi','note','prezzo','caparra'].forEach(k=>$('f_'+k).value=c[k]||'');
   $('f_stato_manuale').value = c.stato_manuale || 'auto';
   $('apt_add_container').style.display = 'flex';
   $('form_actions').style.display = 'flex';
@@ -739,28 +831,27 @@ function openEdit(id){
 function closeForm(){$('fov').classList.remove('open');}
 
 function addApt(){
-  if(!isAdmin) return;
-  const d=$('apt_data').value,n=$('apt_note').value.trim();
+  if(!isAdmin) return; const d=$('apt_data').value,n=$('apt_note').value.trim();
   if(!d)return alert('Inserisci data e ora');
   curApts.push({id:uid(),data:d,note:n});
   $('apt_data').value='';$('apt_note').value='';rAL();
 }
 function remApt(id){
-  if(!isAdmin) return;
-  curApts=curApts.filter(a=>a.id!==id);rAL();
+  if(!isAdmin) return; curApts=curApts.filter(a=>a.id!==id);rAL();
 }
 function rAL(){
   $('al').innerHTML=!curApts.length
     ?'<div style="color:var(--lt);font-size:0.78rem;padding:2px 0">Nessun appuntamento</div>'
-    :curApts.map(a=>`<div class="ai"><span class="ad">🗓️ ${fdt(a.data)}</span><span class="an">${a.note||'—'}</span>${isAdmin ? `<button class="ib d" onclick="remApt('${a.id}')">✕</button>` : ''}</div>`).join('');
+    :curApts.map(a=>`<div class="ai">
+       <span class="ad">🗓️ ${fdt(a.data)}</span><span class="an">${a.note||'—'}</span>
+       ${isAdmin ? `<a href="${getGCalLink($('f_nome').value||'Appuntamento', a.data, a.note)}" target="_blank" style="background:#e8f0fe;color:#1a73e8;border-radius:4px;padding:3px 8px;text-decoration:none;font-size:0.75rem;font-weight:600;margin-right:5px;border:1px solid #d2e3fc;">GCal</a><button class="ib d" onclick="remApt('${a.id}')">✕</button>` : ''}
+     </div>`).join('');
 }
 
 async function saveContact(){
   if(!isAdmin) return;
   const nome=$('f_nome').value.trim(),cartella=$('f_cartella').value,categoria=$('f_categoria').value;
-  if(!nome)return alert('Nome obbligatorio');
-  if(!cartella)return alert('Seleziona una cartella');
-  if(!categoria)return alert('Seleziona una categoria');
+  if(!nome)return alert('Nome obbligatorio'); if(!cartella)return alert('Seleziona una cartella'); if(!categoria)return alert('Seleziona una categoria');
   if(saving)return;saving=true;
   const data={
     id:editId||uid(),nome,
@@ -769,98 +860,55 @@ async function saveContact(){
     stato_manuale:$('f_stato_manuale').value,
     periodo_da:$('f_periodo_da').value,periodo_a:$('f_periodo_a').value,
     periodo_note:$('f_periodo_note').value.trim(),
+    prezzo:Number($('f_prezzo').value)||0, caparra:Number($('f_caparra').value)||0,
     data_contatto:$('f_data_contatto').value,
     chi:$('f_chi').value.trim(),note:$('f_note').value.trim(),
     appuntamenti:JSON.parse(JSON.stringify(curApts)),
     createdAt:editId?(contacts.find(c=>c.id===editId)||{}).createdAt||new Date().toISOString():new Date().toISOString(),
     updatedAt:new Date().toISOString()
   };
-  if(editId){const i=contacts.findIndex(c=>c.id===editId);if(i>=0)contacts[i]=data;}
-  else contacts.unshift(data);
-  
+  if(editId){const i=contacts.findIndex(c=>c.id===editId);if(i>=0)contacts[i]=data;} else contacts.unshift(data);
   localStorage.setItem('sb_cache',JSON.stringify(contacts));
   closeForm();render();
   banner('loading','Salvataggio…');
-  try{
-    await dbUpsert(data);
-    banner('ok','Salvato su Cloud ✓');
-  }catch(e){
-    banner('err','Salvato solo in locale');
-  }finally{
-    saving=false;
-  }
+  try{ await dbUpsert(data); banner('ok','Salvato su Cloud ✓'); }catch(e){ banner('err','Salvato solo in locale'); }finally{ saving=false; }
 }
 
 async function delContact(id){
-  if(!isAdmin) return;
-  if(!confirm('Eliminare questo contatto definitivamente?'))return;
-  contacts=contacts.filter(c=>c.id!==id);
-  localStorage.setItem('sb_cache',JSON.stringify(contacts));
-  render();
+  if(!isAdmin) return; if(!confirm('Eliminare questo contatto definitivamente?'))return;
+  contacts=contacts.filter(c=>c.id!==id); localStorage.setItem('sb_cache',JSON.stringify(contacts)); render();
   banner('loading','Eliminazione…');
-  try{
-    await dbDelete(id);
-    banner('ok','Eliminato da Cloud ✓');
-  }catch(e){
-    banner('err','Errore eliminazione Cloud');
-  }
+  try{ await dbDelete(id); banner('ok','Eliminato da Cloud ✓'); }catch(e){ banner('err','Errore eliminazione Cloud'); }
 }
 
 function openDetail(id){
   const c=contacts.find(x=>x.id===id);if(!c)return;
   $('dtitle').textContent=c.nome;
-  let aptsHtml=!(c.appuntamenti||[]).length 
-    ?'<div>Nessuno</div>'
-    :c.appuntamenti.map(a=>`<div style="margin-bottom:4px"><strong>🗓️ ${fdt(a.data)}</strong> — ${a.note||'—'}</div>`).join('');
-
+  let aptsHtml=!(c.appuntamenti||[]).length ?'<div>Nessuno</div>':c.appuntamenti.map(a=>`<div style="margin-bottom:4px"><strong>🗓️ ${fdt(a.data)}</strong> — ${a.note||'—'}</div>`).join('');
   const statoCasa = calcolaStatoCasa(c);
+  
+  const saldo = (Number(c.prezzo)||0) - (Number(c.caparra)||0);
+  let ecoHtml = '';
+  if(c.prezzo || c.caparra) {
+      ecoHtml = `<div class="di full"><div class="dl">Dettaglio Economico</div><div class="dv">Prezzo: <strong>${c.prezzo||0}€</strong> — Caparra: <strong>${c.caparra||0}€</strong> <br><br>Saldo: <strong style="font-size:1.1rem; color:${saldo>0?'#d9534f':'var(--forest)'}">${saldo}€</strong></div></div>`;
+  }
+
   $('dbody').innerHTML=`
     <div class="dg">
-      <div class="di">
-        <div class="dl">Telefono</div>
-        <div class="dv">${c.tel?`<a href="tel:${c.tel}">${c.tel}</a>`:'—'}</div>
-      </div>
-      <div class="di">
-        <div class="dl">Email</div>
-        <div class="dv">${c.email?`<a href="mailto:${c.email}">${c.email}</a>`:'—'}</div>
-      </div>
-      <div class="di">
-        <div class="dl">Provenienza / Sito</div>
-        <div class="dv">${c.sito||'—'}</div>
-      </div>
-      <div class="di">
-        <div class="dl">Struttura / Categoria</div>
-        <div class="dv">${FE[c.cartella] || '📐'} ${c.cartella} / <span class="atag">${CE[c.categoria]} ${CL[c.categoria]}</span></div>
-      </div>
+      <div class="di"><div class="dl">Telefono</div><div class="dv">${c.tel?`<a href="tel:${c.tel}">${c.tel}</a>`:'—'}</div></div>
+      <div class="di"><div class="dl">Email</div><div class="dv">${c.email?`<a href="mailto:${c.email}">${c.email}</a>`:'—'}</div></div>
+      <div class="di"><div class="dl">Provenienza / Sito</div><div class="dv">${c.sito||'—'}</div></div>
+      <div class="di"><div class="dl">Struttura / Categoria</div><div class="dv">${FE[c.cartella] || '📐'} ${c.cartella} / <span class="atag">${CE[c.categoria]} ${CL[c.categoria]}</span></div></div>
       ${statoCasa ? `<div class="di"><div class="dl">Stato Occupazione</div><div class="dv"><strong>${statoCasa}</strong> ${c.stato_manuale && c.stato_manuale !== 'auto' ? '<span style="font-size:0.75rem; color:var(--lt)">(Forzato Manualmente)</span>' : ''}</div></div>` : ''}
-      <div class="di">
-        <div class="dl">Periodo</div>
-        <div class="dv">${fd(c.periodo_da)} → ${fd(c.periodo_a)}</div>
-      </div>
-      <div class="di">
-        <div class="dl">Note periodo</div>
-        <div class="dv">${c.periodo_note||'—'}</div>
-      </div>
-      <div class="di">
-        <div class="dl">Contatto ricevuto il</div>
-        <div class="dv">${fd(c.data_contatto)} da: <strong>${c.chi||'—'}</strong></div>
-      </div>
-      <div class="di full">
-        <div class="dl">Note e Motivazioni</div>
-        <div class="dn">${c.note||'Nessuna nota'}</div>
-      </div>
-      <div class="di full">
-        <div class="dl">Appuntamenti / Storico</div>
-        <div class="dv">${aptsHtml}</div>
-      </div>
+      <div class="di"><div class="dl">Periodo</div><div class="dv">${fd(c.periodo_da)} → ${fd(c.periodo_a)}</div></div>
+      <div class="di"><div class="dl">Note periodo</div><div class="dv">${c.periodo_note||'—'}</div></div>
+      ${ecoHtml}
+      <div class="di"><div class="dl">Contatto ricevuto il</div><div class="dv">${fd(c.data_contatto)} da: <strong>${c.chi||'—'}</strong></div></div>
+      <div class="di full"><div class="dl">Note e Motivazioni</div><div class="dn">${c.note||'Nessuna nota'}</div></div>
+      <div class="di full"><div class="dl">Appuntamenti / Storico</div><div class="dv">${aptsHtml}</div></div>
     </div>`;
   const ebtn = $('ebtn');
-  if(isAdmin){
-    ebtn.style.display = "block";
-    ebtn.onclick=()=>{closeDetail();openEdit(id);};
-  } else {
-    ebtn.style.display = "none";
-  }
+  if(isAdmin){ ebtn.style.display = "block"; ebtn.onclick=()=>{closeDetail();openEdit(id);}; } else { ebtn.style.display = "none"; }
   $('dov').classList.add('open');
 }
 function closeDetail(){$('dov').classList.remove('open');}
