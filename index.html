@@ -33,6 +33,7 @@
   .toggle-password {position:absolute;right:12px;bottom:11px;background:none;border:none;cursor:pointer;color:var(--lt);font-size:1.1rem;display:flex;align-items:center;justify-content:center;}
   .login-btn-admin {width:100%;padding:12px;background:var(--terra);color:white;border:none;border-radius:var(--rs);font-family:var(--font);font-size:0.95rem;font-weight:600;cursor:pointer;margin-top:10px;margin-bottom:12px;}
   .login-btn-admin:active {background:var(--terra-dk);}
+  .login-btn-admin:disabled {background:#ccc; cursor:not-allowed;}
   .login-btn-guest {background:none;border:none;color:var(--forest);font-size:0.88rem;font-weight:600;cursor:pointer;text-decoration:underline;}
   .login-err {color:#d9534f;font-size:0.8rem;margin-top:8px;display:none;font-weight:500;}
   
@@ -96,7 +97,7 @@
 
   main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
   
-  /* DASHBOARD OPERATIVA (Aggiunta chirurgica) */
+  /* DASHBOARD OPERATIVA */
   .dash-container{padding:12px 20px;background:white;border-bottom:1px solid var(--border);display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;}
   .dash-container::-webkit-scrollbar{display:none;}
   .dash-card{min-width:200px;padding:10px 14px;border-radius:var(--rs);border-left:4px solid var(--lt);background:var(--cream);font-size:0.85rem; flex-shrink:0;}
@@ -276,7 +277,6 @@
       <button type="button" class="toggle-password" onclick="togglePasswordVisibility()">👁️</button>
     </div>
     
-    <!-- NUOVO: SPUNTA RICORDAMI -->
     <div class="remember-row">
       <input type="checkbox" id="l_remember" checked>
       <label for="l_remember">Ricorda le mie credenziali</label>
@@ -422,7 +422,7 @@
   </div>
 </div>
 
-<!-- MODAL DETTAGLIO (Ripristinato) -->
+<!-- MODAL DETTAGLIO -->
 <div class="ov" id="dov">
   <div class="modal">
     <div class="mh"><div class="mt" id="dtitle">Dettaglio</div><button class="xb" onclick="closeDetail()">✕</button></div>
@@ -465,7 +465,7 @@ function togglePasswordVisibility() {
   passInput.type = (passInput.type === 'password') ? 'text' : 'password';
 }
 
-// LOGICA LOGIN E SALVATAGGIO CREDENZIALI
+// LOGICA LOGIN (Aggiornata per gestire i caratteri speciali)
 async function eseguiLogin(isSilent = false){
   const user = $('l_user').value.trim();
   const pass = $('l_pass').value;
@@ -480,14 +480,16 @@ async function eseguiLogin(isSilent = false){
   if(!isSilent){ btn.textContent = "Verifica..."; btn.disabled = true; err.style.display = 'none'; }
 
   try {
-    const res = await fetch(`${SB_URL}/rest/v1/utenti?username=eq.${user}&password=eq.${pass}&select=*`, {headers:HDR});
+    // encodeURIComponent permette di usare caratteri speciali nella password senza rompere la richiesta
+    const url = `${SB_URL}/rest/v1/utenti?username=eq.${encodeURIComponent(user)}&password=eq.${encodeURIComponent(pass)}&select=*`;
+    const res = await fetch(url, {headers:HDR});
+    
     if(!res.ok) throw new Error("Errore API");
     const data = await res.json();
     
     if(data && data.length > 0){
       isAdmin = true;
       
-      // Salvataggio credenziali
       if($('l_remember').checked) {
         localStorage.setItem('gest_u', user);
         localStorage.setItem('gest_p', pass);
@@ -518,7 +520,6 @@ function accessoLibero(){
 
 function logout(){
   isAdmin = false;
-  // Quando si fa logout manuale rimuoviamo le credenziali
   localStorage.removeItem('gest_u');
   localStorage.removeItem('gest_p');
   $('l_user').value = '';
@@ -573,7 +574,7 @@ function getGCalLink(title, dateStr, note){
   if(!dateStr) return '#';
   const d = new Date(dateStr);
   const d1 = d.toISOString().replace(/-|:|\.\d\d\d/g,"");
-  const d2 = new Date(d.getTime() + 3600000).toISOString().replace(/-|:|\.\d\d\d/g,""); // +1 ora di default
+  const d2 = new Date(d.getTime() + 3600000).toISOString().replace(/-|:|\.\d\d\d/g,""); 
   return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${d1}/${d2}&details=${encodeURIComponent(note||'')}`;
 }
 
@@ -600,7 +601,6 @@ async function dbDelete(id){
 }
 
 function load(){
-  // Auto-login se presente
   const su = localStorage.getItem('gest_u');
   const sp = localStorage.getItem('gest_p');
   if(su && sp){
