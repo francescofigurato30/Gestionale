@@ -357,6 +357,7 @@
         <div class="fl"><label>Telefono</label><input type="tel" id="f_tel" placeholder="+39 000 000 0000"></div>
         <div class="fl"><label>Email</label><input type="email" id="f_email" placeholder="email@esempio.it"></div>
         <div class="fl"><label>Provenienza</label><input type="text" id="f_sito" placeholder="Airbnb, Booking, Subito…"></div>
+        
         <div class="sdiv">🏠 Struttura & Categoria</div>
         <div class="fl"><label>Cartella *</label>
           <select id="f_cartella">
@@ -367,6 +368,7 @@
             <option>Monolocale</option>
           </select>
         </div>
+        
         <div class="fl"><label>Categoria *</label>
           <select id="f_categoria">
             <option value="">— Seleziona —</option>
@@ -382,13 +384,14 @@
           </select>
         </div>
         
+        <!-- PALLINO VIOLA REINSERITO ANCHE QUI -->
         <div class="fl full"><label>Stato Occupazione (Pallino)</label>
           <select id="f_stato_manuale">
             <option value="auto">⚙️ Calcola automaticamente (In base alle date)</option>
             <option value="🟢 Libera">🟢 Libera</option>
             <option value="🔴 Occupata">🔴 Occupata</option>
             <option value="🟡 Forse Occupata">🟡 Forse Occupata</option>
-            <option value="nessuno">⚪ Nessun pallino</option>
+            <option value="🟣 Solo Informazioni">🟣 Solo Informazioni</option>
           </select>
         </div>
 
@@ -405,8 +408,10 @@
         <div class="sdiv">📞 Contatto ricevuto</div>
         <div class="fl"><label>Data contatto</label><input type="date" id="f_data_contatto"></div>
         <div class="fl"><label>Chi ha parlato</label><input type="text" id="f_chi" placeholder="es. Io, Tu, Marco…"></div>
+        
         <div class="sdiv">📝 Note</div>
         <div class="fl full"><label>Note e motivazioni</label><textarea id="f_note" placeholder="Perché vuole la casa, preferenze, famiglia…"></textarea></div>
+        
         <div class="sdiv">🗓️ Appuntamenti</div>
         <div class="full">
           <div class="al" id="al"></div>
@@ -432,7 +437,7 @@
 </div>
 
 <script>
-// Le vecchie credenziali, ripristinate per sbloccarti
+// Credenziali bypass sicure e indipendenti da maiuscole/minuscole
 const ADMIN_USERS = ['Francesco', 'Vittoria'];
 const ADMIN_PASS = 'Gestionale2026';
 
@@ -469,17 +474,18 @@ function togglePasswordVisibility() {
   passInput.type = (passInput.type === 'password') ? 'text' : 'password';
 }
 
-// LOGICA LOGIN (Ripristinata alle credenziali fisse per aggirare la mancanza della tabella 'utenti')
 function eseguiLogin(){
-  const user = $('l_user').value.trim();
+  const user = $('l_user').value.trim().toLowerCase();
   const pass = $('l_pass').value;
   const err = $('loginError');
   
-  if(ADMIN_USERS.includes(user) && pass === ADMIN_PASS){
+  const validAdmins = ADMIN_USERS.map(u => u.toLowerCase());
+  
+  if(validAdmins.includes(user) && pass === ADMIN_PASS){
     isAdmin = true;
     
     if($('l_remember').checked) {
-      localStorage.setItem('gest_u', user);
+      localStorage.setItem('gest_u', $('l_user').value.trim());
       localStorage.setItem('gest_p', pass);
     } else {
       localStorage.removeItem('gest_u');
@@ -567,7 +573,7 @@ function banner(state,txt){
   if(bT)clearTimeout(bT); if(state==='ok'||state==='err') bT=setTimeout(()=>b.classList.remove('show'),2500);
 }
 
-// === CORRETTE LE API PER CORRISPONDERE ALLE TUE COLONNE IN ITALIANO ("contatti", "dati", "aggiornato_alle") ===
+// Chiamate API basate sulla struttura ESATTA del tuo DB Supabase in italiano ("contatti", "dati", "aggiornato_alle")
 async function dbRead(){
   const r=await fetch(`${SB_URL}/rest/v1/contatti?select=*&order=aggiornato_alle.desc`,{headers:HDR});
   if(!r.ok)throw new Error('read');
@@ -849,7 +855,7 @@ async function saveContact(){
     chi:$('f_chi').value.trim(),note:$('f_note').value.trim(),
     appuntamenti:JSON.parse(JSON.stringify(curApts)),
     createdAt:editId?(contacts.find(c=>c.id===editId)||{}).createdAt||new Date().toISOString():new Date().toISOString(),
-    updatedAt:new Date().toISOString()
+    updatedAt:new Date().toISOString() // salvato nel db come campo aggiornato_alle
   };
   if(editId){const i=contacts.findIndex(c=>c.id===editId);if(i>=0)contacts[i]=data;} else contacts.unshift(data);
   localStorage.setItem('sb_cache',JSON.stringify(contacts));
