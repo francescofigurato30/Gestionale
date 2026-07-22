@@ -368,7 +368,6 @@
             <option>Monolocale</option>
           </select>
         </div>
-        
         <div class="fl"><label>Categoria *</label>
           <select id="f_categoria">
             <option value="">— Seleziona —</option>
@@ -384,7 +383,6 @@
           </select>
         </div>
         
-        <!-- PALLINO VIOLA REINSERITO ANCHE QUI -->
         <div class="fl full"><label>Stato Occupazione (Pallino)</label>
           <select id="f_stato_manuale">
             <option value="auto">⚙️ Calcola automaticamente (In base alle date)</option>
@@ -392,6 +390,7 @@
             <option value="🔴 Occupata">🔴 Occupata</option>
             <option value="🟡 Forse Occupata">🟡 Forse Occupata</option>
             <option value="🟣 Solo Informazioni">🟣 Solo Informazioni</option>
+            <option value="nessuno">⚪ Nessun pallino</option>
           </select>
         </div>
 
@@ -573,20 +572,20 @@ function banner(state,txt){
   if(bT)clearTimeout(bT); if(state==='ok'||state==='err') bT=setTimeout(()=>b.classList.remove('show'),2500);
 }
 
-// Chiamate API basate sulla struttura ESATTA del tuo DB Supabase in italiano ("contatti", "dati", "aggiornato_alle")
+// Chiamate API con i veri nomi del database in inglese
 async function dbRead(){
-  const r=await fetch(`${SB_URL}/rest/v1/contatti?select=*&order=aggiornato_alle.desc`,{headers:HDR});
+  const r=await fetch(`${SB_URL}/rest/v1/contacts?select=*&order=updated_at.desc`,{headers:HDR});
   if(!r.ok)throw new Error('read');
-  const rows=await r.json(); return rows.map(row=>({...row.dati,id:row.id}));
+  const rows=await r.json(); return rows.map(row=>({...row.data,id:row.id}));
 }
 async function dbUpsert(c){
   if(!isAdmin) return;
-  const r=await fetch(`${SB_URL}/rest/v1/contatti`,{method:'POST',headers:{...HDR,'Prefer':'resolution=merge-duplicates'},body:JSON.stringify({id:c.id,dati:c,aggiornato_alle:new Date().toISOString()})});
+  const r=await fetch(`${SB_URL}/rest/v1/contacts`,{method:'POST',headers:{...HDR,'Prefer':'resolution=merge-duplicates'},body:JSON.stringify({id:c.id,data:c,updated_at:new Date().toISOString()})});
   if(!r.ok)throw new Error('upsert');
 }
 async function dbDelete(id){
   if(!isAdmin) return;
-  const r=await fetch(`${SB_URL}/rest/v1/contatti?id=eq.${id}`,{method:'DELETE',headers:HDR});
+  const r=await fetch(`${SB_URL}/rest/v1/contacts?id=eq.${id}`,{method:'DELETE',headers:HDR});
   if(!r.ok)throw new Error('delete');
 }
 
@@ -855,7 +854,7 @@ async function saveContact(){
     chi:$('f_chi').value.trim(),note:$('f_note').value.trim(),
     appuntamenti:JSON.parse(JSON.stringify(curApts)),
     createdAt:editId?(contacts.find(c=>c.id===editId)||{}).createdAt||new Date().toISOString():new Date().toISOString(),
-    updatedAt:new Date().toISOString() // salvato nel db come campo aggiornato_alle
+    updatedAt:new Date().toISOString()
   };
   if(editId){const i=contacts.findIndex(c=>c.id===editId);if(i>=0)contacts[i]=data;} else contacts.unshift(data);
   localStorage.setItem('sb_cache',JSON.stringify(contacts));
