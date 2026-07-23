@@ -368,6 +368,7 @@
             <option>Monolocale</option>
           </select>
         </div>
+        
         <div class="fl"><label>Categoria *</label>
           <select id="f_categoria">
             <option value="">— Seleziona —</option>
@@ -436,7 +437,7 @@
 </div>
 
 <script>
-// Credenziali bypass sicure e indipendenti da maiuscole/minuscole
+// Credenziali bypass sicure
 const ADMIN_USERS = ['Francesco', 'Vittoria'];
 const ADMIN_PASS = 'Gestionale2026';
 
@@ -572,7 +573,7 @@ function banner(state,txt){
   if(bT)clearTimeout(bT); if(state==='ok'||state==='err') bT=setTimeout(()=>b.classList.remove('show'),2500);
 }
 
-// Chiamate API con i veri nomi del database in inglese
+// Chiamate API basate sui VERI nomi di Supabase (contacts, data, updated_at)
 async function dbRead(){
   const r=await fetch(`${SB_URL}/rest/v1/contacts?select=*&order=updated_at.desc`,{headers:HDR});
   if(!r.ok)throw new Error('read');
